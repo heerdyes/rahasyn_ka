@@ -1,5 +1,29 @@
 #include "ofApp.h"
 
+void ofApp::inittbl()
+{
+    // bipolar tables
+    ta=new tbl();
+    ta->setup(128);
+    ta->dramp();
+
+    // unipolar tables
+    tb=new tbl();
+    tb->setup(64);
+    tb->pulse(.5);
+
+    tc=new tbl();
+    tc->setup(64);
+    tc->uramp();
+}
+
+void ofApp::inittlo()
+{
+    o.setup(ta, 1.0, 1.0);
+    oa.setup(tb, 1.0, 1.0);
+    ort.setup(tc, 1.0, 4.0);
+}
+
 //--------------------------------------------------------------
 void ofApp::setup()
 {
@@ -12,10 +36,8 @@ void ofApp::setup()
     mgain=0.125;
     omode=0;
 
-    o.setup(0, 128, 1.0, 1.0);
-    oa.setup(2, 32, 1.5, 1.0);
-    ort.setup(0, 64, .5, 4.0);
-    ort.t.bi2uni();
+    inittbl();
+    inittlo();
 
     soundsetup();
 }
@@ -33,10 +55,10 @@ void ofApp::draw()
     float cy=ofGetHeight()/2;
     float cx=50;
     float ky=400;
-    float kx=4;
+    float kx=2;
 
     ofSetColor(255,144,11);
-    for(int i=0;i<BUFR_SIZE;i++)
+    for(int i=0;i<SCOP_SIZE;i++)
     {
         float xx=cx+i*kx;
         ofDrawLine(xx,cy,xx,cy-scope[i]*ky);
@@ -59,7 +81,7 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         else if(lv<-.99) lv=-.99;  // valves
 
         scope[scopectr]=lv;
-        scopectr=(scopectr+1)%BUFR_SIZE;
+        scopectr=(scopectr+1)%SCOP_SIZE;
 
         outbuf[lch]=lv;
         outbuf[rch]=lv;

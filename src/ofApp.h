@@ -3,7 +3,7 @@
 #include "ofMain.h"
 
 #define SMPL_RATE   (44100)
-#define BUFR_SIZE   (256)
+#define BUFR_SIZE   (512)
 #define SCOP_SIZE   (512)
 #define TBL_MAX_N   (16384)
 
@@ -14,7 +14,10 @@ public:
     int sz;
     float ptr;
 
-    tbl(){}
+    tbl()
+    {
+        ptr=0.0;
+    }
 
     void setup(int n)
     {
@@ -33,8 +36,8 @@ public:
 
     void uramp()
     {
-        float m=2.0 / (float)sz;
-        float smp=-1.0;
+        float m=1.0 / (float)sz;
+        float smp=0.0;
         for(int i=0;i<sz;i++)
         {
             buf[i]=smp;
@@ -75,26 +78,22 @@ public:
 class tlo
 {
 public:
-    tbl t;
+    tbl *t;
     float rate;
     float amp;
 
     tlo(){}
 
-    void setup(int ch, int tn, float r0, float a0)
+    void setup(tbl *tt, float r0, float a0)
     {
-        t.setup(tn);
-        if(ch==0) t.uramp();
-        else if(ch==1) t.dramp();
-        else t.pulse();
-
+        t=tt;
         rate=r0;
         amp=a0;
     }
 
-    void evolve() { t.mvptr(rate); }
+    void evolve() { t->mvptr(rate); }
 
-    float samp() { return amp*t.sampnow(); }
+    float samp() { return amp*t->sampnow(); }
 };
 
 class ofApp : public ofBaseApp{
@@ -136,14 +135,23 @@ class ofApp : public ofBaseApp{
             soundStream.setup(settings);
         }
 
+        void inittbl();
+        void inittlo();
+
         ofSoundStream soundStream;
         ofTrueTypeFont fnt;
 
-        float scope[BUFR_SIZE];
+        float scope[SCOP_SIZE];
         int scopectr;
+        int octr;
         float mgain;
 
-        // synth
+        // tables
+        tbl *ta;
+        tbl *tb;
+        tbl *tc;
+
+        // oscillators
         tlo o;
         tlo oa;
         tlo ort;
