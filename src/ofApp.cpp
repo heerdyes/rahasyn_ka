@@ -77,7 +77,7 @@ void ofApp::rndrfsm()
 void ofApp::draw()
 {
     ofSetColor(22,202,232);
-    fnt.drawString("synthesizer esoteria", 50,50);
+    fnt.drawString("rahasynth_ka", 22,44);
 
     float cy=HH/2;
     float cx=50;
