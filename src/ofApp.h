@@ -6,6 +6,8 @@
 #define BUFR_SIZE   (512)
 #define SCOP_SIZE   (512)
 #define TBL_MAX_N   (16384)
+#define HH          (ofGetHeight())
+#define WW          (ofGetWidth())
 
 class tbl
 {
@@ -96,6 +98,34 @@ public:
     float samp() { return amp*t->sampnow(); }
 };
 
+class nd
+{
+public:
+    float x,y;
+    int st;
+    ofColor c;
+    float w;
+
+    void setup(float xx,float yy,int s)
+    {
+        x=xx;
+        y=yy;
+        st=s;
+        w=30;
+        c.set(255,108,0);
+    }
+
+    void rndr(ofTrueTypeFont f0, int fstate)
+    {
+        if(fstate==st) ofSetColor(c);
+        else ofSetColor(23,202,232);
+
+        ofDrawEllipse(x,y,w,w);
+        ofSetColor(0);
+        f0.drawString(ofToString(st), x-7,y+8);
+    }
+};
+
 class ofApp : public ofBaseApp{
 
     public:
@@ -135,16 +165,52 @@ class ofApp : public ofBaseApp{
             soundStream.setup(settings);
         }
 
+        // refer project splinear for more splines
+        void spline2(float x1,float y1, float x2,float y2, float p,float q, int n, string st, ofTrueTypeFont ft)
+        {
+            float mul=(1.0 / (float)n);
+            float ox1=x1;
+            float oy1=y1;
+
+            for(int i=1;i<n+1;i++)
+            {
+                float d=mul*i;
+                float zx1=x1*pow(1.0-d, 2) + 2*p*(1.0-d)*d + x2*pow(d, 2);
+                float zy1=y1*pow(1.0-d, 2) + 2*q*(1.0-d)*d + y2*pow(d, 2);
+
+                float dst=abs((fctr%n)-i);
+                if(dst<3) ofSetColor(255,128,0);
+                else ofSetColor(0,255,0);
+
+                ofDrawLine(ox1,oy1, zx1,zy1);
+
+                if(i==n/2)
+                {
+                    ofSetColor(23,202,232);
+                    ft.drawString(st, zx1, zy1-8);
+                }
+
+                ox1=zx1;
+                oy1=zy1;
+            }
+        }
+
+        void initfsm();
+        void rndrfsm();
+
+        // table and oscillator funxions
         void inittbl();
         void inittlo();
 
         ofSoundStream soundStream;
         ofTrueTypeFont fnt;
+        ofTrueTypeFont fej;
 
         float scope[SCOP_SIZE];
         int scopectr;
-        int octr;
         float mgain;
+        int ctr;
+        int fctr;
 
         // tables
         tbl *ta;
@@ -156,4 +222,8 @@ class ofApp : public ofBaseApp{
         tlo oa;
         tlo ort;
         int omode;
+        int state;
+
+        // fsm
+        nd s0,s1,s2,s3;
 };

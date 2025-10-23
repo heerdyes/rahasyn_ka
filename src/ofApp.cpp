@@ -24,6 +24,14 @@ void ofApp::inittlo()
     ort.setup(tc, 1.0, 4.0);
 }
 
+void ofApp::initfsm()
+{
+    s0.setup(400,HH-44,0);
+    s1.setup(480,HH-44,1);
+    s2.setup(550,HH-88,2);
+    s3.setup(600,HH-44,3);
+}
+
 //--------------------------------------------------------------
 void ofApp::setup()
 {
@@ -31,20 +39,39 @@ void ofApp::setup()
     ofBackground(0);
 
     scopectr=0;
-    fnt.load("OCRA", 22);
+    fctr=0;
+    ctr=0;
+    state=0;
+
+    fnt.load("OCRA", 16);
+    fej.load("OCRA", 10);
 
     mgain=0.125;
-    omode=0;
 
     inittbl();
     inittlo();
+    initfsm();
 
     soundsetup();
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
-{}
+{
+    ctr++;
+    if(ctr%4==0) fctr++;
+}
+
+void ofApp::rndrfsm()
+{
+    s0.rndr(fnt, state);
+    s1.rndr(fnt, state);
+    s2.rndr(fnt, state);
+    s3.rndr(fnt, state);
+
+    spline2(s0.x,s0.y, s1.x,s1.y, (s0.x+s1.x)/2,s1.y-40, 18, "F1", fej);
+    spline2(s1.x,s1.y, s2.x,s2.y, (s1.x+s2.x)/2-30,s2.y-20, 18, "F2", fej);
+}
 
 //--------------------------------------------------------------
 void ofApp::draw()
@@ -52,17 +79,19 @@ void ofApp::draw()
     ofSetColor(22,202,232);
     fnt.drawString("synthesizer esoteria", 50,50);
 
-    float cy=ofGetHeight()/2;
+    float cy=HH/2;
     float cx=50;
     float ky=400;
     float kx=2;
 
-    ofSetColor(255,144,11);
+    ofSetColor(23,202,232);
     for(int i=0;i<SCOP_SIZE;i++)
     {
         float xx=cx+i*kx;
         ofDrawLine(xx,cy,xx,cy-scope[i]*ky);
     }
+
+    rndrfsm();
 }
 
 // ----------------------------------------- //
@@ -99,13 +128,19 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
 void ofApp::keyPressed(int key)
 {
     cout<<key<<endl;
-    if(key==57344)
+    if(state==0)
     {
-        omode=0;
+        if(key==57344)
+        {
+            state=1;
+        }
     }
-    else if(key==57345)
+    else if(state==1)
     {
-        omode=1;
+        if(key==97)
+        {
+            state=2;
+        }
     }
 }
 
