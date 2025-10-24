@@ -1,29 +1,5 @@
 #include "ofApp.h"
 
-void ofApp::inittbl()
-{
-    // bipolar tables
-    ta=new tbl();
-    ta->setup(128);
-    ta->dramp();
-
-    // unipolar tables
-    tb=new tbl();
-    tb->setup(64);
-    tb->pulse(.5);
-
-    tc=new tbl();
-    tc->setup(64);
-    tc->uramp();
-}
-
-void ofApp::inittlo()
-{
-    o.setup(ta, 1.0, 1.0);
-    oa.setup(tb, 1.0, 1.0);
-    ort.setup(tc, 1.0, 4.0);
-}
-
 void ofApp::initfsm()
 {
     s0.setup(400,HH-44,0);
@@ -46,11 +22,9 @@ void ofApp::setup()
     fnt.load("OCRA", 16);
     fej.load("OCRA", 10);
 
-    mgain=0.125;
-
-    inittbl();
-    inittlo();
     initfsm();
+
+    z.setup();
 
     soundsetup();
 }
@@ -73,6 +47,24 @@ void ofApp::rndrfsm()
     spline2(s1.x,s1.y, s2.x,s2.y, (s1.x+s2.x)/2-30,s2.y-20, 18, "F2", fej);
 }
 
+void ofApp::rndrtbl(float x, float y, float w, float h, int ti, float k)
+{
+    ofSetColor(23,202,232);
+    float xf=w/(float)z.tx[ti].sz;
+    float xx=x;
+
+    for(int i=0;i<z.tx[ti].sz;i++)
+    {
+        float yy=y-k*z.tx[ti].buf[i];
+        ofDrawLine(xx,y,xx,yy);
+        xx+=xf;
+    }
+
+    ofSetColor(255,88,0);
+    float xp=x+z.tx[ti].ptr*w/(float)z.tx[ti].sz;
+    ofDrawLine(xp,y+k/2,xp,y-k/2);
+}
+
 //--------------------------------------------------------------
 void ofApp::draw()
 {
@@ -91,7 +83,15 @@ void ofApp::draw()
         ofDrawLine(xx,cy,xx,cy-scope[i]*ky);
     }
 
+    // rndr voice tables
+    rndrtbl(300,100,160,90,z.ox[z.v0].tid,80);
+    rndrtbl(600,100,160,90,z.ox[z.v1].tid,80);
+    rndrtbl(300,300,160,90,z.ox[z.v2].tid,80);
+    rndrtbl(600,300,160,90,z.ox[z.v3].tid,80);
+
     rndrfsm();
+
+    fnt.drawString(ofToString(z.ctr), 600,40);
 }
 
 // ----------------------------------------- //
@@ -103,9 +103,8 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         int lch=ni;
         int rch=ni+1;
 
-        float asig=o.samp();  // modded tlo signal
+        float lv=z.vsamp();        // synth signal
 
-        float lv=mgain*asig;       // synth signal
         if(lv>.99) lv=.99;         // protection
         else if(lv<-.99) lv=-.99;  // valves
 
@@ -115,13 +114,9 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         outbuf[lch]=lv;
         outbuf[rch]=lv;
 
-        o.evolve();              // audio rate osc
+        rbctr++;
+        if(rbctr>222222) rbctr=0;
     }
-
-    o.rate=ort.samp();
-    o.amp=oa.samp();
-    oa.evolve(); // kontrol
-    ort.evolve(); // rate osc
 }
 
 //--------------------------------------------------------------
