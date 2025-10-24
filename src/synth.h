@@ -10,6 +10,42 @@
 #define NTBL        (26)
 #define NTLO        (26)
 
+class tbl2
+{
+public:
+    float buf[TBL_MAX_N];
+    int sz;
+    int ptr;
+
+    void setup(int n)
+    {
+        sz=n;
+        ptr=0;
+        dramp();
+    }
+
+    void dramp()
+    {
+        float m=2.0 / (float)sz;
+        float smp=1.0;
+        for(int i=0;i<sz;i++)
+        {
+            buf[i]=smp;
+            smp-=m;
+        }
+    }
+
+    void incptr()
+    {
+        ptr=(ptr+1)%sz;
+    }
+
+    float samp()
+    {
+        return buf[ptr];
+    }
+};
+
 class tbl
 {
 public:

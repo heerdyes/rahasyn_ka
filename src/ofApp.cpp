@@ -25,6 +25,7 @@ void ofApp::setup()
     initfsm();
 
     z.setup();
+    a0.setup(512);
 
     soundsetup();
 }
@@ -103,7 +104,7 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         int lch=ni;
         int rch=ni+1;
 
-        float lv=z.vsamp();        // synth signal
+        float lv=z.mgain * a0.samp();
 
         if(lv>.99) lv=.99;         // protection
         else if(lv<-.99) lv=-.99;  // valves
@@ -114,8 +115,7 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         outbuf[lch]=lv;
         outbuf[rch]=lv;
 
-        rbctr++;
-        if(rbctr>222222) rbctr=0;
+        a0.incptr();
     }
 }
 

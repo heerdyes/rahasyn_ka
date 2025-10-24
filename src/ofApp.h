@@ -125,4 +125,6 @@ class ofApp : public ofBaseApp{
 
         syn z;
         int rbctr=0;
+
+        tbl2 a0;
 };
