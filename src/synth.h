@@ -15,12 +15,10 @@ class tbl2
 public:
     float buf[TBL_MAX_N];
     int sz;
-    int ptr;
 
     void setup(int n)
     {
         sz=n;
-        ptr=0;
         dramp();
     }
 
@@ -33,16 +31,6 @@ public:
             buf[i]=smp;
             smp-=m;
         }
-    }
-
-    void incptr()
-    {
-        ptr=(ptr+1)%sz;
-    }
-
-    float samp()
-    {
-        return buf[ptr];
     }
 };
 
@@ -144,11 +132,23 @@ public:
     // mod tlos
     int rtlo;
     int atlo;
+    float ptr;
 
     tlo()
     {
         rtlo=-1;
         atlo=-1;
+        ptr=0;
+    }
+
+    tbl2 gettbl(tbl2 tx[])
+    {
+        return tx[tid];
+    }
+
+    int tblsz(tbl2 tx[])
+    {
+        return tx[tid].sz;
     }
 
     void setup(int tt, float r0, float a0)
@@ -158,14 +158,29 @@ public:
         amp=a0;
     }
 
-    void evolve(tbl tx[], tlo ox[])
+    void setra(float rr, float aa)
     {
-        tx[tid].mvptr(rate);
+        rate=rr;
+        amp=aa;
+    }
+
+    void incptr(tbl2 tx[])
+    {
+        ptr+=rate;
+        if(ptr>tx[tid].sz-1) ptr-=tx[tid].sz-1;
+    }
+
+    void evolve(tbl2 tx[], tlo ox[])
+    {
+        incptr(tx);
         if(rtlo!=-1) rate=ox[rtlo].samp(tx);
         if(atlo!=-1) amp=ox[atlo].samp(tx);
     }
 
-    float samp(tbl tx[]) { return amp*tx[tid].sampnow(); }
+    float samp(tbl2 tx[])
+    {
+        return amp * tx[tid].buf[(int)round(ptr)];
+    }
 };
 
 class syn: public ofThread
@@ -203,6 +218,7 @@ public:
     {
         while(isThreadRunning())
         {
+            /*
             if(ctr2%1==0)
             {
                 ox[v0].evolve(tx,ox);           // audio rate
@@ -215,6 +231,7 @@ public:
                 if(rem==v0 || rem==v1 || rem==v2 || rem==v3) {}
                 else ox[rem].evolve(tx,ox);
             }
+            */
 
             ctr++;
             if(ctr%4==0) ctr2++;
@@ -222,6 +239,14 @@ public:
             if(ctr>444444) ctr=0;
             if(ctr2>444444) ctr2=0;
         }
+    }
+
+    void evolve()
+    {
+        ox[v0].evolve(tx,ox);           // audio rate
+        ox[v1].evolve(tx,ox);           // table lookup
+        ox[v2].evolve(tx,ox);           // oscillator
+        ox[v3].evolve(tx,ox);           // evolution
     }
 
     float vsamp()
@@ -257,15 +282,33 @@ public:
     {
         // vox init
         v0=0; v1=1; v2=2; v3=3;
-        ox[v0].rate=.25;
-        ox[v1].amp=.0;
-        ox[v2].amp=.0;
+        ox[v0].setra(2.0, .4);
+        ox[v1].setra(2.01, .4);
+        ox[v2].setra(3.0, .2);
         ox[v3].amp=.0;
     }
 
-    /// This drawing function cannot be called from the thread itself because
-    /// it includes OpenGL calls
     void draw(){}
+
+    tlo & getosc(int oi)
+    {
+        return ox[oi];
+    }
+
+    float getosctblsamp(int oi, int j)
+    {
+        return tx[ox[oi].tid].buf[j];
+    }
+
+    int getosctblsz(int oi)
+    {
+        return tx[ox[oi].tid].sz;
+    }
+
+    float getoscptr(int oi)
+    {
+        return ox[oi].ptr;
+    }
 
     // vars
     int ctr = 0;
@@ -273,7 +316,7 @@ public:
     float synbuf[SYNBUF_SZ];
 
     // table list
-    tbl tx[NTBL];
+    tbl2 tx[NTBL];
 
     // oscillators
     tlo ox[NTLO];

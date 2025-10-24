@@ -108,7 +108,7 @@ class ofApp : public ofBaseApp{
         void rndrfsm();
 
         // table rendering
-        void rndrtbl(float x, float y, float w, float h, int ti, float k);
+        void rndrtlo(float x, float y, float w, float h, int oi, float k);
 
         ofSoundStream soundStream;
         ofTrueTypeFont fnt;

@@ -48,21 +48,22 @@ void ofApp::rndrfsm()
     spline2(s1.x,s1.y, s2.x,s2.y, (s1.x+s2.x)/2-30,s2.y-20, 18, "F2", fej);
 }
 
-void ofApp::rndrtbl(float x, float y, float w, float h, int ti, float k)
+void ofApp::rndrtlo(float x, float y, float w, float h, int oi, float k)
 {
     ofSetColor(23,202,232);
-    float xf=w/(float)z.tx[ti].sz;
+    int tsz=z.getosctblsz(oi);
+    float xf=w / (float) tsz;
     float xx=x;
 
-    for(int i=0;i<z.tx[ti].sz;i++)
+    for(int i=0;i<tsz;i++)
     {
-        float yy=y-k*z.tx[ti].buf[i];
+        float yy=y - k*z.getosctblsamp(oi,i);
         ofDrawLine(xx,y,xx,yy);
         xx+=xf;
     }
 
     ofSetColor(255,88,0);
-    float xp=x+z.tx[ti].ptr*w/(float)z.tx[ti].sz;
+    float xp=x+z.getoscptr(oi) * w / (float) tsz;
     ofDrawLine(xp,y+k/2,xp,y-k/2);
 }
 
@@ -85,14 +86,14 @@ void ofApp::draw()
     }
 
     // rndr voice tables
-    rndrtbl(300,100,160,90,z.ox[z.v0].tid,80);
-    rndrtbl(600,100,160,90,z.ox[z.v1].tid,80);
-    rndrtbl(300,300,160,90,z.ox[z.v2].tid,80);
-    rndrtbl(600,300,160,90,z.ox[z.v3].tid,80);
+    rndrtlo(300,100,160,90,z.ox[z.v0].tid,80);
+    rndrtlo(600,100,160,90,z.ox[z.v1].tid,80);
+    rndrtlo(300,300,160,90,z.ox[z.v2].tid,80);
+    rndrtlo(600,300,160,90,z.ox[z.v3].tid,80);
 
     rndrfsm();
 
-    fnt.drawString(ofToString(z.ctr), 600,40);
+    fnt.drawString(ofToString(z.ctr), 800,40);
 }
 
 // ----------------------------------------- //
@@ -104,7 +105,7 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         int lch=ni;
         int rch=ni+1;
 
-        float lv=z.mgain * a0.samp();
+        float lv=z.vsamp();
 
         if(lv>.99) lv=.99;         // protection
         else if(lv<-.99) lv=-.99;  // valves
@@ -115,7 +116,7 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         outbuf[lch]=lv;
         outbuf[rch]=lv;
 
-        a0.incptr();
+        z.evolve();
     }
 }
 
