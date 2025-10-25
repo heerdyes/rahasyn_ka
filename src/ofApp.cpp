@@ -25,8 +25,6 @@ void ofApp::setup()
     initfsm();
 
     z.setup();
-    a0.setup(512);
-
     soundsetup();
 }
 
@@ -54,10 +52,11 @@ void ofApp::rndrtlo(float x, float y, float w, float h, int oi, float k)
     int tsz=z.getosctblsz(oi);
     float xf=w / (float) tsz;
     float xx=x;
+    float kk=k*z.getoscamp(oi);
 
     for(int i=0;i<tsz;i++)
     {
-        float yy=y - k*z.getosctblsamp(oi,i);
+        float yy=y - kk*z.getosctblsamp(oi,i);
         ofDrawLine(xx,y,xx,yy);
         xx+=xf;
     }
@@ -86,10 +85,10 @@ void ofApp::draw()
     }
 
     // rndr voice tables
-    rndrtlo(300,100,160,90,z.ox[z.v0].tid,80);
-    rndrtlo(600,100,160,90,z.ox[z.v1].tid,80);
-    rndrtlo(300,300,160,90,z.ox[z.v2].tid,80);
-    rndrtlo(600,300,160,90,z.ox[z.v3].tid,80);
+    rndrtlo(300,100,160,90,z.v0,80);
+    rndrtlo(600,100,160,90,z.v1,80);
+    rndrtlo(300,300,160,90,z.v2,80);
+    rndrtlo(600,300,160,90,z.v3,80);
 
     rndrfsm();
 
@@ -116,8 +115,11 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         outbuf[lch]=lv;
         outbuf[rch]=lv;
 
-        z.evolve();
+        z.aevolve();
+        z.kevolve();
     }
+
+    //z.kevolve();
 }
 
 //--------------------------------------------------------------

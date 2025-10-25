@@ -32,34 +32,6 @@ public:
             smp-=m;
         }
     }
-};
-
-class tbl
-{
-public:
-    float buf[TBL_MAX_N];
-    int sz;
-    float ptr;
-
-    tbl()
-    {
-        ptr=0.0;
-    }
-
-    void setup(int n)
-    {
-        if(n>TBL_MAX_N || n<0) sz=TBL_MAX_N;
-        else sz=n;
-    }
-
-    float sampnow() { return buf[(int)round(ptr)]; }
-
-    void mvptr(float r)
-    {
-        float _ptr=ptr+r;
-        if(_ptr>sz-1) _ptr-=sz-1;
-        ptr=_ptr;
-    }
 
     void uramp()
     {
@@ -69,17 +41,6 @@ public:
         {
             buf[i]=smp;
             smp+=m;
-        }
-    }
-
-    void dramp()
-    {
-        float m=2.0 / (float)sz;
-        float smp=1.0;
-        for(int i=0;i<sz;i++)
-        {
-            buf[i]=smp;
-            smp-=m;
         }
     }
 
@@ -173,8 +134,8 @@ public:
     void evolve(tbl2 tx[], tlo ox[])
     {
         incptr(tx);
-        if(rtlo!=-1) rate=ox[rtlo].samp(tx);
-        if(atlo!=-1) amp=ox[atlo].samp(tx);
+        if(rtlo!=-1) rate=abs(ox[rtlo].samp(tx));
+        if(atlo!=-1) amp=abs(ox[atlo].samp(tx));
     }
 
     float samp(tbl2 tx[])
@@ -218,35 +179,27 @@ public:
     {
         while(isThreadRunning())
         {
-            /*
-            if(ctr2%1==0)
-            {
-                ox[v0].evolve(tx,ox);           // audio rate
-                ox[v1].evolve(tx,ox);           // table lookup
-                ox[v2].evolve(tx,ox);           // oscillator
-                ox[v3].evolve(tx,ox);           // evolution
-
-                // evolve the remaining kontrol rate oscs without looping
-                int rem=ctr%NTLO;
-                if(rem==v0 || rem==v1 || rem==v2 || rem==v3) {}
-                else ox[rem].evolve(tx,ox);
-            }
-            */
-
-            ctr++;
-            if(ctr%4==0) ctr2++;
-
-            if(ctr>444444) ctr=0;
-            if(ctr2>444444) ctr2=0;
+            // some parallel code
         }
     }
 
-    void evolve()
+    void aevolve()
     {
         ox[v0].evolve(tx,ox);           // audio rate
         ox[v1].evolve(tx,ox);           // table lookup
         ox[v2].evolve(tx,ox);           // oscillator
         ox[v3].evolve(tx,ox);           // evolution
+    }
+
+    void kevolve()
+    {
+        // evolve the remaining kontrol rate oscs without looping
+        int rem=ctr%NTLO;
+        if(rem==v0 || rem==v1 || rem==v2 || rem==v3) {}
+        else ox[rem].evolve(tx,ox);
+
+        ctr++;
+        if(ctr>444444) ctr=0;
     }
 
     float vsamp()
@@ -268,6 +221,8 @@ public:
             tx[i].setup(512);
             tx[i].dramp();
         }
+
+        tx[11].pulse(.1);
     }
 
     void inittlo()
@@ -276,6 +231,9 @@ public:
         {
             ox[i].setup(0, 1.0, 1.0);
         }
+
+        ox[4].setup(11, .75, 1.0);
+        ox[5].setup(0, 1.5, 5.0);
     }
 
     void initvox()
@@ -283,9 +241,11 @@ public:
         // vox init
         v0=0; v1=1; v2=2; v3=3;
         ox[v0].setra(2.0, .4);
-        ox[v1].setra(2.01, .4);
-        ox[v2].setra(3.0, .2);
-        ox[v3].amp=.0;
+        ox[v0].atlo=4;
+        ox[v1].setra(3.0, .4);
+        ox[v1].rtlo=5;
+        ox[v2].setra(1.0, .0);
+        ox[v3].setra(1.0, .0);
     }
 
     void draw(){}
@@ -310,9 +270,13 @@ public:
         return ox[oi].ptr;
     }
 
+    float getoscamp(int oi)
+    {
+        return ox[oi].amp;
+    }
+
     // vars
     int ctr = 0;
-    int ctr2 = 0;
     float synbuf[SYNBUF_SZ];
 
     // table list
