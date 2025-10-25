@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include <atomic>
 
 #define SMPL_RATE   (44100)
 #define BUFR_SIZE   (512)
@@ -240,10 +239,8 @@ public:
     {
         // vox init
         v0=0; v1=1; v2=2; v3=3;
-        ox[v0].setra(2.0, .4);
-        ox[v0].atlo=4;
-        ox[v1].setra(3.0, .4);
-        ox[v1].rtlo=5;
+        ox[v0].setra(2.0, .5);
+        ox[v1].setra(3.0, .0);
         ox[v2].setra(1.0, .0);
         ox[v3].setra(1.0, .0);
     }

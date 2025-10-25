@@ -3,7 +3,7 @@
 void ofApp::initfsm()
 {
     s0.setup(400,HH-44,0);
-    s1.setup(480,HH-44,1);
+    s1.setup(480,HH-88,1);
     s2.setup(550,HH-88,2);
     s3.setup(600,HH-44,3);
 }
@@ -43,16 +43,18 @@ void ofApp::rndrfsm()
     s3.rndr(fnt, state);
 
     spline2(s0.x,s0.y, s1.x,s1.y, (s0.x+s1.x)/2,s1.y-40, 18, "F1", fej);
-    spline2(s1.x,s1.y, s2.x,s2.y, (s1.x+s2.x)/2-30,s2.y-20, 18, "F2", fej);
+    spline2(s1.x,s1.y, s2.x,s2.y, (s1.x+s2.x)/2-30,s2.y-20, 18, "a-z", fej);
+    spline2(s2.x,s2.y, s3.x,s3.y, (s2.x+s3.x)/2+30,s3.y-20, 18, "a-z", fej);
+    spline2(s3.x,s3.y, s0.x,s0.y, (s3.x+s0.x)/2-30,s0.y-20, 18, "a-z", fej);
 }
 
-void ofApp::rndrtlo(float x, float y, float w, float h, int oi, float k)
+void ofApp::rndrtlo(float x, float y, float w, float h, int oi)
 {
     ofSetColor(23,202,232);
     int tsz=z.getosctblsz(oi);
     float xf=w / (float) tsz;
-    float xx=x;
-    float kk=k*z.getoscamp(oi);
+    float xx=x-w/2;
+    float kk=(h/2)*z.getoscamp(oi);
 
     for(int i=0;i<tsz;i++)
     {
@@ -63,7 +65,7 @@ void ofApp::rndrtlo(float x, float y, float w, float h, int oi, float k)
 
     ofSetColor(255,88,0);
     float xp=x+z.getoscptr(oi) * w / (float) tsz;
-    ofDrawLine(xp,y+k/2,xp,y-k/2);
+    ofDrawLine(xp,y+h/2,xp,y-h/2);
 }
 
 //--------------------------------------------------------------
@@ -73,26 +75,32 @@ void ofApp::draw()
     fnt.drawString("rahasynth_ka", 22,44);
 
     float cy=HH/2;
-    float cx=50;
-    float ky=400;
-    float kx=2;
+    float cgy=cy-100;
+    float wd=800;
+    float ht=400;
+    float cx=WW/2-wd/2;
+    float ky=ht/2;
+    float kx=wd/SCOP_SIZE;
 
     ofSetColor(23,202,232);
     for(int i=0;i<SCOP_SIZE;i++)
     {
         float xx=cx+i*kx;
-        ofDrawLine(xx,cy,xx,cy-scope[i]*ky);
+        ofDrawLine(xx,cgy,xx,cgy-scope[i]*ky);
     }
 
-    // rndr voice tables
-    rndrtlo(300,100,160,90,z.v0,80);
-    rndrtlo(600,100,160,90,z.v1,80);
-    rndrtlo(300,300,160,90,z.v2,80);
-    rndrtlo(600,300,160,90,z.v3,80);
+    // rndr 26 tlos
+    float rr=300;
+    float frac=2*PI/NTLO;
+    float xmid=WW/2;
+    for(int i=0;i<NTLO;i++)
+    {
+        float xq=xmid+1.6*rr*cos(i*frac);
+        float yq=cgy-.9*rr*sin(i*frac);
+        rndrtlo(xq,yq, 80,45, i);
+    }
 
     rndrfsm();
-
-    fnt.drawString(ofToString(z.ctr), 800,40);
 }
 
 // ----------------------------------------- //
@@ -115,11 +123,10 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         outbuf[lch]=lv;
         outbuf[rch]=lv;
 
+        // below looks odd
         z.aevolve();
         z.kevolve();
     }
-
-    //z.kevolve();
 }
 
 //--------------------------------------------------------------
@@ -130,14 +137,32 @@ void ofApp::keyPressed(int key)
     {
         if(key==57344)
         {
+            // voice F1 -> v0
             state=1;
         }
     }
     else if(state==1)
     {
-        if(key==97)
+        if(key>=97 && key<=122)
         {
+            z.v0=key-97;
             state=2;
+        }
+    }
+    else if(state==2)
+    {
+        if(key>=97 && key<=122)
+        {
+            z.getosc(z.v0).rtlo=key-97;
+            state=3;
+        }
+    }
+    else if(state==3)
+    {
+        if(key>=97 && key<=122)
+        {
+            z.getosc(z.v0).atlo=key-97;
+            state=0;
         }
     }
 }

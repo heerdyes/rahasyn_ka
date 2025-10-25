@@ -15,10 +15,10 @@ K  := "F1"|"F2"|"F3"|"F4"
 
 OF := SA | FN
 
-# vox_ctl: vox oscil ampmod ratemod
+# vox_ctl: vox oscil ratemod ampmod
 V  := K SA OF OF
 
-# tlo_ctl: tlo table amp(mod) rate(mod)
+# tlo_ctl: tlo table rate(mod) amp(mod)
 O  := SA BA OF OF
 
 # tab_ctl: tab type size
