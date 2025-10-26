@@ -5,6 +5,9 @@ void ofApp::initfsm()
     s0.setup(400,HH-44,0);
     s1.setup(480,HH-88,1);
     s2.setup(550,HH-88,2);
+    s20.setup(600,HH-144,20);
+    s21.setup(680,HH-144,21);
+    s22.setup(720,HH-88,22);
     s3.setup(600,HH-44,3);
 }
 
@@ -15,7 +18,6 @@ void ofApp::setup()
     ofBackground(0);
 
     scopectr=0;
-    fctr=0;
     ctr=0;
     state=0;
 
@@ -32,20 +34,31 @@ void ofApp::setup()
 void ofApp::update()
 {
     ctr++;
-    if(ctr%4==0) fctr++;
+    if(ctr%4==0) u.update();
 }
 
 void ofApp::rndrfsm()
 {
-    s0.rndr(fnt, state);
-    s1.rndr(fnt, state);
-    s2.rndr(fnt, state);
-    s3.rndr(fnt, state);
+    u.edge2(s0,s1, s0.x-30,s1.y-40, "F1", fej);
+    u.edge2(s1,s2, s1.x-30,s2.y-20, "a-z", fej);
+    u.edge2(s2,s3, s2.x+30,s3.y-20, "a-z", fej);
+    u.edge2(s3,s0, (s3.x+s0.x)/2,s0.y+20, "a-z", fej);
 
-    spline2(s0.x,s0.y, s1.x,s1.y, (s0.x+s1.x)/2,s1.y-40, 18, "F1", fej);
-    spline2(s1.x,s1.y, s2.x,s2.y, (s1.x+s2.x)/2-30,s2.y-20, 18, "a-z", fej);
-    spline2(s2.x,s2.y, s3.x,s3.y, (s2.x+s3.x)/2+30,s3.y-20, 18, "a-z", fej);
-    spline2(s3.x,s3.y, s0.x,s0.y, (s3.x+s0.x)/2-30,s0.y-20, 18, "a-z", fej);
+    u.edge2(s2,s20, (s2.x+s20.x)/2-40,s2.y-60, "0-9", fej);
+    u.edge3(s20,s20, s20.x-60,s20.y-60, s20.x+40,s20.y-60, "0-9", fej);
+    u.edge2(s20,s21, s20.x+50,s21.y-40, ".", fej);
+    u.edge3(s22,s22, s22.x+10,s22.y-50, s22.x+70,s22.y, "0-9", fej);
+    u.edge2(s21,s22, s21.x+30,s22.y-30, "0-9", fej);
+    u.edge2(s2,s21, s2.x+50,s21.y+50, ".", fej);
+    u.edge2(s22,s3, s3.x+30,s3.y+40, "\\n", fej);
+
+    s0.rndr(fej, state);
+    s1.rndr(fej, state);
+    s2.rndr(fej, state);
+    s20.rndr(fej, state);
+    s21.rndr(fej, state);
+    s22.rndr(fej, state);
+    s3.rndr(fej, state);
 }
 
 void ofApp::rndrtlo(float x, float y, float w, float h, int oi)
@@ -64,8 +77,10 @@ void ofApp::rndrtlo(float x, float y, float w, float h, int oi)
     }
 
     ofSetColor(255,88,0);
-    float xp=x+z.getoscptr(oi) * w / (float) tsz;
+    float xp=x-w/2 + z.getoscptr(oi) * w / (float) tsz;
     ofDrawLine(xp,y+h/2,xp,y-h/2);
+
+    fej.drawString(ofToString((char)(97+oi)), x-5,y+h/2);
 }
 
 //--------------------------------------------------------------
@@ -133,6 +148,8 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
 void ofApp::keyPressed(int key)
 {
     cout<<key<<endl;
+    char ckey=(char)key;
+
     if(state==0)
     {
         if(key==57344)
@@ -154,6 +171,54 @@ void ofApp::keyPressed(int key)
         if(key>=97 && key<=122)
         {
             z.getosc(z.v0).rtlo=key-97;
+            state=3;
+        }
+        else if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=20;
+        }
+        else if(ckey=='.')
+        {
+            numtok+=ofToString(ckey);
+            state=21;
+        }
+    }
+    else if(state==20)
+    {
+        if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=20;
+        }
+        else if(ckey=='.')
+        {
+            numtok+=ofToString(ckey);
+            state=21;
+        }
+    }
+    else if(state==21)
+    {
+        if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=22;
+        }
+    }
+    else if(state==22)
+    {
+        if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=22;
+        }
+        else if(key==13) // enter key
+        {
+            tlo & _o=z.getosc(z.v0);
+            _o.rate=ofToFloat(numtok);
+            _o.rtlo=-1;
+
+            numtok.clear();
             state=3;
         }
     }

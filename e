@@ -2,7 +2,7 @@
 set -euo pipefail
 
 kate &
-sleep 3
+sleep 4
 
 kate src/ofApp.cpp
 kate src/ofApp.h
