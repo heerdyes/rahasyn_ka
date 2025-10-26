@@ -50,9 +50,6 @@ class ofApp : public ofBaseApp{
         void initfsm();
         void rndrfsm();
 
-        // table rendering
-        void rndrtlo(float x, float y, float w, float h, int oi);
-
         ofSoundStream soundStream;
         ofTrueTypeFont fnt;
         ofTrueTypeFont fej;

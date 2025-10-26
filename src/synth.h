@@ -252,6 +252,11 @@ public:
         return ox[oi];
     }
 
+    int gettblsz(int ti)
+    {
+        return tx[ti].sz;
+    }
+
     float getosctblsamp(int oi, int j)
     {
         return tx[ox[oi].tid].buf[j];
@@ -270,6 +275,71 @@ public:
     float getoscamp(int oi)
     {
         return ox[oi].amp;
+    }
+
+    void rndrtlo(float x, float y, float w, float h, int oi, ofTrueTypeFont ft)
+    {
+        ofSetColor(23,202,232);
+        int tsz=getosctblsz(oi);
+        float xf=w / (float) tsz;
+        float xx=x-w/2;
+        float kk=(h/2)*getoscamp(oi);
+
+        for(int i=0;i<tsz;i++)
+        {
+            float yy=y - kk*getosctblsamp(oi,i);
+            ofDrawLine(xx,y,xx,yy);
+            xx+=xf;
+        }
+
+        ofSetColor(255,88,0);
+        float xp=x-w/2 + getoscptr(oi) * w / (float) tsz;
+        ofDrawLine(xp,y+h/2,xp,y-h/2);
+
+        ft.drawString(ofToString((char)(97+oi)), x-5,y+h/2);
+    }
+
+    void rndrtlos(float x, float y, float r, ofTrueTypeFont ft)
+    {
+        // rndr 26 tlos
+        float frac=2*PI/NTLO;
+        for(int i=0;i<NTLO;i++)
+        {
+            float xq=x+r*cos(i*frac);
+            float yq=y-r*sin(i*frac);
+            rndrtlo(xq,yq, 72,40, i, ft);
+        }
+    }
+
+    void rndrtbl(float x,float y, float w,float h, int ti, ofTrueTypeFont ft)
+    {
+        ofSetColor(23,202,232);
+        int tsz=gettblsz(ti);
+        float xf=w / (float) tsz;
+        float xx=x-w/2;
+        float kk=h/2;
+
+        for(int i=0;i<tsz;i++)
+        {
+            float yy=y - kk*tx[ti].buf[i];
+            ofDrawLine(xx,y,xx,yy);
+            xx+=xf;
+        }
+
+        ofSetColor(255,88,0);
+        ft.drawString(ofToString((char)(97+ti)), x-5,y+h/2);
+    }
+
+    void rndrtbls(float x, float y, float r, ofTrueTypeFont ft)
+    {
+        // rndr 26 tbls
+        float frac=2*PI/NTBL;
+        for(int i=0;i<NTBL;i++)
+        {
+            float xq=x+r*cos(i*frac);
+            float yq=y-r*sin(i*frac);
+            rndrtbl(xq,yq, 72,40, i, ft);
+        }
     }
 
     // vars

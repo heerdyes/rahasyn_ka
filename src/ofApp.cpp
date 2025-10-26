@@ -61,28 +61,6 @@ void ofApp::rndrfsm()
     s3.rndr(fej, state);
 }
 
-void ofApp::rndrtlo(float x, float y, float w, float h, int oi)
-{
-    ofSetColor(23,202,232);
-    int tsz=z.getosctblsz(oi);
-    float xf=w / (float) tsz;
-    float xx=x-w/2;
-    float kk=(h/2)*z.getoscamp(oi);
-
-    for(int i=0;i<tsz;i++)
-    {
-        float yy=y - kk*z.getosctblsamp(oi,i);
-        ofDrawLine(xx,y,xx,yy);
-        xx+=xf;
-    }
-
-    ofSetColor(255,88,0);
-    float xp=x-w/2 + z.getoscptr(oi) * w / (float) tsz;
-    ofDrawLine(xp,y+h/2,xp,y-h/2);
-
-    fej.drawString(ofToString((char)(97+oi)), x-5,y+h/2);
-}
-
 //--------------------------------------------------------------
 void ofApp::draw()
 {
@@ -91,12 +69,13 @@ void ofApp::draw()
 
     float cy=HH/2;
     float cgy=cy-100;
-    float wd=800;
-    float ht=400;
+    float wd=1280;
+    float ht=440;
     float cx=WW/2-wd/2;
     float ky=ht/2;
     float kx=wd/SCOP_SIZE;
 
+    // sound waveform
     ofSetColor(23,202,232);
     for(int i=0;i<SCOP_SIZE;i++)
     {
@@ -104,17 +83,10 @@ void ofApp::draw()
         ofDrawLine(xx,cgy,xx,cgy-scope[i]*ky);
     }
 
-    // rndr 26 tlos
-    float rr=300;
-    float frac=2*PI/NTLO;
-    float xmid=WW/2;
-    for(int i=0;i<NTLO;i++)
-    {
-        float xq=xmid+1.6*rr*cos(i*frac);
-        float yq=cgy-.9*rr*sin(i*frac);
-        rndrtlo(xq,yq, 80,45, i);
-    }
+    z.rndrtlos(WW/2+400, HH/2-100, 330, fej);
+    z.rndrtbls(WW/2-400, HH/2-100, 330, fej);
 
+    // render finite state machine
     rndrfsm();
 }
 
