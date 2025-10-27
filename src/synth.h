@@ -214,13 +214,21 @@ public:
 
     void inittbl()
     {
-        // bipolar tables
-        for(int i=0;i<NTBL;i++)
+        // bipolar sawteeth
+        for(int i=0;i<NTBL/2;i++)
         {
             tx[i].setup(512);
             tx[i].dramp();
         }
 
+        // unipolar triangles
+        for(int i=NTBL/2;i<NTBL;i++)
+        {
+            tx[i].setup(512);
+            tx[i].utri();
+        }
+
+        // a wild pulse
         tx[11].pulse(.1);
     }
 
@@ -277,6 +285,7 @@ public:
         return ox[oi].amp;
     }
 
+    // tlo rendering
     void rndrtlo(float x, float y, float w, float h, int oi, ofTrueTypeFont ft)
     {
         ofSetColor(23,202,232);
@@ -292,11 +301,19 @@ public:
             xx+=xf;
         }
 
+        // x axis
+        ofDrawLine(x-w/2,y,x+w/2,y);
+
         ofSetColor(255,88,0);
         float xp=x-w/2 + getoscptr(oi) * w / (float) tsz;
         ofDrawLine(xp,y+h/2,xp,y-h/2);
 
         ft.drawString(ofToString((char)(97+oi)), x-5,y+h/2);
+    }
+
+    void rndrtlo(int oi, ofTrueTypeFont ft)
+    {
+        rndrtlo(tloxywh[oi].x, tloxywh[oi].y, tloxywh[oi].z, tloxywh[oi].w, oi, ft);
     }
 
     void rndrtlos(float x, float y, float r, ofTrueTypeFont ft)
@@ -307,10 +324,17 @@ public:
         {
             float xq=x+r*cos(i*frac);
             float yq=y-r*sin(i*frac);
-            rndrtlo(xq,yq, 72,40, i, ft);
+
+            tloxywh[i].x=xq;
+            tloxywh[i].y=yq;
+            tloxywh[i].z=72;
+            tloxywh[i].w=40;
+
+            rndrtlo(i, ft);
         }
     }
 
+    // tbl rendering
     void rndrtbl(float x,float y, float w,float h, int ti, ofTrueTypeFont ft)
     {
         ofSetColor(23,202,232);
@@ -326,8 +350,16 @@ public:
             xx+=xf;
         }
 
+        // x axis
+        ofDrawLine(x-w/2,y,x+w/2,y);
+
         ofSetColor(255,88,0);
         ft.drawString(ofToString((char)(97+ti)), x-5,y+h/2);
+    }
+
+    void rndrtbl(int ti, ofTrueTypeFont ft)
+    {
+        rndrtbl(tblxywh[ti].x, tblxywh[ti].y, tblxywh[ti].z, tblxywh[ti].w, ti, ft);
     }
 
     void rndrtbls(float x, float y, float r, ofTrueTypeFont ft)
@@ -338,7 +370,13 @@ public:
         {
             float xq=x+r*cos(i*frac);
             float yq=y-r*sin(i*frac);
-            rndrtbl(xq,yq, 72,40, i, ft);
+
+            tblxywh[i].x=xq;
+            tblxywh[i].y=yq;
+            tblxywh[i].z=72;
+            tblxywh[i].w=40;
+
+            rndrtbl(i, ft);
         }
     }
 
@@ -355,4 +393,8 @@ public:
     // 4 voices
     int v0, v1, v2, v3;
     float mgain;
+
+    // tbl and tlo locations/sizes
+    ofVec4f tblxywh[NTBL];
+    ofVec4f tloxywh[NTLO];
 };
