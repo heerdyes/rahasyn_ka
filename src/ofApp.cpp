@@ -34,7 +34,11 @@ void ofApp::setup()
 void ofApp::update()
 {
     ctr++;
-    if(ctr%4==0) u.update();
+    if(ctr%4==0)
+    {
+        u.update();
+        z.u.update();
+    }
 }
 
 void ofApp::rndrfsm()

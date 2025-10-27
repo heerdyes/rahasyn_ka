@@ -212,7 +212,6 @@ public:
         else ox[rem].evolve(tx,ox);
 
         ctr++;
-        if(ctr%1000==0) u.update();
         if(ctr>444444) ctr=0;
     }
 
