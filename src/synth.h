@@ -250,11 +250,11 @@ public:
     {
         for(int i=0;i<NTLO;i++)
         {
-            ox[i].setup(0, 1.0, 1.0);
+            ox[i].setup(i%8, 1.0, 1.0);
         }
 
-        ox[4].setup(11, .75, 1.0);
-        ox[5].setup(0, 1.5, 5.0);
+        ox[8].setup(11, .75, 1.0);
+        ox[9].setup(0, 1.5, 5.0);
     }
 
     void initvox()
@@ -375,21 +375,21 @@ public:
         int tbix=oref.tid;
         float xdst=tblxywh[tbix].x;
         float ydst=tblxywh[tbix].y;
-        u.spline2(x,y, xdst,ydst, WW/2,HH/2, 18, "o:"+ofToString(tbix), ft);
+        u.spline2(x,y, xdst,ydst, WW/2,50, 18, "o:"+ofToString(tbix), ft);
 
         if(oref.ratemodded())
         {
             int rtlo=oref.rtlo;
             float oxdst=tloxywh[rtlo].x;
             float oydst=tloxywh[rtlo].y;
-            u.spline2(x,y, oxdst,oydst, WW/2,HH/2, 18, "r:"+ofToString(oref.rtlo), ft);
+            u.spline2(x,y, oxdst,oydst, WW/2,HH/2+50, 18, "r:"+ofToString(oref.rtlo), ft);
         }
         if(oref.ampmodded())
         {
             int atlo=oref.atlo;
             float oxdst=tloxywh[atlo].x;
             float oydst=tloxywh[atlo].y;
-            u.spline2(x,y, oxdst,oydst, WW/2,HH/2, 18, "a:"+ofToString(oref.atlo), ft);
+            u.spline2(x,y, oxdst,oydst, WW/2,HH-50, 18, "a:"+ofToString(oref.atlo), ft);
         }
     }
 
