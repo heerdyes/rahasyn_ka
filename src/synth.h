@@ -9,6 +9,17 @@
 #define NTBL        (26)
 #define NTLO        (26)
 
+class xywh
+{
+public:
+    float x,y,w,h;
+
+    xywh()
+    {
+        x=y=w=h=0;
+    }
+};
+
 class tbl2
 {
 public:
@@ -100,6 +111,9 @@ public:
         atlo=-1;
         ptr=0;
     }
+
+    bool ratemodded() { return rtlo!=-1; }
+    bool ampmodded() { return atlo!=-1; }
 
     tbl2 gettbl(tbl2 tx[])
     {
@@ -198,6 +212,7 @@ public:
         else ox[rem].evolve(tx,ox);
 
         ctr++;
+        if(ctr%1000==0) u.update();
         if(ctr>444444) ctr=0;
     }
 
@@ -285,55 +300,6 @@ public:
         return ox[oi].amp;
     }
 
-    // tlo rendering
-    void rndrtlo(float x, float y, float w, float h, int oi, ofTrueTypeFont ft)
-    {
-        ofSetColor(23,202,232);
-        int tsz=getosctblsz(oi);
-        float xf=w / (float) tsz;
-        float xx=x-w/2;
-        float kk=(h/2)*getoscamp(oi);
-
-        for(int i=0;i<tsz;i++)
-        {
-            float yy=y - kk*getosctblsamp(oi,i);
-            ofDrawLine(xx,y,xx,yy);
-            xx+=xf;
-        }
-
-        // x axis
-        ofDrawLine(x-w/2,y,x+w/2,y);
-
-        ofSetColor(255,88,0);
-        float xp=x-w/2 + getoscptr(oi) * w / (float) tsz;
-        ofDrawLine(xp,y+h/2,xp,y-h/2);
-
-        ft.drawString(ofToString((char)(97+oi)), x-5,y+h/2);
-    }
-
-    void rndrtlo(int oi, ofTrueTypeFont ft)
-    {
-        rndrtlo(tloxywh[oi].x, tloxywh[oi].y, tloxywh[oi].z, tloxywh[oi].w, oi, ft);
-    }
-
-    void rndrtlos(float x, float y, float r, ofTrueTypeFont ft)
-    {
-        // rndr 26 tlos
-        float frac=2*PI/NTLO;
-        for(int i=0;i<NTLO;i++)
-        {
-            float xq=x+r*cos(i*frac);
-            float yq=y-r*sin(i*frac);
-
-            tloxywh[i].x=xq;
-            tloxywh[i].y=yq;
-            tloxywh[i].z=72;
-            tloxywh[i].w=40;
-
-            rndrtlo(i, ft);
-        }
-    }
-
     // tbl rendering
     void rndrtbl(float x,float y, float w,float h, int ti, ofTrueTypeFont ft)
     {
@@ -359,7 +325,7 @@ public:
 
     void rndrtbl(int ti, ofTrueTypeFont ft)
     {
-        rndrtbl(tblxywh[ti].x, tblxywh[ti].y, tblxywh[ti].z, tblxywh[ti].w, ti, ft);
+        rndrtbl(tblxywh[ti].x, tblxywh[ti].y, tblxywh[ti].w, tblxywh[ti].h, ti, ft);
     }
 
     void rndrtbls(float x, float y, float r, ofTrueTypeFont ft)
@@ -373,10 +339,81 @@ public:
 
             tblxywh[i].x=xq;
             tblxywh[i].y=yq;
-            tblxywh[i].z=72;
-            tblxywh[i].w=40;
+            tblxywh[i].w=72;
+            tblxywh[i].h=40;
 
             rndrtbl(i, ft);
+        }
+    }
+
+    // tlo rendering
+    void rndrtlo(float x, float y, float w, float h, int oi, ofTrueTypeFont ft)
+    {
+        tlo & oref=getosc(oi);
+        ofSetColor(23,202,232);
+        int tsz=getosctblsz(oi);
+        float xf=w / (float) tsz;
+        float xx=x-w/2;
+        float kk=(h/2)*getoscamp(oi);
+
+        for(int i=0;i<tsz;i++)
+        {
+            float yy=y - kk*getosctblsamp(oi,i);
+            ofDrawLine(xx,y,xx,yy);
+            xx+=xf;
+        }
+
+        // x axis
+        ofDrawLine(x-w/2,y,x+w/2,y);
+
+        ofSetColor(255,88,0);
+        float xp=x-w/2 + getoscptr(oi) * w / (float) tsz;
+        ofDrawLine(xp,y+h/2,xp,y-h/2);
+
+        ft.drawString(ofToString((char)(97+oi)), x-5,y+h/2);
+
+        // spline to mod tbl, if applicable
+        int tbix=oref.tid;
+        float xdst=tblxywh[tbix].x;
+        float ydst=tblxywh[tbix].y;
+        u.spline2(x,y, xdst,ydst, WW/2,HH/2, 18, "o:"+ofToString(tbix), ft);
+
+        if(oref.ratemodded())
+        {
+            int rtlo=oref.rtlo;
+            float oxdst=tloxywh[rtlo].x;
+            float oydst=tloxywh[rtlo].y;
+            u.spline2(x,y, oxdst,oydst, WW/2,HH/2, 18, "r:"+ofToString(oref.rtlo), ft);
+        }
+        if(oref.ampmodded())
+        {
+            int atlo=oref.atlo;
+            float oxdst=tloxywh[atlo].x;
+            float oydst=tloxywh[atlo].y;
+            u.spline2(x,y, oxdst,oydst, WW/2,HH/2, 18, "a:"+ofToString(oref.atlo), ft);
+        }
+    }
+
+    void rndrtlo(int oi, ofTrueTypeFont ft)
+    {
+        rndrtlo(tloxywh[oi].x, tloxywh[oi].y, tloxywh[oi].w, tloxywh[oi].h, oi, ft);
+    }
+
+    void rndrtlos(float x, float y, float r, ofTrueTypeFont ft)
+    {
+        // rndr 26 tlos
+        float frac=2*PI/NTLO;
+        for(int i=0;i<NTLO;i++)
+        {
+            float xq=x+r*cos(i*frac);
+            float yq=y-r*sin(i*frac);
+
+            tloxywh[i].x=xq;
+            tloxywh[i].y=yq;
+            tloxywh[i].w=72;
+            tloxywh[i].h=40;
+
+            rndrtlo(i, ft);
         }
     }
 
@@ -395,6 +432,8 @@ public:
     float mgain;
 
     // tbl and tlo locations/sizes
-    ofVec4f tblxywh[NTBL];
-    ofVec4f tloxywh[NTLO];
+    xywh tblxywh[NTBL];
+    xywh tloxywh[NTLO];
+
+    ut u;
 };

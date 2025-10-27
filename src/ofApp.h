@@ -1,12 +1,15 @@
 #pragma once
 
 #include "ofMain.h"
+
+#define HH          (ofGetHeight())
+#define WW          (ofGetWidth())
+
 #include "fsm.h"
+#include "uts.h"
 #include "synth.h"
 
 #define SCOP_SIZE   (512)
-#define HH          (ofGetHeight())
-#define WW          (ofGetWidth())
 
 class ofApp : public ofBaseApp{
 
