@@ -6,5 +6,6 @@ sleep 4
 
 kate src/ofApp.cpp
 kate src/ofApp.h
-kate src/main.cpp
-
+kate src/synth.h
+kate src/fsm.h
+kate src/uts.h

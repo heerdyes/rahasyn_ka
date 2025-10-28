@@ -7,6 +7,7 @@
 
 #include "fsm.h"
 #include "uts.h"
+#include "ftbl.h"
 #include "synth.h"
 
 #define SCOP_SIZE   (512)

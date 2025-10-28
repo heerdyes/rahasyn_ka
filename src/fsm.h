@@ -2,6 +2,17 @@
 
 #include "ofMain.h"
 
+class xywh
+{
+public:
+    float x,y,w,h;
+
+    xywh()
+    {
+        x=y=w=h=0;
+    }
+};
+
 class nd
 {
 public:
