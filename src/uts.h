@@ -66,7 +66,7 @@ public:
 
     void edge2(nd& n0, nd& n1, float p,float q, string st, ofTrueTypeFont fz)
     {
-        spline2(n0.x,n0.y, n1.x,n1.y, p,q, 18, st, fz);
+        spline2(n0.x,n0.y, n1.x,n1.y, p,q, 22, st, fz);
     }
 
     void edge3(nd& n0, nd& n1, float p1,float q1, float p2,float q2, string st, ofTrueTypeFont fz)

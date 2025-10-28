@@ -167,11 +167,11 @@ public:
             xx+=xf;
         }
 
-        // x axis
-        ofDrawLine(x-w/2,y,x+w/2,y);
+        ft.drawString(ofToString((char)(65+ti)), x-5,y+h/2);
 
+        // x axis
         ofSetColor(255,88,0);
-        ft.drawString(ofToString((char)(97+ti)), x-5,y+h/2);
+        ofDrawLine(x-w/2,y,x+w/2,y);
     }
 
     void rndrtbl(int ti, ofTrueTypeFont ft)
@@ -214,14 +214,15 @@ public:
             xx+=xf;
         }
 
+        // label
+        ft.drawString(ofToString((char)(97+oi)), x-5,y+h/2);
+
         // x axis
+        ofSetColor(255,88,0);
         ofDrawLine(x-w/2,y,x+w/2,y);
 
-        ofSetColor(255,88,0);
         float xp=x-w/2 + getoscptr(oi) * w / (float) tsz;
         ofDrawLine(xp,y+h/2,xp,y-h/2);
-
-        ft.drawString(ofToString((char)(97+oi)), x-5,y+h/2);
 
         // spline to mod tbl, if applicable
         int tbix=oref.tid;
@@ -229,6 +230,7 @@ public:
         float ydst=tblxywh[tbix].y;
         u.spline2(x,y, xdst,ydst, WW/2,50, 18, "o:"+ofToString(tbix), ft);
 
+        // display modulation patch cables
         if(oref.ratemodded())
         {
             int rtlo=oref.rtlo;
