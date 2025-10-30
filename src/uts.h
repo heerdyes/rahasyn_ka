@@ -2,6 +2,9 @@
 
 #include "ofMain.h"
 
+#define STK_MAX (64)
+#define LOG_MAX (8)
+
 class ut
 {
 public:
@@ -27,7 +30,8 @@ public:
             if(i==n/2)
             {
                 ofSetColor(23,202,232);
-                ft.drawString(st, zx1, zy1-8);
+                float shalf=ft.stringWidth(st)/2;
+                ft.drawString(st, zx1-shalf, zy1-8);
             }
 
             ox1=zx1;
@@ -56,7 +60,8 @@ public:
             if(i==n/2)
             {
                 ofSetColor(23,202,232);
-                ft.drawString(st, zx1, zy1-8);
+                float shalf=ft.stringWidth(st)/2;
+                ft.drawString(st, zx1-shalf, zy1-8);
             }
 
             ox1=zx1;
@@ -80,4 +85,95 @@ public:
     }
 
     int fctr=0;
+};
+
+class cstk
+{
+public:
+    char buf[STK_MAX];
+    int sp;
+
+    cstk()
+    {
+        sp=0;
+        for(int i=0;i<STK_MAX;i++) buf[i]='\0';
+    }
+
+    void push(char a)
+    {
+        if(sp>=STK_MAX-1)
+        {
+            cout<<"[error] stack overflow!\n";
+            return;
+        }
+
+        buf[sp]=a;
+        sp++;
+    }
+
+    char pop()
+    {
+        if(sp<=0)
+        {
+            cout<<"[error] empty stack\n";
+            return -1;
+        }
+
+        sp--;
+        return buf[sp];
+    }
+
+    void rndr(float x, float y, ofTrueTypeFont ff)
+    {
+        float yy=y-10;
+        ofSetColor(0,255,255);
+        ofDrawLine(x-10,y, x+10,y);
+
+        for(int i=0;i<sp;i++)
+        {
+            ff.drawString(ofToString(buf[i]), x,yy);
+            yy-=14;
+        }
+
+        ofSetColor(255);
+        ofDrawLine(x-10,yy, x+10,yy);
+    }
+};
+
+class lg
+{
+public:
+    float x,y;
+    string buf[LOG_MAX];
+    int pos;
+
+    lg()
+    {
+        setup(770, HH-160);
+    }
+
+    void setup(float xx, float yy)
+    {
+        x=xx;
+        y=yy;
+        pos=0;
+    }
+
+    void rndr(ofTrueTypeFont ff)
+    {
+        float yy=y;
+        ofSetColor(55,242,66);
+        for(int i=(pos+1)%LOG_MAX; i!=pos; i=(i+1)%LOG_MAX)
+        {
+            ofSetColor(55,242,66);
+            ff.drawString(buf[i], x,yy);
+            yy+=14;
+        }
+    }
+
+    void log(string s)
+    {
+        buf[pos]=s;
+        pos=(pos+1)%LOG_MAX;
+    }
 };

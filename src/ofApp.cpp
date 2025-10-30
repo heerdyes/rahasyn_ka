@@ -2,13 +2,14 @@
 
 void ofApp::initfsm()
 {
-    s0.setup(400,HH-44,0);
-    s1.setup(480,HH-88,1);
-    s2.setup(550,HH-88,2);
-    s20.setup(600,HH-144,20);
-    s21.setup(680,HH-144,21);
-    s22.setup(720,HH-88,22);
-    s3.setup(600,HH-44,3);
+    s0.setup(480,HH-88-44, 0);
+    s1.setup(400,HH-88-44, 1);
+    s2.setup(560,HH-88-44, 2);
+    s3.setup(520,HH-144-88, 3);
+    s4.setup(520,HH-44, 4);
+    s5.setup(640,HH-144-88, 5);
+    s6.setup(640,HH-88-44, 6);
+    s7.setup(640,HH-44, 7);
 }
 
 //--------------------------------------------------------------
@@ -43,26 +44,36 @@ void ofApp::update()
 
 void ofApp::rndrfsm()
 {
-    u.edge2(s0,s1, s0.x-30,s1.y-40, "F1", fej);
-    u.edge2(s1,s2, s1.x-30,s2.y-20, "a-z", fej);
-    u.edge2(s2,s3, s2.x+30,s3.y-20, "a-z", fej);
-    u.edge2(s3,s0, (s3.x+s0.x)/2,s0.y+20, "a-z", fej);
+    // edges first
+    u.edge2(s0,s1, s0.x-30,s1.y-40, "F[1-4]", fej);
+    u.edge2(s1,s0, s0.x-30,s1.y+30, "a-z", fej);
+    u.edge2(s0,s2, s2.x-30,s0.y-20, "a-z", fej);
+    u.edge2(s2,s3, s2.x,s3.y, "r", fej);
+    u.edge2(s2,s4, s2.x,s4.y, "a", fej);
+    u.edge2(s3,s0, s0.x,s3.y, "a-z", fej);
+    u.edge2(s4,s0, s0.x,s4.y, "a-z", fej);
+    u.edge2(s3,s5, s5.x,s3.y, "0-9", fej);
+    u.edge2(s3,s6, s5.x,s5.y, "<.>", fej);
+    u.edge3(s5,s5, s5.x+60,s5.y-30, s5.x+60,s5.y+30, "0-9", fej);
+    u.edge2(s5,s6, s5.x+20,s6.y, "<.>", fej);
+    u.edge2(s6,s7, s7.x+30,s7.y-20, "0-9", fej);
+    u.edge3(s7,s7, s7.x+50,s7.y-30, s7.x+50,s7.y+30, "0-9", fej);
+    u.edge2(s4,s5, s6.x,s6.y, "0-9", fej);
+    u.edge2(s4,s6, s7.x,s7.y, "<.>", fej);
+    u.edge2(s7,s0, s2.x,s2.y+30, "\\n", fej);
 
-    u.edge2(s2,s20, (s2.x+s20.x)/2-40,s2.y-60, "0-9", fej);
-    u.edge3(s20,s20, s20.x-60,s20.y-60, s20.x+40,s20.y-60, "0-9", fej);
-    u.edge2(s20,s21, s20.x+50,s21.y-40, ".", fej);
-    u.edge3(s22,s22, s22.x+10,s22.y-50, s22.x+70,s22.y, "0-9", fej);
-    u.edge2(s21,s22, s21.x+30,s22.y-30, "0-9", fej);
-    u.edge2(s2,s21, s2.x+50,s21.y+50, ".", fej);
-    u.edge2(s22,s3, s3.x+30,s3.y+40, "\\n", fej);
-
+    // then nodes, to prevent edge lines reaching the center
     s0.rndr(fej, state);
     s1.rndr(fej, state);
     s2.rndr(fej, state);
-    s20.rndr(fej, state);
-    s21.rndr(fej, state);
-    s22.rndr(fej, state);
     s3.rndr(fej, state);
+    s4.rndr(fej, state);
+    s5.rndr(fej, state);
+    s6.rndr(fej, state);
+    s7.rndr(fej, state);
+
+    // rndr stack
+    S.rndr(60,HH-80, fej);
 }
 
 //--------------------------------------------------------------
@@ -92,6 +103,10 @@ void ofApp::draw()
 
     // render finite state machine
     rndrfsm();
+    z.rndrvox(80,HH-160, fej);
+
+    // transcript
+    L.rndr(fej);
 }
 
 // ----------------------------------------- //
@@ -128,82 +143,95 @@ void ofApp::keyPressed(int key)
 
     if(state==0)
     {
+        // F[1-4] -> v[0-3]
         if(key==57344)
         {
-            // voice F1 -> v0
+            vcur=0;
             state=1;
+        }
+        else if(key==57345)
+        {
+            vcur=1;
+            state=1;
+        }
+        else if(key==57346)
+        {
+            vcur=2;
+            state=1;
+        }
+        else if(key==57347)
+        {
+            vcur=3;
+            state=1;
+        }
+        // [a-z] -> oscil
+        else if(key>=97 && key<=122)
+        {
+            S.push(ckey);
+            state=2;
         }
     }
     else if(state==1)
     {
         if(key>=97 && key<=122)
         {
-            z.v0=key-97;
-            state=2;
+            if(vcur==0)      z.v0=key-97;
+            else if(vcur==1) z.v1=key-97;
+            else if(vcur==2) z.v2=key-97;
+            else if(vcur==3) z.v3=key-97;
+            state=0;
         }
     }
     else if(state==2)
     {
-        if(key>=97 && key<=122)
+        if(ckey=='r')
         {
-            z.getosc(z.v0).rtlo=key-97;
             state=3;
         }
-        else if(key>=48 && key<=57)
+        else if(ckey=='a')
         {
-            numtok+=ofToString(ckey);
-            state=20;
-        }
-        else if(ckey=='.')
-        {
-            numtok+=ofToString(ckey);
-            state=21;
-        }
-    }
-    else if(state==20)
-    {
-        if(key>=48 && key<=57)
-        {
-            numtok+=ofToString(ckey);
-            state=20;
-        }
-        else if(ckey=='.')
-        {
-            numtok+=ofToString(ckey);
-            state=21;
-        }
-    }
-    else if(state==21)
-    {
-        if(key>=48 && key<=57)
-        {
-            numtok+=ofToString(ckey);
-            state=22;
-        }
-    }
-    else if(state==22)
-    {
-        if(key>=48 && key<=57)
-        {
-            numtok+=ofToString(ckey);
-            state=22;
-        }
-        else if(key==13) // enter key
-        {
-            tlo & _o=z.getosc(z.v0);
-            _o.rate=ofToFloat(numtok);
-            _o.rtlo=-1;
-
-            numtok.clear();
-            state=3;
+            state=4;
         }
     }
     else if(state==3)
     {
         if(key>=97 && key<=122)
         {
-            z.getosc(z.v0).atlo=key-97;
+            char oc=S.pop();
+            int oci=((int)oc)-97;
+
+            cout<<"osc "<<oci<<" rate mod target: "<<ckey<<endl;
+            L.log("osc "+ofToString(oci)+" rate mod target: "+ofToString(ckey));
+
+            z.ox[oci].rtlo=key-97;
             state=0;
+        }
+        else if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=5;
+        }
+    }
+    else if(state==4)
+    {
+        if(key>=97 && key<=122)
+        {
+            char oc=S.pop();
+            int oci=((int)oc)-97;
+
+            cout<<"osc "<<oci<<" amp mod target: "<<ckey<<endl;
+            L.log("osc "+ofToString(oci)+" amp mod target: "+ofToString(ckey));
+
+            z.ox[oci].atlo=key-97;
+            state=0;
+        }
+    }
+    else if(state==5)
+    {
+        if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=5;
         }
     }
 }
