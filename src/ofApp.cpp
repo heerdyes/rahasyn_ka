@@ -147,6 +147,15 @@ void ofApp::keyPressed(int key)
     cout<<key<<endl;
     char ckey=(char)key;
 
+    if(key==3682)
+    {
+        z.updatesplt(mouseX, mouseY);
+    }
+    if(key==3683)
+    {
+        z.updatesplo(mouseX, mouseY);
+    }
+
     if(state==0)
     {
         // F[1-4] -> v[0-3]

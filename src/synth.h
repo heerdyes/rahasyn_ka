@@ -225,22 +225,23 @@ public:
         int tbix=oref.tid;
         float xdst=tblxywh[tbix].x;
         float ydst=tblxywh[tbix].y;
-        u.spline2(x,y, xdst,ydst, WW/2,50, 18, "o:"+ofToString(tbix), ft);
+        string sosc=ofToString((char)(97+oi));
+        u.spline2(xdst,ydst, x,y, spltx,splty, 22, sosc+"t"+ofToString((char)(65+tbix)), ft);
 
-        // display modulation patch cables
+        // display modulation patch cable splines
         if(oref.ratemodded())
         {
             int rtlo=oref.rtlo;
             float oxdst=tloxywh[rtlo].x;
             float oydst=tloxywh[rtlo].y;
-            u.spline2(x,y, oxdst,oydst, WW/2,HH/2+50, 18, "r:"+ofToString(oref.rtlo), ft);
+            u.spline2(oxdst,oydst, x,y, splox,sploy, 22, sosc+"r"+ofToString((char)(97+rtlo)), ft);
         }
         if(oref.ampmodded())
         {
             int atlo=oref.atlo;
             float oxdst=tloxywh[atlo].x;
             float oydst=tloxywh[atlo].y;
-            u.spline2(x,y, oxdst,oydst, WW/2,HH-50, 18, "a:"+ofToString(oref.atlo), ft);
+            u.spline2(oxdst,oydst, x,y, splox,sploy, 22, sosc+"a"+ofToString((char)(97+atlo)), ft);
         }
     }
 
@@ -282,6 +283,18 @@ public:
         ff.drawString(ofToString((char)(v3+97)), x-xm,y+r+2*ym);
     }
 
+    void updatesplo(float xx, float yy)
+    {
+        splox=xx;
+        sploy=yy;
+    }
+
+    void updatesplt(float xx, float yy)
+    {
+        spltx=xx;
+        splty=yy;
+    }
+
     // vars
     int ctr = 0;
     float synbuf[SYNBUF_SZ];
@@ -301,4 +314,6 @@ public:
     xywh tloxywh[NTLO];
 
     ut u; // TODO: make a singleton utility available for all classes
+    float splox=WW/2, sploy=HH/2;
+    float spltx=WW/2, splty=HH/2;
 };

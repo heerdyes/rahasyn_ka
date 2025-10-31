@@ -22,14 +22,14 @@ public:
             float zy1=y1*pow(1.0-d, 2) + 2*q*(1.0-d)*d + y2*pow(d, 2);
 
             float dst=abs((fctr%n)-i);
-            if(dst<3) ofSetColor(255,128,0);
-            else ofSetColor(0,255,0);
+            if(dst<2) ofSetColor(255,128,0);
+            else ofSetColor(0,108,0);
 
             ofDrawLine(ox1,oy1, zx1,zy1);
 
             if(i==n/2)
             {
-                ofSetColor(23,202,232);
+                ofSetColor(244,180,22);
                 float shalf=ft.stringWidth(st)/2;
                 ft.drawString(st, zx1-shalf, zy1-8);
             }
