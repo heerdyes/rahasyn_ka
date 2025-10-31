@@ -134,6 +134,18 @@ public:
         ampref=aa;
     }
 
+    void setr(float rr)
+    {
+        rateref=rr;
+        rate=rr;
+    }
+
+    void seta(float aa)
+    {
+        ampref=aa;
+        amp=aa;
+    }
+
     void incptr(tbl2 tx[])
     {
         ptr+=rate;

@@ -28,6 +28,7 @@ void ofApp::setup()
     initfsm();
 
     z.setup();
+    L.setup(840,HH-120);
     soundsetup();
 }
 
@@ -103,10 +104,11 @@ void ofApp::draw()
 
     // render finite state machine
     rndrfsm();
-    z.rndrvox(80,HH-160, fej);
+    z.rndrvox(64,HH-240, fej);
 
     // transcript
     L.rndr(fej);
+    fej.drawString(numtok, WW-180,HH-44);
 }
 
 // ----------------------------------------- //
@@ -179,6 +181,8 @@ void ofApp::keyPressed(int key)
             else if(vcur==1) z.v1=key-97;
             else if(vcur==2) z.v2=key-97;
             else if(vcur==3) z.v3=key-97;
+
+            L.log("[vox] v"+ofToString(vcur)+" -> "+ofToString(ckey));
             state=0;
         }
     }
@@ -186,10 +190,12 @@ void ofApp::keyPressed(int key)
     {
         if(ckey=='r')
         {
+            S.push(ckey);
             state=3;
         }
         else if(ckey=='a')
         {
+            S.push(ckey);
             state=4;
         }
     }
@@ -197,11 +203,11 @@ void ofApp::keyPressed(int key)
     {
         if(key>=97 && key<=122)
         {
+            S.pop(); // discard top
             char oc=S.pop();
-            int oci=((int)oc)-97;
 
-            cout<<"osc "<<oci<<" rate mod target: "<<ckey<<endl;
-            L.log("osc "+ofToString(oci)+" rate mod target: "+ofToString(ckey));
+            int oci=((int)oc)-97;
+            L.log("[m] "+ofToString(oc)+".rate <- "+ofToString(ckey));
 
             z.ox[oci].rtlo=key-97;
             state=0;
@@ -211,19 +217,56 @@ void ofApp::keyPressed(int key)
             numtok+=ofToString(ckey);
             state=5;
         }
+        else if(key==46) // .
+        {
+            numtok+=".";
+            state=6;
+        }
+        else if(key==45) // -
+        {
+            S.pop(); // discard top
+            char oc=S.pop();
+
+            int oci=((int)oc)-97;
+            L.log("[m] "+ofToString(oc)+".rtlo = -1");
+
+            z.ox[oci].rtlo=-1;
+            state=0;
+        }
     }
     else if(state==4)
     {
         if(key>=97 && key<=122)
         {
+            S.pop(); // discard top
             char oc=S.pop();
-            int oci=((int)oc)-97;
 
-            cout<<"osc "<<oci<<" amp mod target: "<<ckey<<endl;
-            L.log("osc "+ofToString(oci)+" amp mod target: "+ofToString(ckey));
+            int oci=((int)oc)-97;
+            L.log("[m] "+ofToString(oc)+".amp <- "+ofToString(ckey));
 
             z.ox[oci].atlo=key-97;
             state=0;
+        }
+        else if(key==45) // -
+        {
+            S.pop(); // discard top
+            char oc=S.pop();
+
+            int oci=((int)oc)-97;
+            L.log("[m] "+ofToString(oc)+".atlo = -1");
+
+            z.ox[oci].atlo=-1;
+            state=0;
+        }
+        else if(key==46) // .
+        {
+            numtok+=".";
+            state=6;
+        }
+        else if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=5;
         }
     }
     else if(state==5)
@@ -232,6 +275,47 @@ void ofApp::keyPressed(int key)
         {
             numtok+=ofToString(ckey);
             state=5;
+        }
+        else if(key==46) // .
+        {
+            numtok+=".";
+            state=6;
+        }
+    }
+    else if(state==6)
+    {
+        if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=7;
+        }
+    }
+    else if(state==7)
+    {
+        if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=7;
+        }
+        else if(key==13)
+        {
+            char attr=S.pop();
+            char oci=S.pop();
+            int oix=((int)oci)-97;
+
+            if(attr=='r')
+            {
+                z.ox[oix].setr(ofToFloat(numtok));
+                L.log("[r] "+ofToString(oci)+".rate = "+numtok);
+            }
+            else if(attr=='a')
+            {
+                z.ox[oix].seta(ofToFloat(numtok));
+                L.log("[a] "+ofToString(oci)+".amp = "+numtok);
+            }
+
+            numtok.clear();
+            state=0;
         }
     }
 }
