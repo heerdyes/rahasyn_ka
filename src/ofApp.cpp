@@ -10,6 +10,7 @@ void ofApp::initfsm()
     s5.setup(640,HH-144-88, 5);
     s6.setup(640,HH-88-44, 6);
     s7.setup(640,HH-44, 7);
+    s8.setup(400,HH-88-144, 8);
 }
 
 //--------------------------------------------------------------
@@ -62,6 +63,8 @@ void ofApp::rndrfsm()
     u.edge2(s4,s5, s6.x,s6.y, "0-9", fej);
     u.edge2(s4,s6, s7.x,s7.y, "<.>", fej);
     u.edge2(s7,s0, s2.x,s2.y+30, "\\n", fej);
+    u.edge2(s2,s8, s3.x,s3.y+30, "t", fej);
+    u.edge2(s8,s0, s1.x,s1.y-30, "A-Z", fej);
 
     // then nodes, to prevent edge lines reaching the center
     s0.rndr(fej, state);
@@ -72,6 +75,7 @@ void ofApp::rndrfsm()
     s5.rndr(fej, state);
     s6.rndr(fej, state);
     s7.rndr(fej, state);
+    s8.rndr(fej, state);
 
     // rndr stack
     S.rndr(60,HH-80, fej);
@@ -198,6 +202,10 @@ void ofApp::keyPressed(int key)
             S.push(ckey);
             state=4;
         }
+        else if(ckey=='t')
+        {
+            state=8;
+        }
     }
     else if(state==3)
     {
@@ -315,6 +323,19 @@ void ofApp::keyPressed(int key)
             }
 
             numtok.clear();
+            state=0;
+        }
+    }
+    else if(state==8)
+    {
+        if(key>=65 && key<=90)
+        {
+            char oc=S.pop();
+            int oci=((int)oc)-97;
+
+            L.log("[t] "+ofToString(oc)+".table -> "+ofToString(ckey));
+            z.ox[oci].tid=key-65;
+
             state=0;
         }
     }
