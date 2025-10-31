@@ -35,6 +35,22 @@ public:
         }
     }
 
+    void birnd()
+    {
+        for(int i=0;i<sz;i++)
+        {
+            buf[i]=ofRandom(-1,1);
+        }
+    }
+
+    void urnd()
+    {
+        for(int i=0;i<sz;i++)
+        {
+            buf[i]=ofRandom(0,1);
+        }
+    }
+
     void uramp()
     {
         float m=1.0 / (float)sz;

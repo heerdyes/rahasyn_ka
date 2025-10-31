@@ -92,7 +92,10 @@ public:
             tx[i].utri();
         }
 
-        // a wild pulse
+        tx[2].birnd();
+        tx[3].urnd();
+
+        // wild pulses
         tx[11].pulse(.5);
         tx[12].pulse(.25);
         tx[13].pulse(.125);
