@@ -72,11 +72,9 @@ public:
         return mgain * (ox[v0].samp(tx) + ox[v1].samp(tx) + ox[v2].samp(tx) + ox[v3].samp(tx));
     }
 
-    void update()
-    {}
+    void update(){}
 
-    void updateNoLock()
-    {}
+    void updateNoLock(){}
 
     void inittbl()
     {
@@ -95,28 +93,27 @@ public:
         }
 
         // a wild pulse
-        tx[11].pulse(.1);
+        tx[11].pulse(.5);
+        tx[12].pulse(.25);
+        tx[13].pulse(.125);
+        tx[14].pulse(.0625);
+        tx[15].jya();
     }
 
     void inittlo()
     {
         for(int i=0;i<NTLO;i++)
         {
-            ox[i].setup(i%8, 1.0, 1.0);
+            ox[i].setup(i%16, 1.0, 1.0);
         }
 
-        ox[8].setup(11, .75, 1.0);
-        ox[9].setup(0, 1.5, 5.0);
+        ox[16].setup(11, .75, 0.0);
     }
 
     void initvox()
     {
         // vox init
-        v0=0; v1=1; v2=2; v3=3;
-        ox[v0].setra(2.0, .5);
-        ox[v1].setra(3.0, .0);
-        ox[v2].setra(1.0, .0);
-        ox[v3].setra(1.0, .0);
+        v0=16; v1=16; v2=16; v3=16;
     }
 
     void draw(){}
@@ -268,6 +265,21 @@ public:
 
             rndrtlo(i, ft);
         }
+    }
+
+    void rndrvox(float x, float y, ofTrueTypeFont ff)
+    {
+        float r=33;
+        float ym=4;
+        float xm=5;
+
+        ofDrawLine(x,y-r, x,y+r);
+        ofDrawLine(x-r,y, x+r,y);
+
+        ff.drawString(ofToString((char)(v0+97)), x+r,y+ym);
+        ff.drawString(ofToString((char)(v1+97)), x-xm,y-r-ym);
+        ff.drawString(ofToString((char)(v2+97)), x-r-2*xm,y+ym);
+        ff.drawString(ofToString((char)(v3+97)), x-xm,y+r+2*ym);
     }
 
     // vars

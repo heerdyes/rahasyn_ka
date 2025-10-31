@@ -64,11 +64,14 @@ class ofApp : public ofBaseApp{
         int state;
 
         // fsm
-        nd s0,s1,s2,s3,s20,s21,s22;
+        nd s0,s1,s2,s3,s4,s5,s6,s7,s8;
 
         syn z;
         int rbctr=0;
         string numtok;
 
         ut u;
+        cstk S;
+        int vcur;
+        lg L;
 };

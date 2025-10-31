@@ -27,6 +27,14 @@ public:
         }
     }
 
+    void jya()
+    {
+        for(int i=0;i<sz;i++)
+        {
+            buf[i]=sin(i*2*PI/(float)sz);
+        }
+    }
+
     void uramp()
     {
         float m=1.0 / (float)sz;
@@ -84,6 +92,8 @@ public:
     int tid;
     float rate;
     float amp;
+    float rateref; // reference rate
+    float ampref;  // reference amp
     // mod tlos
     int rtlo;
     int atlo;
@@ -114,11 +124,25 @@ public:
         tid=tt;
         rate=r0;
         amp=a0;
+        rateref=r0;
+        ampref=a0;
     }
 
     void setra(float rr, float aa)
     {
+        rateref=rr;
+        ampref=aa;
+    }
+
+    void setr(float rr)
+    {
+        rateref=rr;
         rate=rr;
+    }
+
+    void seta(float aa)
+    {
+        ampref=aa;
         amp=aa;
     }
 
@@ -131,8 +155,8 @@ public:
     void evolve(tbl2 tx[], tlo ox[])
     {
         incptr(tx);
-        if(rtlo!=-1) rate=abs(ox[rtlo].samp(tx));
-        if(atlo!=-1) amp=abs(ox[atlo].samp(tx));
+        if(rtlo!=-1) rate=abs(rateref*ox[rtlo].samp(tx));
+        if(atlo!=-1) amp=abs(ampref*ox[atlo].samp(tx));
     }
 
     float samp(tbl2 tx[])
