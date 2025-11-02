@@ -79,28 +79,42 @@ public:
     void inittbl()
     {
         // bipolar sawteeth
-        for(int i=0;i<NTBL/2;i++)
-        {
-            tx[i].setup(512);
-            tx[i].dramp();
-        }
+        tx[0].setup(512);
+        tx[0].dramp();
+        
+        // adsyn
+        tx[1].setup(512);
+        tx[1].jya();
+        
+        tx[2].setup(1024);
+        tx[2].dvijya(1,1, 2,1);
+        
+        tx[3].setup(1024);
+        tx[3].trijya(1,2, 2,1, 4,1);
+        
+        // triangles
+        tx[4].setup(512);
+        tx[4].utri();
 
-        // unipolar triangles
-        for(int i=NTBL/2;i<NTBL;i++)
-        {
-            tx[i].setup(512);
-            tx[i].utri();
-        }
-
-        tx[2].birnd();
-        tx[3].urnd();
+        // noise
+        tx[5].setup(512);
+        tx[5].birnd();
+        
+        tx[6].setup(512);
+        tx[6].urnd();
 
         // wild pulses
-        tx[11].pulse(.5);
-        tx[12].pulse(.25);
-        tx[13].pulse(.125);
-        tx[14].pulse(.0625);
-        tx[15].jya();
+        tx[7].setup(512);
+        tx[7].pulse(.5);
+        
+        tx[8].setup(512);
+        tx[8].pulse(.25);
+        
+        tx[9].setup(512);
+        tx[9].pulse(.125);
+        
+        tx[10].setup(512);
+        tx[10].pulse(.0625);
     }
 
     void inittlo()

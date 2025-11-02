@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-kate &
+gedit &
 sleep 4
 
-kate src/ofApp.cpp
-kate src/ofApp.h
-kate src/synth.h
-kate src/ftbl.h
-kate src/fsm.h
-kate src/uts.h
+gedit src/ofApp.cpp
+gedit src/ofApp.h
+gedit src/synth.h
+gedit src/ftbl.h
+gedit src/fsm.h
+gedit src/uts.h
+

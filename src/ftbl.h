@@ -8,7 +8,7 @@ class tbl2
 {
 public:
     float buf[TBL_MAX_N];
-    int sz;
+    int sz=256;
 
     void setup(int n)
     {
@@ -33,6 +33,39 @@ public:
         {
             buf[i]=sin(i*2*PI/(float)sz);
         }
+    }
+    
+    void nrmlyz()
+    {
+        float max=0;
+        // get abs max
+        for(int i=0;i<sz;i++) if(abs(buf[i])>max) max=abs(buf[i]);
+        // normalize
+        for(int i=0;i<sz;i++) buf[i]/=max;
+    }
+    
+    void dvijya(float f1,float w1, float f2,float w2)
+    {
+        float k=2*PI/(float)sz;
+        
+        for(int i=0;i<sz;i++)
+        {
+            buf[i]=w1*sin(i*k*f1) + w2*sin(i*k*f2);
+        }
+        
+        nrmlyz();
+    }
+    
+    void trijya(float f1,float w1, float f2,float w2, float f3,float w3)
+    {
+        float k=2*PI/(float)sz;
+        
+        for(int i=0;i<sz;i++)
+        {
+            buf[i]=w1*sin(i*k*f1) + w2*sin(i*k*f2) + w3*sin(i*k*f3);
+        }
+        
+        nrmlyz();
     }
 
     void birnd()
