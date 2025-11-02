@@ -115,6 +115,15 @@ public:
         
         tx[10].setup(512);
         tx[10].pulse(.0625);
+        
+        tx[11].setup(512);
+        tx[11].squ();
+        
+        tx[12].setup(512);
+        tx[12].btri();
+        
+        tx[13].setup(512);
+        tx[13].dcy(.98);
     }
 
     void inittlo()

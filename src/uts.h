@@ -159,7 +159,7 @@ public:
         pos=0;
     }
 
-    void rndr(ofTrueTypeFont ff)
+    void rndr(ofTrueTypeFont ff, float ht)
     {
         float yy=y;
         ofSetColor(55,242,66);
@@ -167,7 +167,7 @@ public:
         {
             ofSetColor(55,242,66);
             ff.drawString(buf[i], x,yy);
-            yy+=14;
+            yy+=ht;
         }
     }
 

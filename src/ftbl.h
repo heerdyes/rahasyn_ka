@@ -15,6 +15,15 @@ public:
         sz=n;
         dramp();
     }
+    
+    void nrmlyz()
+    {
+        float max=0;
+        // get abs max
+        for(int i=0;i<sz;i++) if(abs(buf[i])>max) max=abs(buf[i]);
+        // normalize
+        for(int i=0;i<sz;i++) buf[i]/=max;
+    }
 
     void dramp()
     {
@@ -27,21 +36,13 @@ public:
         }
     }
 
+    // additive synthesizers
     void jya()
     {
         for(int i=0;i<sz;i++)
         {
             buf[i]=sin(i*2*PI/(float)sz);
         }
-    }
-    
-    void nrmlyz()
-    {
-        float max=0;
-        // get abs max
-        for(int i=0;i<sz;i++) if(abs(buf[i])>max) max=abs(buf[i]);
-        // normalize
-        for(int i=0;i<sz;i++) buf[i]/=max;
     }
     
     void dvijya(float f1,float w1, float f2,float w2)
@@ -67,7 +68,42 @@ public:
         
         nrmlyz();
     }
+    
+    void squ(float pwm=.5)
+    {
+        for (int i = 0; i < sz; i += 1)
+        {
+            buf[i]=(i<pwm*sz)?1.0:-1.0;
+        }
+    }
+    
+    void btri()
+    {
+        float acc=0;
+        float k=4.0/sz;
+        for (int i = 0; i < sz; i += 1)
+        {
+            buf[i]=acc;
+            acc+=k;
+            if(abs(acc)>1)
+            {
+                acc=acc>0?1.0:-1.0;
+                k=-k;
+            }
+        }
+    }
+    
+    void dcy(float gp=.5)
+    {
+        float acc=1.0;
+        for (int i = 0; i < sz; i += 1)
+        {
+            buf[i]=acc;
+            acc*=gp;
+        }
+    }
 
+    // noise synthesizers
     void birnd()
     {
         for(int i=0;i<sz;i++)
@@ -95,6 +131,7 @@ public:
         }
     }
 
+    // pulsators
     void pulse(float _pwm=.5)
     {
         float pwm=(_pwm<0 || _pwm>1)?.5:_pwm;
@@ -105,6 +142,7 @@ public:
         }
     }
 
+    // triangulars
     void utri()
     {
         float m=2.0/(float)sz;
