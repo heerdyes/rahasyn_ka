@@ -306,6 +306,7 @@ public:
         float ym=4;
         float xm=5;
 
+        ofSetColor(222,99,111);
         ofDrawLine(x,y-r, x,y+r);
         ofDrawLine(x-r,y, x+r,y);
 

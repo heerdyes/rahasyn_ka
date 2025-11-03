@@ -2,15 +2,15 @@
 
 void ofApp::initfsm()
 {
-    s0.setup(480,HH-88-44, 0);
-    s1.setup(400,HH-88-44, 1);
-    s2.setup(560,HH-88-44, 2);
-    s3.setup(520,HH-144-88, 3);
-    s4.setup(520,HH-44, 4);
-    s5.setup(640,HH-144-88, 5);
-    s6.setup(640,HH-88-44, 6);
+    s0.setup(290,HH-88-44, 0);
+    s1.setup(120,HH-88-44, 1);
+    s2.setup(480,HH-156, 2);
+    s3.setup(420,HH-264, 3);
+    s4.setup(420,HH-44, 4);
+    s5.setup(640,HH-280, 5);
+    s6.setup(660,HH-88-88, 6);
     s7.setup(640,HH-44, 7);
-    s8.setup(400,HH-88-144, 8);
+    s8.setup(200,HH-281, 8);
 }
 
 //--------------------------------------------------------------
@@ -30,7 +30,7 @@ void ofApp::setup()
     initfsm();
 
     z.setup();
-    L.setup(880,HH-144);
+    L.setup(880,HH-311);
     soundsetup();
 }
 
@@ -86,7 +86,6 @@ void ofApp::rndrfsm()
 void ofApp::draw()
 {
     ofSetColor(22,202,232);
-    fnt.drawString("rahasynth_ka", 22,44);
 
     float cy=HH/2;
     float cgy=cy-100;
@@ -104,12 +103,12 @@ void ofApp::draw()
         ofDrawLine(xx,cgy,xx,cgy-scope[i]*ky);
     }
 
-    z.rndrtlos(WW/2+400, HH/2-100, 330, fej);
-    z.rndrtbls(WW/2-400, HH/2-100, 330, fej);
+    z.rndrtlos(WW/2+550, HH/2-170, 330, fej);
+    z.rndrtbls(WW/2-550, HH/2-170, 330, fej);
 
     // render finite state machine
     rndrfsm();
-    z.rndrvox(64,HH-240, fej);
+    z.rndrvox(WW/2,HH/2+111, fnt);
 
     // transcript
     L.rndr(fnt, 18);

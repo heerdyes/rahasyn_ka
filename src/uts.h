@@ -3,7 +3,7 @@
 #include "ofMain.h"
 
 #define STK_MAX (64)
-#define LOG_MAX (8)
+#define LOG_MAX (18)
 
 class ut
 {
@@ -23,7 +23,7 @@ public:
 
             float dst=abs((fctr%n)-i);
             if(dst<2) ofSetColor(255,128,0);
-            else ofSetColor(0,108,0);
+            else ofSetColor(0,180,207);
 
             ofDrawLine(ox1,oy1, zx1,zy1);
 
