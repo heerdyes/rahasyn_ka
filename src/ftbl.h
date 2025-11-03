@@ -96,10 +96,12 @@ public:
         }
     }
     
-    void dcy(float gp=.5)
+    void dcy(float gp=.5, float ph=.0)
     {
         float acc=1.0;
-        for (int i = 0; i < sz; i += 1)
+        int begat=ph<0?0:ph>=1?sz-1:(int)(ph*sz);
+        
+        for (int i = begat; i < sz; i += 1)
         {
             buf[i]=acc;
             acc*=gp;

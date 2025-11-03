@@ -130,6 +130,17 @@ public:
         
         tx[15].setup(512);
         tx[15].wqspline(100,1, 412,-1, 600);
+        
+        tx[16].setup(512);
+        tx[16].wqspline(80,1.4, 222,-1.3, 600);
+        
+        tx[17].setup(512);
+        tx[17].dcy(.97);
+        tx[17].dcy(.97,.25);
+        
+        tx[18].setup(512);
+        tx[18].dcy(.97);
+        tx[18].dcy(.97,.3333);
     }
 
     void inittlo()
