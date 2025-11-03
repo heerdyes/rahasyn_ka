@@ -8,12 +8,24 @@ class tbl2
 {
 public:
     float buf[TBL_MAX_N];
-    int sz;
+    int sz=256;
 
     void setup(int n)
     {
         sz=n;
-        dramp();
+        for (int i = 0; i < sz; i += 1)
+        {
+            buf[i]=0.0;
+        }
+    }
+    
+    void nrmlyz()
+    {
+        float max=0;
+        // get abs max
+        for(int i=0;i<sz;i++) if(abs(buf[i])>max) max=abs(buf[i]);
+        // normalize
+        for(int i=0;i<sz;i++) buf[i]/=max;
     }
 
     void dramp()
@@ -27,6 +39,7 @@ public:
         }
     }
 
+    // additive synthesizers
     void jya()
     {
         for(int i=0;i<sz;i++)
@@ -34,7 +47,66 @@ public:
             buf[i]=sin(i*2*PI/(float)sz);
         }
     }
+    
+    void dvijya(float f1,float w1, float f2,float w2)
+    {
+        float k=2*PI/(float)sz;
+        
+        for(int i=0;i<sz;i++)
+        {
+            buf[i]=w1*sin(i*k*f1) + w2*sin(i*k*f2);
+        }
+        
+        nrmlyz();
+    }
+    
+    void trijya(float f1,float w1, float f2,float w2, float f3,float w3)
+    {
+        float k=2*PI/(float)sz;
+        
+        for(int i=0;i<sz;i++)
+        {
+            buf[i]=w1*sin(i*k*f1) + w2*sin(i*k*f2) + w3*sin(i*k*f3);
+        }
+        
+        nrmlyz();
+    }
+    
+    void squ(float pwm=.5)
+    {
+        for (int i = 0; i < sz; i += 1)
+        {
+            buf[i]=(i<pwm*sz)?1.0:-1.0;
+        }
+    }
+    
+    void btri()
+    {
+        float acc=0;
+        float k=4.0/sz;
+        for (int i = 0; i < sz; i += 1)
+        {
+            buf[i]=acc;
+            acc+=k;
+            if(abs(acc)>1)
+            {
+                acc=acc>0?1.0:-1.0;
+                k=-k;
+            }
+        }
+    }
+    
+    void dcy(float gp=.5)
+    {
+        float acc=1.0;
+        for (int i = 0; i < sz; i += 1)
+        {
+            buf[i]=acc;
+            acc*=gp;
+        }
+    }
 
+    // noise synthesizers
     void birnd()
     {
         for(int i=0;i<sz;i++)
@@ -62,6 +134,7 @@ public:
         }
     }
 
+    // pulsators
     void pulse(float _pwm=.5)
     {
         float pwm=(_pwm<0 || _pwm>1)?.5:_pwm;
@@ -71,7 +144,28 @@ public:
             else buf[i]=0.0;
         }
     }
+    
+    // splinewaves
+    void wqspline(float p1,float q1, float p2,float q2, int n)
+    {
+        float x1=0,y1=0;
+        float x2=sz-1,y2=0;
+        float mul=(1.0 / (float)n);
+        
+        for(int i=1;i<n+1;i++)
+        {
+            float d=mul*i;
+            float zx1=x1*pow(1.0-d, 3) + 3*p1*pow(1.0-d, 2)*d + 3*p2*(1.0-d)*pow(d, 2) + x2*pow(d, 3);
+            float zy1=y1*pow(1.0-d, 3) + 3*q1*pow(1.0-d, 2)*d + 3*q2*(1.0-d)*pow(d, 2) + y2*pow(d, 3);
+            
+            int ix=zx1<0?0:zx1>sz-1?sz-1:(int)zx1;
+            buf[ix]=zy1;
+        }
+        
+        nrmlyz();
+    }
 
+    // triangulars
     void utri()
     {
         float m=2.0/(float)sz;

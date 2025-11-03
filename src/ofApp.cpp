@@ -23,13 +23,14 @@ void ofApp::setup()
     ctr=0;
     state=0;
 
-    fnt.load("OCRA", 16);
-    fej.load("OCRA", 10);
+    string sf("OcrA.ttf");
+    fnt.load(sf, 16);
+    fej.load(sf, 11);
 
     initfsm();
 
     z.setup();
-    L.setup(840,HH-120);
+    L.setup(880,HH-144);
     soundsetup();
 }
 
@@ -111,7 +112,7 @@ void ofApp::draw()
     z.rndrvox(64,HH-240, fej);
 
     // transcript
-    L.rndr(fej);
+    L.rndr(fnt, 18);
     fej.drawString(numtok, WW-180,HH-44);
 }
 

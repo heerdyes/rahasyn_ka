@@ -10,7 +10,7 @@
 #include "ftbl.h"
 #include "synth.h"
 
-#define SCOP_SIZE   (512)
+#define SCOP_SIZE   (1024)
 
 class ofApp : public ofBaseApp{
 
