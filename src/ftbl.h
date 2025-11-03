@@ -13,7 +13,10 @@ public:
     void setup(int n)
     {
         sz=n;
-        dramp();
+        for (int i = 0; i < sz; i += 1)
+        {
+            buf[i]=0.0;
+        }
     }
     
     void nrmlyz()
@@ -140,6 +143,26 @@ public:
             if(i<pwm*sz) buf[i]=1.0;
             else buf[i]=0.0;
         }
+    }
+    
+    // splinewaves
+    void wqspline(float p1,float q1, float p2,float q2, int n)
+    {
+        float x1=0,y1=0;
+        float x2=sz-1,y2=0;
+        float mul=(1.0 / (float)n);
+        
+        for(int i=1;i<n+1;i++)
+        {
+            float d=mul*i;
+            float zx1=x1*pow(1.0-d, 3) + 3*p1*pow(1.0-d, 2)*d + 3*p2*(1.0-d)*pow(d, 2) + x2*pow(d, 3);
+            float zy1=y1*pow(1.0-d, 3) + 3*q1*pow(1.0-d, 2)*d + 3*q2*(1.0-d)*pow(d, 2) + y2*pow(d, 3);
+            
+            int ix=zx1<0?0:zx1>sz-1?sz-1:(int)zx1;
+            buf[ix]=zy1;
+        }
+        
+        nrmlyz();
     }
 
     // triangulars

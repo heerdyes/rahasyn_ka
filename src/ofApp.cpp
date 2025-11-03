@@ -23,14 +23,14 @@ void ofApp::setup()
     ctr=0;
     state=0;
 
-    string sf("Courier");
+    string sf("OcrA.ttf");
     fnt.load(sf, 16);
-    fej.load(sf, 10);
+    fej.load(sf, 11);
 
     initfsm();
 
     z.setup();
-    L.setup(840,HH-120);
+    L.setup(880,HH-144);
     soundsetup();
 }
 
