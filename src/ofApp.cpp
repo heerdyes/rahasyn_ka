@@ -30,7 +30,7 @@ void ofApp::setup()
     initfsm();
 
     z.setup();
-    L.setup(880,HH-311);
+    L.setup(1380,HH-303);
     soundsetup();
 }
 
@@ -77,9 +77,6 @@ void ofApp::rndrfsm()
     s6.rndr(fej, state);
     s7.rndr(fej, state);
     s8.rndr(fej, state);
-
-    // rndr stack
-    S.rndr(60,HH-80, fej);
 }
 
 //--------------------------------------------------------------
@@ -96,7 +93,7 @@ void ofApp::draw()
     float kx=wd/SCOP_SIZE;
 
     // sound waveform
-    ofSetColor(23,202,232);
+    ofSetColor(255,202,77);
     for(int i=0;i<SCOP_SIZE;i++)
     {
         float xx=cx+i*kx;
@@ -108,11 +105,13 @@ void ofApp::draw()
 
     // render finite state machine
     rndrfsm();
-    z.rndrvox(WW/2,HH/2+111, fnt);
-
     // transcript
     L.rndr(fnt, 18);
-    fej.drawString(numtok, WW-180,HH-44);
+    // stack and numtok
+    S.rndr(WW/2,HH/2+200, fnt,18);
+    fnt.drawString(numtok, WW/2-fnt.stringWidth(numtok)/2,HH/2+200+30);
+    // vox
+    z.rndrvox(WW/2,HH/2+200+108, fnt);
 }
 
 // ----------------------------------------- //
@@ -213,6 +212,7 @@ void ofApp::keyPressed(int key)
         }
         else if(ckey=='t')
         {
+            S.push(ckey);
             state=8;
         }
     }
@@ -339,6 +339,7 @@ void ofApp::keyPressed(int key)
     {
         if(key>=65 && key<=90)
         {
+            S.pop(); // discard 't'
             char oc=S.pop();
             int oci=((int)oc)-97;
 

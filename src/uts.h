@@ -123,20 +123,21 @@ public:
         return buf[sp];
     }
 
-    void rndr(float x, float y, ofTrueTypeFont ff)
+    void rndr(float x, float y, ofTrueTypeFont ff, float hgap)
     {
         float yy=y-10;
         ofSetColor(0,255,255);
-        ofDrawLine(x-10,y, x+10,y);
+        ofDrawLine(x-18,y, x+18,y);
 
         for(int i=0;i<sp;i++)
         {
             ff.drawString(ofToString(buf[i]), x,yy);
-            yy-=14;
+            yy-=hgap;
         }
 
-        ofSetColor(255);
-        ofDrawLine(x-10,yy, x+10,yy);
+        yy-=8;
+        ofSetColor(0,255,255);
+        ofDrawLine(x-18,yy, x+18,yy);
     }
 };
 
