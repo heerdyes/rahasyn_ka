@@ -192,7 +192,7 @@ public:
     }
 
     // tbl rendering
-    void rndrtbl(float x,float y, float w,float h, int ti, ofTrueTypeFont ft)
+    void rndrtbl(float x,float y, float w,float h, int ti)
     {
         ofSetColor(23,202,232);
         int tsz=gettblsz(ti);
@@ -207,19 +207,19 @@ public:
             xx+=xf;
         }
 
-        ft.drawString(ofToString((char)(65+ti)), x-5,y+h/2);
+        ofDrawBitmapString(ofToString((char)(65+ti)), x-5,y+h/2);
 
         // x axis
         ofSetColor(255,88,0);
         ofDrawLine(x-w/2,y,x+w/2,y);
     }
 
-    void rndrtbl(int ti, ofTrueTypeFont ft)
+    void rndrtbl(int ti)
     {
-        rndrtbl(tblxywh[ti].x, tblxywh[ti].y, tblxywh[ti].w, tblxywh[ti].h, ti, ft);
+        rndrtbl(tblxywh[ti].x, tblxywh[ti].y, tblxywh[ti].w, tblxywh[ti].h, ti);
     }
 
-    void rndrtbls(float x, float y, float r, ofTrueTypeFont ft)
+    void rndrtbls(float x, float y, float r)
     {
         // rndr 26 tbls
         float frac=2*PI/NTBL;
@@ -233,12 +233,12 @@ public:
             tblxywh[i].w=72;
             tblxywh[i].h=40;
 
-            rndrtbl(i, ft);
+            rndrtbl(i);
         }
     }
 
     // tlo rendering
-    void rndrtlo(float x, float y, float w, float h, int oi, ofTrueTypeFont ft)
+    void rndrtlo(float x, float y, float w, float h, int oi)
     {
         tlo & oref=getosc(oi);
         ofSetColor(23,202,232);
@@ -255,7 +255,7 @@ public:
         }
 
         // label
-        ft.drawString(ofToString((char)(97+oi)), x-5,y+h/2);
+        ofDrawBitmapString(ofToString((char)(97+oi)), x-5,y+h/2);
 
         // x axis
         ofSetColor(255,88,0);
@@ -269,7 +269,7 @@ public:
         float xdst=tblxywh[tbix].x;
         float ydst=tblxywh[tbix].y;
         string sosc=ofToString((char)(97+oi));
-        u.spline2(xdst,ydst, x,y, spltx,splty, 22, sosc+"t"+ofToString((char)(65+tbix)), ft);
+        u.spline2(xdst,ydst, x,y, spltx,splty, 22, sosc+"t"+ofToString((char)(65+tbix)));
 
         // display modulation patch cable splines
         if(oref.ratemodded())
@@ -277,23 +277,23 @@ public:
             int rtlo=oref.rtlo;
             float oxdst=tloxywh[rtlo].x;
             float oydst=tloxywh[rtlo].y;
-            u.spline2(oxdst,oydst, x,y, splox,sploy, 22, sosc+"r"+ofToString((char)(97+rtlo)), ft);
+            u.spline2(oxdst,oydst, x,y, splox,sploy, 22, sosc+"r"+ofToString((char)(97+rtlo)));
         }
         if(oref.ampmodded())
         {
             int atlo=oref.atlo;
             float oxdst=tloxywh[atlo].x;
             float oydst=tloxywh[atlo].y;
-            u.spline2(oxdst,oydst, x,y, splox,sploy, 22, sosc+"a"+ofToString((char)(97+atlo)), ft);
+            u.spline2(oxdst,oydst, x,y, splox,sploy, 22, sosc+"a"+ofToString((char)(97+atlo)));
         }
     }
 
-    void rndrtlo(int oi, ofTrueTypeFont ft)
+    void rndrtlo(int oi)
     {
-        rndrtlo(tloxywh[oi].x, tloxywh[oi].y, tloxywh[oi].w, tloxywh[oi].h, oi, ft);
+        rndrtlo(tloxywh[oi].x, tloxywh[oi].y, tloxywh[oi].w, tloxywh[oi].h, oi);
     }
 
-    void rndrtlos(float x, float y, float r, ofTrueTypeFont ft)
+    void rndrtlos(float x, float y, float r)
     {
         // rndr 26 tlos
         float frac=2*PI/NTLO;
@@ -307,11 +307,11 @@ public:
             tloxywh[i].w=72;
             tloxywh[i].h=40;
 
-            rndrtlo(i, ft);
+            rndrtlo(i);
         }
     }
 
-    void rndrvox(float x, float y, ofTrueTypeFont ff)
+    void rndrvox(float x, float y)
     {
         float r=33;
         float ym=4;
@@ -321,10 +321,10 @@ public:
         ofDrawLine(x,y-r, x,y+r);
         ofDrawLine(x-r,y, x+r,y);
 
-        ff.drawString(ofToString((char)(v0+97)), x+r,y+ym);
-        ff.drawString(ofToString((char)(v1+97)), x-xm,y-r-ym);
-        ff.drawString(ofToString((char)(v2+97)), x-r-2*xm,y+ym);
-        ff.drawString(ofToString((char)(v3+97)), x-xm,y+r+2*ym);
+        ofDrawBitmapString(ofToString((char)(v0+97)), x+r,y+ym);
+        ofDrawBitmapString(ofToString((char)(v1+97)), x-xm,y-r-ym);
+        ofDrawBitmapString(ofToString((char)(v2+97)), x-r-2*xm,y+ym);
+        ofDrawBitmapString(ofToString((char)(v3+97)), x-xm,y+r+2*ym);
     }
 
     void updatesplo(float xx, float yy)

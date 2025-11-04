@@ -26,14 +26,11 @@ void ofApp::setup()
     ctr=0;
     state=0;
 
-    string sf("OcrA.ttf");
-    fnt.load(sf, 16);
-    fej.load(sf, 11);
-
     initfsm();
 
     z.setup();
     L.setup(1380,HH-303);
+    
     soundsetup();
 }
 
@@ -51,43 +48,43 @@ void ofApp::update()
 void ofApp::rndrfsm()
 {
     // edges first
-    u.edge2(s0,s1, s0.x-30,s1.y-40, "F[1-4]", fej);
-    u.edge2(s1,s0, s0.x-30,s1.y+30, "a-z", fej);
-    u.edge2(s0,s2, s2.x-30,s0.y-20, "a-z", fej);
-    u.edge2(s2,s3, s2.x,s3.y, "r", fej);
-    u.edge2(s2,s4, s2.x,s4.y, "a", fej);
-    u.edge2(s3,s0, s0.x,s3.y, "a-z", fej);
-    u.edge2(s4,s0, s0.x,s4.y, "a-z", fej);
-    u.edge2(s3,s5, s5.x,s3.y, "0-9", fej);
-    u.edge2(s3,s6, s5.x,s5.y, "<.>", fej);
-    u.edge3(s5,s5, s5.x+60,s5.y-30, s5.x+60,s5.y+30, "0-9", fej);
-    u.edge2(s5,s6, s5.x+20,s6.y, "<.>", fej);
-    u.edge2(s6,s7, s7.x+30,s7.y-20, "0-9", fej);
-    u.edge3(s7,s7, s7.x+50,s7.y-30, s7.x+50,s7.y+30, "0-9", fej);
-    u.edge2(s4,s5, s6.x,s6.y, "0-9", fej);
-    u.edge2(s4,s6, s7.x,s7.y, "<.>", fej);
-    u.edge2(s7,s0, s2.x,s2.y+30, "\\n", fej);
-    u.edge2(s2,s8, s3.x,s3.y+30, "t", fej);
-    u.edge2(s8,s0, s1.x,s1.y-30, "A-Z", fej);
-    u.edge2(s0,s9, s0.x-30,s9.y+30, "F12", fej);
-    u.edge2(s9,s10, s9.x,s10.y, "<.>", fej);
-    u.edge2(s10,s11, s10.x-44,s11.y+33, "0-9", fej);
-    u.edge3(s11,s11, s11.x-20,s11.y-20,s11.x+20,s11.y-20, "0-9", fej);
-    u.edge2(s11,s0, s11.x+20,s0.y, "\\n", fej);
+    u.edge2(s0,s1, s0.x-30,s1.y-40, "F[1-4]");
+    u.edge2(s1,s0, s0.x-30,s1.y+30, "a-z");
+    u.edge2(s0,s2, s2.x-30,s0.y-20, "a-z");
+    u.edge2(s2,s3, s2.x,s3.y, "r");
+    u.edge2(s2,s4, s2.x,s4.y, "a");
+    u.edge2(s3,s0, s0.x,s3.y, "a-z");
+    u.edge2(s4,s0, s0.x,s4.y, "a-z");
+    u.edge2(s3,s5, s5.x,s3.y, "0-9");
+    u.edge2(s3,s6, s5.x,s5.y, "<.>");
+    u.edge3(s5,s5, s5.x+60,s5.y-30, s5.x+60,s5.y+30, "0-9");
+    u.edge2(s5,s6, s5.x+20,s6.y, "<.>");
+    u.edge2(s6,s7, s7.x+30,s7.y-20, "0-9");
+    u.edge3(s7,s7, s7.x+50,s7.y-30, s7.x+50,s7.y+30, "0-9");
+    u.edge2(s4,s5, s6.x,s6.y, "0-9");
+    u.edge2(s4,s6, s7.x,s7.y, "<.>");
+    u.edge2(s7,s0, s2.x,s2.y+30, "\\n");
+    u.edge2(s2,s8, s3.x,s3.y+30, "t");
+    u.edge2(s8,s0, s1.x,s1.y-30, "A-Z");
+    u.edge2(s0,s9, s0.x-30,s9.y+30, "F12");
+    u.edge2(s9,s10, s9.x,s10.y, "<.>");
+    u.edge2(s10,s11, s10.x-44,s11.y+33, "0-9");
+    u.edge3(s11,s11, s11.x-20,s11.y-20,s11.x+20,s11.y-20, "0-9");
+    u.edge2(s11,s0, s11.x+20,s0.y, "\\n");
 
     // then nodes, to prevent edge lines reaching the center
-    s0.rndr(fej, state);
-    s1.rndr(fej, state);
-    s2.rndr(fej, state);
-    s3.rndr(fej, state);
-    s4.rndr(fej, state);
-    s5.rndr(fej, state);
-    s6.rndr(fej, state);
-    s7.rndr(fej, state);
-    s8.rndr(fej, state);
-    s9.rndr(fej, state);
-    s10.rndr(fej, state);
-    s11.rndr(fej, state);
+    s0.rndr(state);
+    s1.rndr(state);
+    s2.rndr(state);
+    s3.rndr(state);
+    s4.rndr(state);
+    s5.rndr(state);
+    s6.rndr(state);
+    s7.rndr(state);
+    s8.rndr(state);
+    s9.rndr(state);
+    s10.rndr(state);
+    s11.rndr(state);
 }
 
 //--------------------------------------------------------------
@@ -111,18 +108,18 @@ void ofApp::draw()
         ofDrawLine(xx,cgy,xx,cgy-scope[i]*ky);
     }
 
-    z.rndrtlos(WW/2+550, HH/2-170, 330, fej);
-    z.rndrtbls(WW/2-550, HH/2-170, 330, fej);
+    z.rndrtlos(WW/2+550, HH/2-170, 330);
+    z.rndrtbls(WW/2-550, HH/2-170, 330);
 
     // render finite state machine
     rndrfsm();
     // transcript
-    L.rndr(fnt, 18);
+    L.rndr(18);
     // stack and numtok
-    S.rndr(WW/2,HH/2+200, fnt,18);
-    fnt.drawString(numtok, WW/2-fnt.stringWidth(numtok)/2,HH/2+200+30);
+    S.rndr(WW/2,HH/2+200, 18);
+    ofDrawBitmapString(numtok, WW/2-numtok.length()*SNHALF,HH/2+200+30);
     // vox
-    z.rndrvox(WW/2,HH/2+200+108, fnt);
+    z.rndrvox(WW/2,HH/2+200+108);
 }
 
 // ----------------------------------------- //
@@ -381,7 +378,6 @@ void ofApp::keyPressed(int key)
     {
         if(key==46) // .
         {
-            S.pop();
             numtok+=".";
             state=10;
         }
@@ -406,6 +402,7 @@ void ofApp::keyPressed(int key)
             z.mgain=ofToFloat(numtok);
             L.log("!! master volume = "+ofToString(z.mgain));
             
+            S.pop();
             numtok.clear();
             state=0;
         }

@@ -16,11 +16,13 @@
 #define STKLBL  (ofSetColor(0,255,255))
 #define LGCOLOR (ofSetColor(55,242,66))
 
+#define SNHALF  (0.5 * 8)
+
 class ut
 {
 public:
     // refer project splinear for more splines
-    void spline2(float x1,float y1, float x2,float y2, float p,float q, int n, string st, ofTrueTypeFont ft)
+    void spline2(float x1,float y1, float x2,float y2, float p,float q, int n, string st)
     {
         float mul=(1.0 / (float)n);
         float ox1=x1;
@@ -41,8 +43,8 @@ public:
             if(i==n/2)
             {
                 CS2LBL;
-                float shalf=ft.stringWidth(st)/2;
-                ft.drawString(st, zx1-shalf, zy1-8);
+                float shalf=st.length()*SNHALF;
+                ofDrawBitmapString(st, zx1-shalf, zy1-8);
             }
 
             ox1=zx1;
@@ -50,7 +52,7 @@ public:
         }
     }
 
-    void spline3(float x1,float y1, float x2,float y2, float p1,float q1, float p2,float q2, int n, string st, ofTrueTypeFont ft)
+    void spline3(float x1,float y1, float x2,float y2, float p1,float q1, float p2,float q2, int n, string st)
     {
         float mul=(1.0 / (float)n);
         float ox1=x1;
@@ -71,8 +73,8 @@ public:
             if(i==n/2)
             {
                 CS3LBL;
-                float shalf=ft.stringWidth(st)/2;
-                ft.drawString(st, zx1-shalf, zy1-8);
+                float shalf=st.length()*SNHALF;
+                ofDrawBitmapString(st, zx1-shalf, zy1-8);
             }
 
             ox1=zx1;
@@ -80,14 +82,14 @@ public:
         }
     }
 
-    void edge2(nd& n0, nd& n1, float p,float q, string st, ofTrueTypeFont fz)
+    void edge2(nd& n0, nd& n1, float p,float q, string st)
     {
-        spline2(n0.x,n0.y, n1.x,n1.y, p,q, 22, st, fz);
+        spline2(n0.x,n0.y, n1.x,n1.y, p,q, 22, st);
     }
 
-    void edge3(nd& n0, nd& n1, float p1,float q1, float p2,float q2, string st, ofTrueTypeFont fz)
+    void edge3(nd& n0, nd& n1, float p1,float q1, float p2,float q2, string st)
     {
-        spline3(n0.x,n0.y, n1.x,n1.y, p1,q1, p2,q2, 22, st, fz);
+        spline3(n0.x,n0.y, n1.x,n1.y, p1,q1, p2,q2, 22, st);
     }
 
     void update()
@@ -134,7 +136,7 @@ public:
         return buf[sp];
     }
 
-    void rndr(float x, float y, ofTrueTypeFont ff, float hgap)
+    void rndr(float x, float y, float hgap)
     {
         float yy=y-10;
         float xx=x-18;
@@ -144,12 +146,12 @@ public:
         for(int i=0;i<sp;i++)
         {
             int k=buf[i];
-            if(k==57355) ff.drawString("F12", xx,yy);
-            else if(k==57344) ff.drawString("F1", xx,yy);
-            else if(k==57345) ff.drawString("F2", xx,yy);
-            else if(k==57346) ff.drawString("F3", xx,yy);
-            else if(k==57347) ff.drawString("F4", xx,yy);
-            else ff.drawString("["+ofToString(k)+"] "+ofToString((char)k), xx,yy);
+            if(k==57355) ofDrawBitmapString("F12", xx,yy);
+            else if(k==57344) ofDrawBitmapString("F1", xx,yy);
+            else if(k==57345) ofDrawBitmapString("F2", xx,yy);
+            else if(k==57346) ofDrawBitmapString("F3", xx,yy);
+            else if(k==57347) ofDrawBitmapString("F4", xx,yy);
+            else ofDrawBitmapString("["+ofToString(k)+"] "+ofToString((char)k), xx,yy);
             yy-=hgap;
         }
 
@@ -178,13 +180,13 @@ public:
         pos=0;
     }
 
-    void rndr(ofTrueTypeFont ff, float ht)
+    void rndr(float ht)
     {
         float yy=y;
         LGCOLOR;
         for(int i=(pos+1)%LOG_MAX; i!=pos; i=(i+1)%LOG_MAX)
         {
-            ff.drawString(buf[i], x,yy);
+            ofDrawBitmapString(buf[i], x,yy);
             yy+=ht;
         }
     }

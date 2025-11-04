@@ -55,8 +55,6 @@ class ofApp : public ofBaseApp{
         void rndrfsm();
 
         ofSoundStream soundStream;
-        ofTrueTypeFont fnt;
-        ofTrueTypeFont fej;
 
         float scope[SCOP_SIZE];
         int scopectr;
