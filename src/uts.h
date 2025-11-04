@@ -5,6 +5,17 @@
 #define STK_MAX (64)
 #define LOG_MAX (18)
 
+#define CS2Y    (ofSetColor(255,180,88))
+#define CS2TB   (ofSetColor(0,180,207))
+#define CS2LBL  (ofSetColor(244,180,22))
+
+#define CS3Y    (ofSetColor(255,180,88))
+#define CS3TB   (ofSetColor(0,180,207))
+#define CS3LBL  (ofSetColor(244,180,22))
+
+#define STKLBL  (ofSetColor(0,255,255))
+#define LGCOLOR (ofSetColor(55,242,66))
+
 class ut
 {
 public:
@@ -22,14 +33,14 @@ public:
             float zy1=y1*pow(1.0-d, 2) + 2*q*(1.0-d)*d + y2*pow(d, 2);
 
             float dst=abs((fctr%n)-i);
-            if(dst<2) ofSetColor(255,128,0);
-            else ofSetColor(0,180,207);
+            if(dst<2) CS2Y;
+            else CS2TB;
 
             ofDrawLine(ox1,oy1, zx1,zy1);
 
             if(i==n/2)
             {
-                ofSetColor(244,180,22);
+                CS2LBL;
                 float shalf=ft.stringWidth(st)/2;
                 ft.drawString(st, zx1-shalf, zy1-8);
             }
@@ -52,14 +63,14 @@ public:
             float zy1=y1*pow(1.0-d, 3) + 3*q1*pow(1.0-d, 2)*d + 3*q2*(1.0-d)*pow(d, 2) + y2*pow(d, 3);
 
             float dst=abs((fctr%n)-i);
-            if(dst<3) ofSetColor(255,128,0);
-            else ofSetColor(0,255,0);
+            if(dst<3) CS3Y;
+            else CS3TB;
 
             ofDrawLine(ox1,oy1, zx1,zy1);
 
             if(i==n/2)
             {
-                ofSetColor(23,202,232);
+                CS3LBL;
                 float shalf=ft.stringWidth(st)/2;
                 ft.drawString(st, zx1-shalf, zy1-8);
             }
@@ -90,16 +101,16 @@ public:
 class cstk
 {
 public:
-    char buf[STK_MAX];
+    int buf[STK_MAX];
     int sp;
 
     cstk()
     {
         sp=0;
-        for(int i=0;i<STK_MAX;i++) buf[i]='\0';
+        for(int i=0;i<STK_MAX;i++) buf[i]='0';
     }
 
-    void push(char a)
+    void push(int a)
     {
         if(sp>=STK_MAX-1)
         {
@@ -111,7 +122,7 @@ public:
         sp++;
     }
 
-    char pop()
+    int pop()
     {
         if(sp<=0)
         {
@@ -126,17 +137,24 @@ public:
     void rndr(float x, float y, ofTrueTypeFont ff, float hgap)
     {
         float yy=y-10;
-        ofSetColor(0,255,255);
+        float xx=x-18;
+        STKLBL;
         ofDrawLine(x-18,y, x+18,y);
 
         for(int i=0;i<sp;i++)
         {
-            ff.drawString(ofToString(buf[i]), x,yy);
+            int k=buf[i];
+            if(k==57355) ff.drawString("F12", xx,yy);
+            else if(k==57344) ff.drawString("F1", xx,yy);
+            else if(k==57345) ff.drawString("F2", xx,yy);
+            else if(k==57346) ff.drawString("F3", xx,yy);
+            else if(k==57347) ff.drawString("F4", xx,yy);
+            else ff.drawString("["+ofToString(k)+"] "+ofToString((char)k), xx,yy);
             yy-=hgap;
         }
 
         yy-=8;
-        ofSetColor(0,255,255);
+        STKLBL;
         ofDrawLine(x-18,yy, x+18,yy);
     }
 };
@@ -163,10 +181,9 @@ public:
     void rndr(ofTrueTypeFont ff, float ht)
     {
         float yy=y;
-        ofSetColor(55,242,66);
+        LGCOLOR;
         for(int i=(pos+1)%LOG_MAX; i!=pos; i=(i+1)%LOG_MAX)
         {
-            ofSetColor(55,242,66);
             ff.drawString(buf[i], x,yy);
             yy+=ht;
         }
@@ -178,3 +195,4 @@ public:
         pos=(pos+1)%LOG_MAX;
     }
 };
+

@@ -3,7 +3,7 @@
 void ofApp::initfsm()
 {
     s0.setup(290,HH-88-44, 0);
-    s1.setup(120,HH-88-44, 1);
+    s1.setup(180,HH-88-44, 1);
     s2.setup(480,HH-156, 2);
     s3.setup(420,HH-264, 3);
     s4.setup(420,HH-44, 4);
@@ -11,6 +11,9 @@ void ofApp::initfsm()
     s6.setup(660,HH-88-88, 6);
     s7.setup(640,HH-44, 7);
     s8.setup(200,HH-281, 8);
+    s9.setup(120,HH-44, 9);
+    s10.setup(64,HH-99, 10);
+    s11.setup(81,HH-191, 11);
 }
 
 //--------------------------------------------------------------
@@ -66,6 +69,11 @@ void ofApp::rndrfsm()
     u.edge2(s7,s0, s2.x,s2.y+30, "\\n", fej);
     u.edge2(s2,s8, s3.x,s3.y+30, "t", fej);
     u.edge2(s8,s0, s1.x,s1.y-30, "A-Z", fej);
+    u.edge2(s0,s9, s0.x-30,s9.y+30, "F12", fej);
+    u.edge2(s9,s10, s9.x,s10.y, "<.>", fej);
+    u.edge2(s10,s11, s10.x-44,s11.y+33, "0-9", fej);
+    u.edge3(s11,s11, s11.x-20,s11.y-20,s11.x+20,s11.y-20, "0-9", fej);
+    u.edge2(s11,s0, s11.x+20,s0.y, "\\n", fej);
 
     // then nodes, to prevent edge lines reaching the center
     s0.rndr(fej, state);
@@ -77,6 +85,9 @@ void ofApp::rndrfsm()
     s6.rndr(fej, state);
     s7.rndr(fej, state);
     s8.rndr(fej, state);
+    s9.rndr(fej, state);
+    s10.rndr(fej, state);
+    s11.rndr(fej, state);
 }
 
 //--------------------------------------------------------------
@@ -154,41 +165,58 @@ void ofApp::keyPressed(int key)
     {
         z.updatesplo(mouseX, mouseY);
     }
+    
+    if(ckey==' ')
+    {
+        // panic and zero out gains of each vox
+        z.panic();
+        L.log("[panic] all vox tlo gains set to zero");
+        return;
+    }
 
     if(state==0)
     {
         // F[1-4] -> v[0-3]
         if(key==57344)
         {
-            vcur=0;
+            S.push(key);
             state=1;
         }
         else if(key==57345)
         {
-            vcur=1;
+            S.push(key);
             state=1;
         }
         else if(key==57346)
         {
-            vcur=2;
+            S.push(key);
             state=1;
         }
         else if(key==57347)
         {
-            vcur=3;
+            S.push(key);
             state=1;
         }
         // [a-z] -> oscil
         else if(key>=97 && key<=122)
         {
-            S.push(ckey);
+            S.push(key);
             state=2;
+        }
+        // F12 -> master volume
+        else if(key==57355)
+        {
+            S.push(key);
+            state=9;
         }
     }
     else if(state==1)
     {
         if(key>=97 && key<=122)
         {
+            int fkey=S.pop();
+            int vcur=fkey-57344;
+            
             if(vcur==0)      z.v0=key-97;
             else if(vcur==1) z.v1=key-97;
             else if(vcur==2) z.v2=key-97;
@@ -202,17 +230,17 @@ void ofApp::keyPressed(int key)
     {
         if(ckey=='r')
         {
-            S.push(ckey);
+            S.push(key);
             state=3;
         }
         else if(ckey=='a')
         {
-            S.push(ckey);
+            S.push(key);
             state=4;
         }
         else if(ckey=='t')
         {
-            S.push(ckey);
+            S.push(key);
             state=8;
         }
     }
@@ -221,10 +249,10 @@ void ofApp::keyPressed(int key)
         if(key>=97 && key<=122)
         {
             S.pop(); // discard top
-            char oc=S.pop();
+            int oc=S.pop();
 
-            int oci=((int)oc)-97;
-            L.log("[m] "+ofToString(oc)+".rate <- "+ofToString(ckey));
+            int oci=oc-97;
+            L.log("[m] "+ofToString((char)oc)+".rate <- "+ofToString(ckey));
 
             z.ox[oci].rtlo=key-97;
             state=0;
@@ -242,10 +270,10 @@ void ofApp::keyPressed(int key)
         else if(key==45) // -
         {
             S.pop(); // discard top
-            char oc=S.pop();
+            int oc=S.pop();
 
-            int oci=((int)oc)-97;
-            L.log("[m] "+ofToString(oc)+".rtlo = -1");
+            int oci=oc-97;
+            L.log("[m] "+ofToString((char)oc)+".rtlo = -1");
 
             z.ox[oci].rtlo=-1;
             state=0;
@@ -256,10 +284,10 @@ void ofApp::keyPressed(int key)
         if(key>=97 && key<=122)
         {
             S.pop(); // discard top
-            char oc=S.pop();
+            int oc=S.pop();
 
-            int oci=((int)oc)-97;
-            L.log("[m] "+ofToString(oc)+".amp <- "+ofToString(ckey));
+            int oci=oc-97;
+            L.log("[m] "+ofToString((char)oc)+".amp <- "+ofToString(ckey));
 
             z.ox[oci].atlo=key-97;
             state=0;
@@ -267,10 +295,10 @@ void ofApp::keyPressed(int key)
         else if(key==45) // -
         {
             S.pop(); // discard top
-            char oc=S.pop();
+            int oc=S.pop();
 
-            int oci=((int)oc)-97;
-            L.log("[m] "+ofToString(oc)+".atlo = -1");
+            int oci=oc-97;
+            L.log("[m] "+ofToString((char)oc)+".atlo = -1");
 
             z.ox[oci].atlo=-1;
             state=0;
@@ -316,19 +344,19 @@ void ofApp::keyPressed(int key)
         }
         else if(key==13)
         {
-            char attr=S.pop();
-            char oci=S.pop();
-            int oix=((int)oci)-97;
+            char attr=(char)S.pop();
+            int oci=S.pop();
+            int oix=oci-97;
 
             if(attr=='r')
             {
                 z.ox[oix].setr(ofToFloat(numtok));
-                L.log("[r] "+ofToString(oci)+".rate = "+numtok);
+                L.log("[r] "+ofToString((char)oci)+".rate = "+numtok);
             }
             else if(attr=='a')
             {
                 z.ox[oix].seta(ofToFloat(numtok));
-                L.log("[a] "+ofToString(oci)+".amp = "+numtok);
+                L.log("[a] "+ofToString((char)oci)+".amp = "+numtok);
             }
 
             numtok.clear();
@@ -340,12 +368,45 @@ void ofApp::keyPressed(int key)
         if(key>=65 && key<=90)
         {
             S.pop(); // discard 't'
-            char oc=S.pop();
-            int oci=((int)oc)-97;
+            int oc=S.pop();
+            int oci=oc-97;
 
-            L.log("[t] "+ofToString(oc)+".table -> "+ofToString(ckey));
+            L.log("[t] "+ofToString((char)oc)+".table -> "+ofToString(ckey));
             z.ox[oci].tid=key-65;
 
+            state=0;
+        }
+    }
+    else if(state==9)
+    {
+        if(key==46) // .
+        {
+            S.pop();
+            numtok+=".";
+            state=10;
+        }
+    }
+    else if(state==10)
+    {
+        if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=11;
+        }
+    }
+    else if(state==11)
+    {
+        if(key>=48 && key<=57)
+        {
+            numtok+=ofToString(ckey);
+            state=11;
+        }
+        else if(key==13)
+        {
+            z.mgain=ofToFloat(numtok);
+            L.log("!! master volume = "+ofToString(z.mgain));
+            
+            numtok.clear();
             state=0;
         }
     }

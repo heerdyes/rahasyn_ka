@@ -338,6 +338,14 @@ public:
         spltx=xx;
         splty=yy;
     }
+    
+    void panic()
+    {
+        ox[v0].seta(.0);
+        ox[v1].seta(.0);
+        ox[v2].seta(.0);
+        ox[v3].seta(.0);
+    }
 
     // vars
     int ctr = 0;
