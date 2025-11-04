@@ -37,6 +37,9 @@ public:
 
         ofDrawEllipse(x,y,w,w);
         ofSetColor(0);
-        ofDrawBitmapString(ofToString(st,2,'0'), x-10,y+5);
+        ofDrawEllipse(x,y,w-5,w-5);
+        
+        ofSetColor(23,202,232);
+        ofDrawBitmapString(ofToString(st,2,'0'), x-8,y+5);
     }
 };

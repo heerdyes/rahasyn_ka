@@ -167,7 +167,14 @@ void ofApp::keyPressed(int key)
     {
         // panic and zero out gains of each vox
         z.panic();
-        L.log("[panic] all vox tlo gains set to zero");
+        L.log("!! all vox tlo gains set to zero !!");
+        return;
+    }
+    
+    if(key==57362) // home
+    {
+        z.resetptrs();
+        L.log("!! tlo ptrs syncd to 0 !!");
         return;
     }
 
@@ -219,7 +226,7 @@ void ofApp::keyPressed(int key)
             else if(vcur==2) z.v2=key-97;
             else if(vcur==3) z.v3=key-97;
 
-            L.log("[vox] v"+ofToString(vcur)+" -> "+ofToString(ckey));
+            L.log("// v"+ofToString(vcur)+" -> "+ofToString(ckey));
             state=0;
         }
     }
@@ -249,7 +256,7 @@ void ofApp::keyPressed(int key)
             int oc=S.pop();
 
             int oci=oc-97;
-            L.log("[m] "+ofToString((char)oc)+".rate <- "+ofToString(ckey));
+            L.log("// "+ofToString((char)oc)+".rate <- "+ofToString(ckey));
 
             z.ox[oci].rtlo=key-97;
             state=0;
@@ -270,7 +277,7 @@ void ofApp::keyPressed(int key)
             int oc=S.pop();
 
             int oci=oc-97;
-            L.log("[m] "+ofToString((char)oc)+".rtlo = -1");
+            L.log("// "+ofToString((char)oc)+".rtlo = -1");
 
             z.ox[oci].rtlo=-1;
             state=0;
@@ -284,7 +291,7 @@ void ofApp::keyPressed(int key)
             int oc=S.pop();
 
             int oci=oc-97;
-            L.log("[m] "+ofToString((char)oc)+".amp <- "+ofToString(ckey));
+            L.log("// "+ofToString((char)oc)+".amp <- "+ofToString(ckey));
 
             z.ox[oci].atlo=key-97;
             state=0;
@@ -295,7 +302,7 @@ void ofApp::keyPressed(int key)
             int oc=S.pop();
 
             int oci=oc-97;
-            L.log("[m] "+ofToString((char)oc)+".atlo = -1");
+            L.log("// "+ofToString((char)oc)+".atlo = -1");
 
             z.ox[oci].atlo=-1;
             state=0;
@@ -348,12 +355,12 @@ void ofApp::keyPressed(int key)
             if(attr=='r')
             {
                 z.ox[oix].setr(ofToFloat(numtok));
-                L.log("[r] "+ofToString((char)oci)+".rate = "+numtok);
+                L.log("// "+ofToString((char)oci)+".rate = "+numtok);
             }
             else if(attr=='a')
             {
                 z.ox[oix].seta(ofToFloat(numtok));
-                L.log("[a] "+ofToString((char)oci)+".amp = "+numtok);
+                L.log("// "+ofToString((char)oci)+".amp = "+numtok);
             }
 
             numtok.clear();
@@ -368,7 +375,7 @@ void ofApp::keyPressed(int key)
             int oc=S.pop();
             int oci=oc-97;
 
-            L.log("[t] "+ofToString((char)oc)+".table -> "+ofToString(ckey));
+            L.log("// "+ofToString((char)oc)+".table -> "+ofToString(ckey));
             z.ox[oci].tid=key-65;
 
             state=0;

@@ -137,12 +137,15 @@ public:
     }
 
     // pulsators
-    void pulse(float _pwm=.5)
+    void pulse(float _pwd=.5, float _beg=.0)
     {
-        float pwm=(_pwm<0 || _pwm>1)?.5:_pwm;
+        int ipwd=(_pwd<=0 || _pwd>=1)?.5:(int)(_pwd*sz);
+        int ibeg=(_beg<=0 || _beg>=1)?.0:(int)(_beg*sz);
+        int iend=ibeg+ipwd;
+        
         for(int i=0;i<sz;i++)
         {
-            if(i<pwm*sz) buf[i]=1.0;
+            if(i>=ibeg && i<=iend) buf[i]=1.0;
             else buf[i]=0.0;
         }
     }

@@ -114,7 +114,7 @@ public:
         tx[9].pulse(.125);
         
         tx[10].setup(512);
-        tx[10].pulse(.0625);
+        tx[10].pulse(.125,.5);
         
         tx[11].setup(512);
         tx[11].squ();
@@ -132,31 +132,46 @@ public:
         tx[15].wqspline(100,1, 412,-1, 600);
         
         tx[16].setup(512);
-        tx[16].wqspline(80,1.4, 222,-1.3, 600);
+        tx[16].wqspline(80,2.4, 162,-2.2, 600);
         
         tx[17].setup(512);
-        tx[17].dcy(.97);
-        tx[17].dcy(.97,.25);
+        tx[17].dcy(.975);
         
         tx[18].setup(512);
-        tx[18].dcy(.97);
-        tx[18].dcy(.97,.3333);
+        tx[18].dcy(.975,(1.0/4.0));
+        
+        tx[19].setup(512);
+        tx[19].dcy(.975,(3.0/8.0));
+        
+        tx[20].setup(512);
+        tx[20].dcy(.975,(5.0/8.0));
+        
+        tx[21].setup(512);
+        tx[21].dcy(.975,.5);
+        
+        tx[22].setup(512);
+        tx[22].dcy(.975,(7.0/8.0));
+        
+        tx[22].setup(512);
+        tx[22].dcy(.975,(1.0/8.0));
     }
 
     void inittlo()
     {
-        for(int i=0;i<NTLO;i++)
+        ox[0].setup(0, 1.0, 0.0);
+        for(int i=1;i<NTLO;i++)
         {
-            ox[i].setup(i%16, 1.0, 1.0);
+            ox[i].setup(i, 1.0, 1.0);
         }
-
-        ox[16].setup(11, .75, 0.0);
     }
 
     void initvox()
     {
         // vox init
-        v0=16; v1=16; v2=16; v3=16;
+        v0=0;
+        v1=0;
+        v2=0;
+        v3=0;
     }
 
     void draw(){}
@@ -345,6 +360,11 @@ public:
         ox[v1].seta(.0);
         ox[v2].seta(.0);
         ox[v3].seta(.0);
+    }
+    
+    void resetptrs()
+    {
+        for(int i=0;i<NTLO;i++) ox[i].ptr=0.0;
     }
 
     // vars
