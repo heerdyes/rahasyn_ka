@@ -30,13 +30,13 @@ public:
         c.set(255,108,0);
     }
 
-    void rndr(ofTrueTypeFont f0, int fstate)
+    void rndr(int fstate)
     {
         if(fstate==st) ofSetColor(c);
         else ofSetColor(23,202,232);
 
         ofDrawEllipse(x,y,w,w);
         ofSetColor(0);
-        f0.drawString(ofToString(st,2,'0'), x-10,y+5);
+        ofDrawBitmapString(ofToString(st,2,'0'), x-10,y+5);
     }
 };
