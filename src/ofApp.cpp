@@ -104,6 +104,9 @@ void ofApp::rndrfsm()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+    // video plsss
+	if(isdvdss) vidGrabber.draw(camx,camy, camWidth*vscale,camHeight*vscale);
+	
     ofSetColor(22,202,232);
 
     float cy=HH/2;
@@ -134,9 +137,6 @@ void ofApp::draw()
     ofDrawBitmapString(numtok, WW/2-numtok.length()*SNHALF,HH/2+200+30);
     // vox
     z.rndrvox(WW/2,HH/2+200+108);
-    
-    // video plsss
-	vidGrabber.draw(camx,camy, camWidth*vscale,camHeight*vscale);
 }
 
 // ----------------------------------------- //
@@ -178,6 +178,12 @@ void ofApp::keyPressed(int key)
     if(key==3683)
     {
         z.updatesplo(mouseX, mouseY);
+    }
+    
+    if(key==96)
+    {
+        isdvdss=!isdvdss;
+        L.log("// screensaver cam: "+ofToString(isdvdss));
     }
     
     if(ckey==' ')

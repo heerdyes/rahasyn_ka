@@ -79,6 +79,7 @@ class ofApp : public ofBaseApp{
 		float camy=0;
 		float vx=1;
 		float vy=1;
-		float vscale=0.5;
+		float vscale=.5;
+		bool isdvdss=false;
 };
 
