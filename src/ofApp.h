@@ -71,5 +71,14 @@ class ofApp : public ofBaseApp{
         ut u;
         cstk S;
         lg L;
+        
+        ofVideoGrabber vidGrabber;
+		int camWidth;
+		int camHeight;
+		float camx=0;
+		float camy=0;
+		float vx=1;
+		float vy=1;
+		float vscale=0.5;
 };
 

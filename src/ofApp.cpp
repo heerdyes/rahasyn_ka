@@ -32,6 +32,13 @@ void ofApp::setup()
     L.setup(1380,HH-303);
     
     soundsetup();
+    
+    // try to grab at this size
+	camWidth = 320;
+	camHeight = 240;
+	
+	vidGrabber.setVerbose(true);
+	vidGrabber.setup(camWidth,camHeight);
 }
 
 //--------------------------------------------------------------
@@ -43,6 +50,13 @@ void ofApp::update()
         u.update();
         z.u.update();
     }
+    
+    camx+=vx;
+    camy+=vy;
+    if(camx<0 || camx>WW-camWidth*vscale) vx=-vx;
+    if(camy<0 || camy>HH-camHeight*vscale) vy=-vy;
+    
+    vidGrabber.update();
 }
 
 void ofApp::rndrfsm()
@@ -120,6 +134,9 @@ void ofApp::draw()
     ofDrawBitmapString(numtok, WW/2-numtok.length()*SNHALF,HH/2+200+30);
     // vox
     z.rndrvox(WW/2,HH/2+200+108);
+    
+    // video plsss
+	vidGrabber.draw(camx,camy, camWidth*vscale,camHeight*vscale);
 }
 
 // ----------------------------------------- //
