@@ -34,11 +34,14 @@ void ofApp::setup()
     soundsetup();
     
     // try to grab at this size
-	camWidth = 320;
-	camHeight = 240;
+	camw = 320;
+	camh = 240;
 	
-	vidGrabber.setVerbose(true);
-	vidGrabber.setup(camWidth,camHeight);
+	vg.setVerbose(true);
+	vg.setup(camw,camh);
+	vfx.allocate(camw, camh, OF_PIXELS_RGB);
+	vtx.allocate(vfx);
+	ofSetVerticalSync(true);
 }
 
 //--------------------------------------------------------------
@@ -50,13 +53,38 @@ void ofApp::update()
         u.update();
         z.u.update();
     }
+    if(ctr%12==0) camclk++;
     
-    camx+=vx;
-    camy+=vy;
-    if(camx<0 || camx>WW-camWidth*vscale) vx=-vx;
-    if(camy<0 || camy>HH-camHeight*vscale) vy=-vy;
-    
-    vidGrabber.update();
+    if(isdvdss)
+    {
+        vg.update();
+        
+        camx+=vx;
+        camy+=vy;
+        if(camx<0 || camx>WW-camw*vscale) vx=-vx;
+        if(camy<0 || camy>HH-camh*vscale) vy=-vy;
+        
+        if(vg.isFrameNew())
+        {
+		    ofPixels & pixels = vg.getPixels();
+		    for(size_t i = 0; i < pixels.size(); i++)
+		    {
+			    // pixel funk
+			    int b=pixels[i]&0xff;
+			    int g=(pixels[i]>>8)&0xff;
+			    int r=(pixels[i]>>16)&0xff;
+			    
+			    int fr=r;
+			    int fg=g;
+			    int fb=b+camclk;
+			    
+			    vfx[i]=((fr&0xff)<<16)+((fg&0xff)<<8)+(fb&0xff);
+		    }
+		    
+		    //load the fxd pixels
+		    vtx.loadData(vfx);
+	    }
+	}
 }
 
 void ofApp::rndrfsm()
@@ -105,7 +133,8 @@ void ofApp::rndrfsm()
 void ofApp::draw()
 {
     // video plsss
-	if(isdvdss) vidGrabber.draw(camx,camy, camWidth*vscale,camHeight*vscale);
+    ofSetColor(255);
+	if(isdvdss) vtx.draw(camx,camy, camw*vscale,camh*vscale);
 	
     ofSetColor(22,202,232);
 

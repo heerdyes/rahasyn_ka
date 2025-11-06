@@ -178,6 +178,10 @@ public:
         v1=0;
         v2=0;
         v3=0;
+        // rgb oscils
+        bo=8;
+        ro=5;
+        go=6;
     }
 
     void draw(){}
@@ -211,6 +215,10 @@ public:
     {
         return ox[oi].amp;
     }
+    
+    float getbo() { return abs(ox[bo].amp); }
+    float getgo() { return abs(ox[go].amp); }
+    float getro() { return abs(ox[ro].amp); }
 
     // tbl rendering
     void rndrtbl(float x,float y, float w,float h, int ti)
@@ -386,6 +394,8 @@ public:
     // 4 voices
     int v0, v1, v2, v3;
     float mgain;
+    // oscils for rgb channels
+    int bo, ro, go;
 
     // tbl and tlo locations/sizes
     xywh tblxywh[NTBL];

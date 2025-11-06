@@ -72,14 +72,18 @@ class ofApp : public ofBaseApp{
         cstk S;
         lg L;
         
-        ofVideoGrabber vidGrabber;
-		int camWidth;
-		int camHeight;
+        // cameraman
+        ofVideoGrabber vg;
+        ofTexture vtx;
+        ofPixels vfx;
+		int camw;
+		int camh;
 		float camx=0;
 		float camy=0;
 		float vx=1;
 		float vy=1;
-		float vscale=.5;
-		bool isdvdss=false;
+		float vscale=1.0;
+		bool isdvdss=true;
+		int camclk=0;
 };
 
