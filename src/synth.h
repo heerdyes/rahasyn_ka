@@ -143,23 +143,18 @@ public:
         
         tx[19].setup(512);
         tx[19].dcy(.975);
-        tx[19].dcy(.975,(3.0/8.0));
+        tx[19].dcy(.975,(1.0/8.0));
         
         tx[20].setup(512);
-        tx[20].dcy(.975);
-        tx[20].dcy(.975,(5.0/8.0));
+        tx[20].dcy(.975,(2.0/8.0));
+        tx[20].dcy(.975,(6.0/8.0));
         
         tx[21].setup(512);
         tx[21].dcy(.975,(2.0/8.0));
         tx[21].dcy(.975,(5.0/8.0));
         
         tx[22].setup(512);
-        tx[22].dcy(.975,(1.0/8.0));
-        tx[22].dcy(.975,(7.0/8.0));
-        
-        tx[22].setup(512);
-        tx[22].dcy(.975,(4.0/8.0));
-        tx[22].dcy(.975,(6.0/8.0));
+        tx[22].dcy(.975,(11.0/16.0));
     }
 
     void inittlo()
@@ -223,7 +218,7 @@ public:
     // tbl rendering
     void rndrtbl(float x,float y, float w,float h, int ti)
     {
-        ofSetColor(23,202,232);
+        TRBLU;
         int tsz=gettblsz(ti);
         float xf=w / (float) tsz;
         float xx=x-w/2;
@@ -236,7 +231,10 @@ public:
             xx+=xf;
         }
 
-        ofDrawBitmapString(ofToString((char)(65+ti)), x-5,y+h/2);
+        TRBLK;
+        ofDrawEllipse(x,y+h/2-5,20,20);
+        TRBLU;
+        ofDrawBitmapString(ofToString((char)(65+ti)), x-3,y+h/2);
 
         // x axis
         ofSetColor(255,88,0);
@@ -270,7 +268,7 @@ public:
     void rndrtlo(float x, float y, float w, float h, int oi)
     {
         tlo & oref=getosc(oi);
-        ofSetColor(23,202,232);
+        TRBLU;
         int tsz=getosctblsz(oi);
         float xf=w / (float) tsz;
         float xx=x-w/2;
@@ -284,7 +282,14 @@ public:
         }
 
         // label
-        ofDrawBitmapString(ofToString((char)(97+oi)), x-5,y+h/2);
+        string slbl=ofToString((char)(97+oi))+" "+ofToString(oref.rate);
+        int sln=slbl.length();
+        float xbeg=x-sln*SNHALF;
+        TRBLK;
+        ofDrawEllipse(xbeg,y+h/2-3+8,20,20);
+        if(oi==v0 || oi==v1 || oi==v2 || oi==v3) TRRED;
+        else TRBLU;
+        ofDrawBitmapString(slbl, xbeg-4,y+h/2+8);
 
         // x axis
         ofSetColor(255,88,0);
