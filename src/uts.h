@@ -5,17 +5,6 @@
 #define STK_MAX (64)
 #define LOG_MAX (18)
 
-#define CS2Y    (ofSetColor(255,180,88))
-#define CS2TB   (ofSetColor(0,180,207))
-#define CS2LBL  (ofSetColor(244,180,22))
-
-#define CS3Y    (ofSetColor(255,180,88))
-#define CS3TB   (ofSetColor(0,180,207))
-#define CS3LBL  (ofSetColor(244,180,22))
-
-#define STKLBL  (ofSetColor(0,255,255))
-#define LGCOLOR (ofSetColor(55,242,66))
-
 #define SNHALF  (0.5 * 8)
 
 class ut

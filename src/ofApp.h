@@ -5,6 +5,7 @@
 #define HH          (ofGetHeight())
 #define WW          (ofGetWidth())
 
+#include "colors.h"
 #include "fsm.h"
 #include "uts.h"
 #include "ftbl.h"

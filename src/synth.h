@@ -355,6 +355,7 @@ public:
         ofDrawLine(x,y-r, x,y+r);
         ofDrawLine(x-r,y, x+r,y);
 
+        BRCYAN;
         ofDrawBitmapString(ofToString((char)(v0+97)), x+r,y+ym);
         ofDrawBitmapString(ofToString((char)(v1+97)), x-xm,y-r-ym);
         ofDrawBitmapString(ofToString((char)(v2+97)), x-r-2*xm,y+ym);

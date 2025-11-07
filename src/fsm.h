@@ -2,10 +2,6 @@
 
 #include "ofMain.h"
 
-#define TRRED   (ofSetColor(255,111,33))
-#define TRBLU   (ofSetColor(23,202,232))
-#define TRBLK   (ofSetColor(0,0,0))
-
 class xywh
 {
 public:
