@@ -45,6 +45,11 @@ public:
         {
             // perhaps table evolution
             // or recurrence/fx module
+            for(int i=0;i<NTBL;i++)
+            {
+                if(tcmd[i]==2) tx[i].birnd();
+                else if(tcmd[i]==1) tx[i].urnd();
+            }
         }
     }
 
@@ -99,9 +104,11 @@ public:
         // noise
         tx[5].setup(512);
         tx[5].birnd();
+        tcmd[5]=2;
         
         tx[6].setup(512);
         tx[6].urnd();
+        tcmd[6]=1;
 
         // wild pulses
         tx[7].setup(512);
@@ -396,6 +403,9 @@ public:
 
     // oscillators
     tlo ox[NTLO];
+    
+    // threaded table commands
+    int tcmd[NTBL];
 
     // 4 voices
     int v0, v1, v2, v3;
