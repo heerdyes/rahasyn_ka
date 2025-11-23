@@ -85,6 +85,20 @@ public:
     {
         fctr++;
     }
+    
+    // tcmd format, styled like midi
+    // cmd byte followed by 2 data bytes
+    int tcmd_pack(int cmd, int d1, int d2)
+    {
+        return ((cmd&0xff)<<16) + ((d1&0xff)<<8) + (d2&0xff);
+    }
+    
+    void tcmd_unpack(int pkt, int *cmd, int *d1, int *d2)
+    {
+        *d2=pkt&0xff;
+        *d1=(pkt>>8)&0xff;
+        *cmd=(pkt>>16)&0xff;
+    }
 
     int fctr=0;
 };

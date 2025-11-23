@@ -43,12 +43,30 @@ public:
     {
         while(isThreadRunning())
         {
-            // perhaps table evolution
-            // or recurrence/fx module
+            // tcmd computer
             for(int i=0;i<NTBL;i++)
             {
-                if(tcmd[i]==2) tx[i].birnd();
-                else if(tcmd[i]==1) tx[i].urnd();
+                int cmd,d1,d2;
+                u.tcmd_unpack(tcmd[i], &cmd, &d1, &d2);
+
+                if(cmd==2) // bipolar random
+                {
+                    if(d1==0 || d2==0) tx[i].birnd();
+                    else
+                    {
+                        // triggered randomness causes timbral changes
+                        if(ctr%(d1*d2)==0) tx[i].birnd();
+                    }
+                }
+                else if(cmd==1) // unipolar random
+                {
+                    if(d1==0 || d2==0) tx[i].urnd();
+                    else
+                    {
+                        // control refresh rate of randomness
+                        if(ctr%(d1*d2)==0) tx[i].urnd();
+                    }
+                }
             }
         }
     }
@@ -69,7 +87,7 @@ public:
         else ox[rem].evolve(tx,ox);
 
         ctr++;
-        if(ctr>444444) ctr=0;
+        if(ctr>8888888) ctr=0;
     }
 
     float vsamp()
@@ -104,11 +122,11 @@ public:
         // noise
         tx[5].setup(512);
         tx[5].birnd();
-        tcmd[5]=2;
+        tcmd[5]=u.tcmd_pack(2, 10, 22);
         
         tx[6].setup(512);
         tx[6].urnd();
-        tcmd[6]=1;
+        tcmd[6]=u.tcmd_pack(1, 30, 50);
 
         // wild pulses
         tx[7].setup(512);
@@ -404,7 +422,7 @@ public:
     // oscillators
     tlo ox[NTLO];
     
-    // threaded table commands
+    // threaded table commands in tcmd format (refer uts.h)
     int tcmd[NTBL];
 
     // 4 voices
