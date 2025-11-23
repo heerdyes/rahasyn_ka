@@ -33,14 +33,18 @@ void ofApp::setup()
     
     soundsetup();
     
-    // try to grab at this size
-	camw = 320;
-	camh = 240;
-	
-	vg.setVerbose(true);
-	vg.setup(camw,camh);
-	vfx.allocate(camw, camh, OF_PIXELS_RGB);
-	vtx.allocate(vfx);
+    if(camon)
+    {
+        // try to grab at this size
+	    camw = 320;
+	    camh = 240;
+	    
+	    vg.setVerbose(true);
+	    vg.setup(camw,camh);
+	    
+	    vfx.allocate(camw, camh, OF_PIXELS_RGB);
+	    vtx.allocate(vfx);
+	}
 	ofSetVerticalSync(true);
 }
 
@@ -53,9 +57,9 @@ void ofApp::update()
         u.update();
         z.u.update();
     }
-    if(ctr%12==0) camclk++;
+    if(camon && ctr%12==0) camclk++;
     
-    if(isdvdss)
+    if(camon && isdvdss)
     {
         vg.update();
         
@@ -134,7 +138,7 @@ void ofApp::draw()
 {
     // video plsss
     ofSetColor(255);
-	if(isdvdss) vtx.draw(camx,camy, camw*vscale,camh*vscale);
+	if(camon && isdvdss) vtx.draw(camx,camy, camw*vscale,camh*vscale);
 	
     ofSetColor(22,202,232);
 

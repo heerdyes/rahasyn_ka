@@ -86,5 +86,6 @@ class ofApp : public ofBaseApp{
 		float vscale=1.0;
 		bool isdvdss=true;
 		int camclk=0;
+		bool camon=true;
 };
 
