@@ -86,18 +86,19 @@ public:
         fctr++;
     }
     
-    // tcmd format, styled like midi
-    // cmd byte followed by 2 data bytes
-    int tcmd_pack(int cmd, int d1, int d2)
+    // tcmd format uses 4 bytes available in unsigned int
+    // cmd byte followed by 3 data bytes
+    int tcmd_pack(int cmd, int d1, int d2, int d3)
     {
-        return ((cmd&0xff)<<16) + ((d1&0xff)<<8) + (d2&0xff);
+        return ((cmd&0xff)<<24) + ((d1&0xff)<<16) + ((d2&0xff)<<8) + (d3&0xff);
     }
     
-    void tcmd_unpack(int pkt, int *cmd, int *d1, int *d2)
+    void tcmd_unpack(int pkt, int *cmd, int *d1, int *d2, int *d3)
     {
-        *d2=pkt&0xff;
-        *d1=(pkt>>8)&0xff;
-        *cmd=(pkt>>16)&0xff;
+        *d3=pkt&0xff;
+        *d2=(pkt>>8)&0xff;
+        *d1=(pkt>>16)&0xff;
+        *cmd=(pkt>>24)&0xff;
     }
 
     int fctr=0;

@@ -192,9 +192,8 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
         outbuf[lch]=lv;
         outbuf[rch]=lv;
 
-        // below looks odd
-        z.aevolve();
-        z.kevolve();
+        // a-rate and k-rate are unified?
+        z.evolve();
     }
 }
 

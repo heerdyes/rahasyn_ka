@@ -46,8 +46,8 @@ public:
             // tcmd computer
             for(int i=0;i<NTBL;i++)
             {
-                int cmd,d1,d2;
-                u.tcmd_unpack(tcmd[i], &cmd, &d1, &d2);
+                int cmd,d1,d2,d3;
+                u.tcmd_unpack(tcmd[i], &cmd, &d1, &d2, &d3);
 
                 if(cmd==2) // bipolar random
                 {
@@ -70,18 +70,16 @@ public:
             }
         }
     }
-
-    void aevolve()
+    
+    void evolve()
     {
-        ox[v0].evolve(tx,ox);           // audio rate
+        // no more a-rate k-rate separation
+        ox[v0].evolve(tx,ox);
         ox[v1].evolve(tx,ox);           // table lookup
         ox[v2].evolve(tx,ox);           // oscillator
         ox[v3].evolve(tx,ox);           // evolution
-    }
-
-    void kevolve()
-    {
-        // evolve the remaining kontrol rate oscs without looping
+        
+        // evolve the remaining oscs without looping
         int rem=ctr%NTLO;
         if(rem==v0 || rem==v1 || rem==v2 || rem==v3) {}
         else ox[rem].evolve(tx,ox);
@@ -122,11 +120,11 @@ public:
         // noise
         tx[5].setup(512);
         tx[5].birnd();
-        tcmd[5]=u.tcmd_pack(2, 10, 22);
+        tcmd[5]=u.tcmd_pack(2, 10, 20, 0);
         
         tx[6].setup(512);
         tx[6].urnd();
-        tcmd[6]=u.tcmd_pack(1, 30, 50);
+        tcmd[6]=u.tcmd_pack(1, 30, 50, 0);
 
         // wild pulses
         tx[7].setup(512);
@@ -423,7 +421,7 @@ public:
     tlo ox[NTLO];
     
     // threaded table commands in tcmd format (refer uts.h)
-    int tcmd[NTBL];
+    unsigned int tcmd[NTBL];
 
     // 4 voices
     int v0, v1, v2, v3;
