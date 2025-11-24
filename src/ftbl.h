@@ -19,6 +19,8 @@ public:
         }
     }
     
+    void resize(int n) { sz=n; }
+    
     void nrmlyz()
     {
         float max=0;
@@ -264,7 +266,7 @@ public:
     void incptr(tbl2 tx[])
     {
         ptr+=rate;
-        if(ptr>tx[tid].sz-1) ptr-=tx[tid].sz-1;
+        while(ptr>tx[tid].sz-1) ptr-=tx[tid].sz-1;
     }
 
     void evolve(tbl2 tx[], tlo ox[])

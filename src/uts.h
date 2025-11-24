@@ -139,6 +139,17 @@ public:
         sp--;
         return buf[sp];
     }
+    
+    int top()
+    {
+        if(sp<=0)
+        {
+            cout<<"[error] empty stack\n";
+            return -1;
+        }
+
+        return buf[sp-1];
+    }
 
     void rndr(float x, float y, float hgap)
     {

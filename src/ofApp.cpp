@@ -2,18 +2,26 @@
 
 void ofApp::initfsm()
 {
-    s0.setup(290,HH-88-44, 0);
-    s1.setup(180,HH-88-44, 1);
-    s2.setup(480,HH-156, 2);
-    s3.setup(420,HH-264, 3);
-    s4.setup(420,HH-44, 4);
+    s0.setup(380,HH-88-44, 0);
+    s1.setup(250,HH-88-11, 1);
+    s2.setup(500,HH-156, 2);
+    s3.setup(450,HH-264, 3);
+    s4.setup(440,HH-44, 4);
     s5.setup(640,HH-280, 5);
     s6.setup(660,HH-88-88, 6);
     s7.setup(640,HH-44, 7);
-    s8.setup(200,HH-281, 8);
-    s9.setup(120,HH-44, 9);
-    s10.setup(64,HH-99, 10);
-    s11.setup(81,HH-191, 11);
+    s8.setup(450,HH-192, 8);
+    s9.setup(180,HH-44, 9);
+    s10.setup(104,HH-44, 10);
+    s11.setup(61,HH-101, 11);
+    //
+    s12.setup(240,HH-216, 12);
+    s13.setup(172,HH-180, 13);
+    s14.setup(100,HH-190, 14);
+    s15.setup(48,HH-246, 15);
+    s16.setup(32,HH-300, 16);
+    s17.setup(99,HH-300, 17);
+    s18.setup(180,HH-270, 18);
 }
 
 //--------------------------------------------------------------
@@ -110,13 +118,24 @@ void ofApp::rndrfsm()
     u.edge2(s4,s5, s6.x,s6.y, "0-9");
     u.edge2(s4,s6, s7.x,s7.y, "<.>");
     u.edge2(s7,s0, s2.x,s2.y+30, "\\n");
-    u.edge2(s2,s8, s3.x,s3.y+30, "t");
-    u.edge2(s8,s0, s1.x,s1.y-30, "A-Z");
+    u.edge2(s2,s8, s2.x-8,s8.y, "t");
+    u.edge2(s8,s0, s0.x,s8.y+30, "A-Z");
     u.edge2(s0,s9, s0.x-30,s9.y+30, "F12");
-    u.edge2(s9,s10, s9.x,s10.y, "<.>");
-    u.edge2(s10,s11, s10.x-44,s11.y+33, "0-9");
+    u.edge2(s9,s10, (s9.x+s10.x)/2,s10.y, "<.>");
+    u.edge2(s10,s11, s11.x,(s10.y+s11.y)/2+22, "0-9");
     u.edge3(s11,s11, s11.x-20,s11.y-20,s11.x+20,s11.y-20, "0-9");
     u.edge2(s11,s0, s11.x+20,s0.y, "\\n");
+    u.edge2(s0,s12, s12.x,(s0.y+s12.y)/2, "A-Z");
+    u.edge2(s12,s0, s0.x-20,(s0.y+s12.y)/2-20, "[wzj]");
+    u.edge2(s12,s13, (s12.x+s13.x)/2,s12.y+22, "d");
+    u.edge2(s13,s14, (s13.x+s14.x)/2+8,s14.y+22, "<.>");
+    u.edge2(s14,s15, (s14.x+s15.x)/2,s14.y, "0-9");
+    u.edge3(s15,s15, s15.x-55,s15.y+55, s15.x+11,s15.y+55, "0-9");
+    u.edge2(s15,s16, s15.x-20,s15.y, "<,>");
+    u.edge2(s16,s17, (s16.x+s17.x)/2,s17.y, "<.>");
+    u.edge2(s17,s18, (s17.x+s18.x)/2,s18.y, "0-9");
+    u.edge3(s18,s18, s18.x-22,s18.y-44, s18.x+36,s18.y-44, "0-9");
+    u.edge2(s18,s0, (s18.x+s0.x)/2+44,(s0.y+s18.y)/2-44, "\\n");
 
     // then nodes, to prevent edge lines reaching the center
     s0.rndr(state);
@@ -131,6 +150,13 @@ void ofApp::rndrfsm()
     s9.rndr(state);
     s10.rndr(state);
     s11.rndr(state);
+    s12.rndr(state);
+    s13.rndr(state);
+    s14.rndr(state);
+    s15.rndr(state);
+    s16.rndr(state);
+    s17.rndr(state);
+    s18.rndr(state);
 }
 
 //--------------------------------------------------------------
@@ -267,6 +293,12 @@ void ofApp::keyPressed(int key)
         {
             S.push(key);
             state=9;
+        }
+        // [A-Z] table
+        else if(key>=65 && key<=90)
+        {
+            S.push(key);
+            state=12;
         }
     }
     else if(state==1)
@@ -466,6 +498,117 @@ void ofApp::keyPressed(int key)
             
             S.pop();
             numtok.clear();
+            state=0;
+        }
+    }
+    else if(state==12)
+    {
+        int tkey,tix;
+        char ctx;
+        if(key==119) // w
+        {
+            tkey=S.pop();
+            tix=tkey-65;
+            ctx=(char)tkey;
+            z.tx[tix].btri();
+            L.log("// tbl "+ofToString(ctx)+" is triangled");
+            state=0;
+        }
+        else if(key==122) // z
+        {
+            tkey=S.pop();
+            tix=tkey-65;
+            ctx=(char)tkey;
+            z.tx[tix].dramp();
+            L.log("// tbl "+ofToString(ctx)+" is ramped");
+            state=0;
+        }
+        else if(key==106) // j
+        {
+            tkey=S.pop();
+            tix=tkey-65;
+            ctx=(char)tkey;
+            z.tx[tix].jya();
+            L.log("// tbl "+ofToString(ctx)+" is sined");
+            state=0;
+        }
+        else if(key==100) // d
+        {
+            S.push(key);
+            state=13;
+        }
+    }
+    else if(state==13)
+    {
+        if(key==46)
+        {
+            numtok+=".";
+            state=14;
+        }
+    }
+    else if(state==14)
+    {
+        if(key>=48 && key<=57)
+        {
+            char ck=(char)key;
+            numtok+=ofToString(ck);
+            state=15;
+        }
+    }
+    else if(state==15)
+    {
+        if(key>=48 && key<=57)
+        {
+            char ck=(char)key;
+            numtok+=ofToString(ck);
+            state=15;
+        }
+        else if(key==44)
+        {
+            arg1=ofToFloat(numtok);
+            L.log("// decay = "+ofToString(arg1));
+            numtok.clear();
+            state=16;
+        }
+    }
+    else if(state==16)
+    {
+        if(key==46)
+        {
+            numtok+=".";
+            state=17;
+        }
+    }
+    else if(state==17)
+    {
+        if(key>=48 && key<=57)
+        {
+            char ck=(char)key;
+            numtok+=ofToString(ck);
+            state=18;
+        }
+    }
+    else if(state==18)
+    {
+        if(key>=48 && key<=57)
+        {
+            char ck=(char)key;
+            numtok+=ofToString(ck);
+            state=18;
+        }
+        else if(key==13)
+        {
+            arg2=ofToFloat(numtok);
+            L.log("// phase = "+ofToString(arg2));
+            numtok.clear();
+            S.pop(); // chuck d
+            
+            int tkey=S.pop();
+            char ct=(char)tkey;
+            int ti=tkey-65;
+            z.tx[ti].dcy(arg1, arg2);
+            
+            L.log("[tx] "+ofToString(ct)+" modified");
             state=0;
         }
     }

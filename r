@@ -2,6 +2,7 @@
 set -euo pipefail
 
 clear
-make clean
+#make clean
 make
 make RunRelease
+

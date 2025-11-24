@@ -64,6 +64,7 @@ class ofApp : public ofBaseApp{
 
         // fsm
         nd s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11;
+        nd s12,s13,s14,s15,s16,s17,s18;
 
         syn z;
         int rbctr=0;
@@ -86,6 +87,8 @@ class ofApp : public ofBaseApp{
 		float vscale=1.0;
 		bool isdvdss=true;
 		int camclk=0;
-		bool camon=true;
+		bool camon=false;
+		
+		float arg1,arg2;
 };
 
