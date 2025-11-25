@@ -3,23 +3,34 @@
 #include "ofMain.h"
 
 #define TBL_MAX_N   (16384)
+#define TBL_STD_N   (256)
 
 class tbl2
 {
 public:
     float buf[TBL_MAX_N];
-    int sz=256;
-
-    void setup(int n)
+    int sz=TBL_STD_N;
+    
+    void wipe()
     {
-        sz=n;
         for (int i = 0; i < sz; i += 1)
         {
             buf[i]=0.0;
         }
     }
+
+    void setup(int n)
+    {
+        resize(n);
+        wipe();
+    }
     
-    void resize(int n) { sz=n; }
+    void resize(int n)
+    {
+        if(n<=1) sz=2;
+        else if(n>=TBL_MAX_N) sz=TBL_MAX_N;
+        else sz=n;
+    }
     
     void nrmlyz()
     {
@@ -201,6 +212,14 @@ public:
             buf[i]=(1.0+buf[i])/2;
         }
     }
+    
+    void uni2bi()
+    {
+        for(int i=0;i<sz;i++)
+        {
+            buf[i]=2*abs(buf[i])-1;
+        }
+    }
 };
 
 class tlo
@@ -221,18 +240,15 @@ public:
         rtlo=-1;
         atlo=-1;
         ptr=0;
+        tid=0; // -1 causes system wide ramifications
     }
 
     bool ratemodded() { return rtlo!=-1; }
     bool ampmodded() { return atlo!=-1; }
 
-    tbl2 gettbl(tbl2 tx[])
-    {
-        return tx[tid];
-    }
-
     int tblsz(tbl2 tx[])
     {
+        if(tid==-1) return 0;
         return tx[tid].sz;
     }
 
@@ -281,3 +297,4 @@ public:
         return amp * tx[tid].buf[(int)round(ptr)];
     }
 };
+

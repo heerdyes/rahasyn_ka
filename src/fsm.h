@@ -43,3 +43,4 @@ public:
         ofDrawBitmapString(ofToString(st,2,'0'), x-8,y+5);
     }
 };
+

@@ -2,8 +2,8 @@
 
 void ofApp::initfsm()
 {
-    s0.setup(380,HH-88-44, 0);
-    s1.setup(250,HH-88-11, 1);
+    s0.setup(380,HH-88-66, 0);
+    s1.setup(281,HH-65, 1);
     s2.setup(500,HH-156, 2);
     s3.setup(450,HH-264, 3);
     s4.setup(440,HH-44, 4);
@@ -11,17 +11,20 @@ void ofApp::initfsm()
     s6.setup(660,HH-88-88, 6);
     s7.setup(640,HH-44, 7);
     s8.setup(450,HH-192, 8);
-    s9.setup(180,HH-44, 9);
-    s10.setup(104,HH-44, 10);
-    s11.setup(61,HH-101, 11);
+    s9.setup(320,HH-44, 9);
+    s10.setup(192,HH-44, 10);
+    s11.setup(232,HH-94, 11);
     //
     s12.setup(240,HH-216, 12);
-    s13.setup(172,HH-180, 13);
-    s14.setup(100,HH-190, 14);
-    s15.setup(48,HH-246, 15);
-    s16.setup(32,HH-300, 16);
-    s17.setup(99,HH-300, 17);
-    s18.setup(180,HH-270, 18);
+    s13.setup(172,HH-205, 13);
+    s14.setup(100,HH-225, 14);
+    s15.setup(48,HH-276, 15);
+    s16.setup(32,HH-340, 16);
+    s17.setup(99,HH-380, 17);
+    s18.setup(180,HH-350, 18);
+    s19.setup(172,HH-256, 19);
+    s20.setup(120,HH-316, 20);
+    s21.setup(48,HH-200, 21);
 }
 
 //--------------------------------------------------------------
@@ -102,13 +105,13 @@ void ofApp::update()
 void ofApp::rndrfsm()
 {
     // edges first
-    u.edge2(s0,s1, s0.x-30,s1.y-40, "F[1-4]");
-    u.edge2(s1,s0, s0.x-30,s1.y+30, "a-z");
+    u.edge2(s0,s1, (s0.x+s1.x)/2,s0.y+22, "F[1-4]");
+    u.edge2(s1,s0, (s0.x+s1.x)/2,s1.y-11, "a-z");
     u.edge2(s0,s2, s2.x-30,s0.y-20, "a-z");
     u.edge2(s2,s3, s2.x,s3.y, "r");
     u.edge2(s2,s4, s2.x,s4.y, "a");
-    u.edge2(s3,s0, s0.x,s3.y, "a-z");
-    u.edge2(s4,s0, s0.x,s4.y, "a-z");
+    u.edge2(s3,s0, s0.x,s3.y, "-|a-z");
+    u.edge2(s4,s0, s0.x,s4.y, "-|a-z");
     u.edge2(s3,s5, s5.x,s3.y, "0-9");
     u.edge2(s3,s6, s5.x,s5.y, "<.>");
     u.edge3(s5,s5, s5.x+60,s5.y-30, s5.x+60,s5.y+30, "0-9");
@@ -121,14 +124,16 @@ void ofApp::rndrfsm()
     u.edge2(s2,s8, s2.x-8,s8.y, "t");
     u.edge2(s8,s0, s0.x,s8.y+30, "A-Z");
     u.edge2(s0,s9, s0.x-30,s9.y+30, "F12");
-    u.edge2(s9,s10, (s9.x+s10.x)/2,s10.y, "<.>");
-    u.edge2(s10,s11, s11.x,(s10.y+s11.y)/2+22, "0-9");
+    u.edge2(s9,s10, (s9.x+s10.x)/2,s10.y+22, "<.>");
+    u.edge2(s10,s11, (s10.x+s11.x)/2-22,s11.y+33, "0-9");
     u.edge3(s11,s11, s11.x-20,s11.y-20,s11.x+20,s11.y-20, "0-9");
-    u.edge2(s11,s0, s11.x+20,s0.y, "\\n");
+    u.edge2(s11,s0, (s11.x+s0.x)/2,s0.y, "\\n");
     u.edge2(s0,s12, s12.x,(s0.y+s12.y)/2, "A-Z");
-    u.edge2(s12,s0, s0.x-20,(s0.y+s12.y)/2-20, "[wzj]");
+    u.edge2(s12,s0, s0.x-20,(s0.y+s12.y)/2-20, "[wzjub]");
     u.edge2(s12,s13, (s12.x+s13.x)/2,s12.y+22, "d");
     u.edge2(s13,s14, (s13.x+s14.x)/2+8,s14.y+22, "<.>");
+    u.edge2(s13,s21, (s13.x+s21.x)/2,s21.y+28, "<->");
+    u.edge2(s21,s14, (s14.x+s21.x)/2,s21.y, "<.>");
     u.edge2(s14,s15, (s14.x+s15.x)/2,s14.y, "0-9");
     u.edge3(s15,s15, s15.x-55,s15.y+55, s15.x+11,s15.y+55, "0-9");
     u.edge2(s15,s16, s15.x-20,s15.y, "<,>");
@@ -136,6 +141,10 @@ void ofApp::rndrfsm()
     u.edge2(s17,s18, (s17.x+s18.x)/2,s18.y, "0-9");
     u.edge3(s18,s18, s18.x-22,s18.y-44, s18.x+36,s18.y-44, "0-9");
     u.edge2(s18,s0, (s18.x+s0.x)/2+44,(s0.y+s18.y)/2-44, "\\n");
+    u.edge2(s12,s19, (s12.x+s19.x)/2,s12.y-20, "n");
+    u.edge2(s19,s20, (s19.x+s20.x)/2,s19.y, "1-9");
+    u.edge3(s20,s20, s20.x-55,s20.y+27, s20.x-55,s20.y-27, "0-9");
+    u.edge2(s20,s0, (s20.x+s0.x)/2+44,(s20.y+s0.y)/2-44, "\\n");
 
     // then nodes, to prevent edge lines reaching the center
     s0.rndr(state);
@@ -157,6 +166,9 @@ void ofApp::rndrfsm()
     s16.rndr(state);
     s17.rndr(state);
     s18.rndr(state);
+    s19.rndr(state);
+    s20.rndr(state);
+    s21.rndr(state);
 }
 
 //--------------------------------------------------------------
@@ -464,7 +476,6 @@ void ofApp::keyPressed(int key)
 
             L.log("// "+ofToString((char)oc)+".table -> "+ofToString(ckey));
             z.ox[oci].tid=key-65;
-
             state=0;
         }
     }
@@ -532,10 +543,33 @@ void ofApp::keyPressed(int key)
             L.log("// tbl "+ofToString(ctx)+" is sined");
             state=0;
         }
+        else if(key==117) // u
+        {
+            tkey=S.pop();
+            tix=tkey-65;
+            ctx=(char)tkey;
+            z.tx[tix].bi2uni();
+            L.log("[tx] "+ofToString(ctx)+" is unipolarized");
+            state=0;
+        }
+        else if(key==98) // b
+        {
+            tkey=S.pop();
+            tix=tkey-65;
+            ctx=(char)tkey;
+            z.tx[tix].uni2bi();
+            L.log("[tx] "+ofToString(ctx)+" is bipolarized");
+            state=0;
+        }
         else if(key==100) // d
         {
             S.push(key);
             state=13;
+        }
+        else if(key==110) // n
+        {
+            S.push(key);
+            state=19;
         }
     }
     else if(state==13)
@@ -544,6 +578,11 @@ void ofApp::keyPressed(int key)
         {
             numtok+=".";
             state=14;
+        }
+        else if(key==45) // -
+        {
+            numtok+="-";
+            state=21;
         }
     }
     else if(state==14)
@@ -608,8 +647,44 @@ void ofApp::keyPressed(int key)
             int ti=tkey-65;
             z.tx[ti].dcy(arg1, arg2);
             
-            L.log("[tx] "+ofToString(ct)+" modified");
+            L.log("[tx] "+ofToString(ct)+" decayed");
             state=0;
+        }
+    }
+    else if(state==19)
+    {
+        if(key>=49 && key<=57)
+        {
+            numtok+=ofToString((char)key);
+            state=20;
+        }
+    }
+    else if(state==20)
+    {
+        if(key>=48 && key<=57)
+        {
+            numtok+=ofToString((char)key);
+            state=20;
+        }
+        else if(key==13)
+        {
+            S.pop();
+            int tkey=S.pop();
+            char ct=(char)tkey;
+            int ti=tkey-65;
+            
+            z.tx[ti].resize(ofToInt(numtok));
+            L.log("[tx] "+ofToString(ct)+" resized to "+numtok);
+            numtok.clear();
+            state=0;
+        }
+    }
+    else if(state==21)
+    {
+        if(key==46)
+        {
+            numtok+=".";
+            state=14;
         }
     }
 }

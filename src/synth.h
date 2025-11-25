@@ -146,8 +146,6 @@ public:
         tx[12].btri();
         
         tx[13].setup(512);
-        tx[13].dcy(.99);
-        
         tx[14].setup(512);
         tx[14].dcy(-.99);
         
@@ -158,26 +156,11 @@ public:
         tx[16].wqspline(80,2.4, 162,-2.2, 600);
         
         tx[17].setup(512);
-        tx[17].dcy(.975);
-        
         tx[18].setup(512);
-        tx[18].dcy(.975);
-        tx[18].dcy(.975,(1.0/4.0));
-        
         tx[19].setup(512);
-        tx[19].dcy(.975);
-        tx[19].dcy(.975,(1.0/8.0));
-        
         tx[20].setup(512);
-        tx[20].dcy(.975,(2.0/8.0));
-        tx[20].dcy(.975,(6.0/8.0));
-        
         tx[21].setup(512);
-        tx[21].dcy(.975,(2.0/8.0));
-        tx[21].dcy(.975,(5.0/8.0));
-        
         tx[22].setup(512);
-        tx[22].dcy(.975,(11.0/16.0));
     }
 
     void inittlo()
@@ -437,3 +420,4 @@ public:
     float splox=WW/2, sploy=HH/2;
     float spltx=WW/2, splty=HH/2;
 };
+
