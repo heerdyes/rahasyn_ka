@@ -240,7 +240,9 @@ public:
         rtlo=-1;
         atlo=-1;
         ptr=0;
-        tid=0; // -1 causes system wide ramifications
+        rate=rateref=1.0;
+        amp=ampref=1.0;
+        tid=-1; // -1 causes system wide ramifications
     }
 
     bool ratemodded() { return rtlo!=-1; }
@@ -281,6 +283,7 @@ public:
 
     void incptr(tbl2 tx[])
     {
+        if(tid==-1) return;
         ptr+=rate;
         while(ptr>tx[tid].sz-1) ptr-=tx[tid].sz-1;
     }
@@ -294,6 +297,7 @@ public:
 
     float samp(tbl2 tx[])
     {
+        if(tid==-1) return 0.0;
         return amp * tx[tid].buf[(int)round(ptr)];
     }
 };

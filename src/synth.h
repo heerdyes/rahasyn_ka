@@ -99,77 +99,47 @@ public:
 
     void inittbl()
     {
+        for(int i=0;i<NTBL;i++) tx[i].setup(256);
+        
         // bipolar sawteeth
-        tx[0].setup(512);
         tx[0].dramp();
         
         // adsyn
-        tx[1].setup(512);
         tx[1].jya();
-        
-        tx[2].setup(1024);
         tx[2].dvijya(1,1, 2,1);
-        
-        tx[3].setup(1024);
         tx[3].trijya(1,2, 2,1, 4,1);
         
         // triangles
-        tx[4].setup(512);
         tx[4].utri();
 
         // noise
-        tx[5].setup(512);
         tx[5].birnd();
         tcmd[5]=u.tcmd_pack(2, 10, 20, 0);
         
-        tx[6].setup(512);
         tx[6].urnd();
         tcmd[6]=u.tcmd_pack(1, 30, 50, 0);
 
         // wild pulses
-        tx[7].setup(512);
         tx[7].pulse(.5);
-        
-        tx[8].setup(512);
         tx[8].pulse(.25);
-        
-        tx[9].setup(512);
         tx[9].pulse(.125);
-        
-        tx[10].setup(512);
         tx[10].pulse(.125,.5);
-        
-        tx[11].setup(512);
         tx[11].squ();
-        
-        tx[12].setup(512);
         tx[12].btri();
-        
-        tx[13].setup(512);
-        tx[14].setup(512);
         tx[14].dcy(-.99);
-        
-        tx[15].setup(512);
-        tx[15].wqspline(100,1, 412,-1, 600);
-        
-        tx[16].setup(512);
-        tx[16].wqspline(80,2.4, 162,-2.2, 600);
-        
-        tx[17].setup(512);
-        tx[18].setup(512);
-        tx[19].setup(512);
-        tx[20].setup(512);
-        tx[21].setup(512);
-        tx[22].setup(512);
+        tx[15].wqspline(10,1, 150,-1, 500);
+        tx[16].wqspline(80,2.4, 162,-2.2, 500);
     }
 
     void inittlo()
     {
+        /*
         ox[0].setup(0, 1.0, 0.0);
         for(int i=1;i<NTLO;i++)
         {
             ox[i].setup(i, 1.0, 1.0);
         }
+        */
     }
 
     void initvox()
@@ -199,11 +169,13 @@ public:
 
     float getosctblsamp(int oi, int j)
     {
+        if(ox[oi].tid==-1) return 0.0;
         return tx[ox[oi].tid].buf[j];
     }
 
     int getosctblsz(int oi)
     {
+        if(ox[oi].tid==-1) return 0;
         return tx[ox[oi].tid].sz;
     }
 
@@ -275,6 +247,23 @@ public:
     {
         tlo & oref=getosc(oi);
         TRBLU;
+        if(oref.tid==-1)
+        {
+            ofDrawLine(x-w/2,y,x+w/2,y);
+            // label
+            string slbl=ofToString((char)(97+oi))+" "+ofToString(oref.rate);
+            int sln=slbl.length();
+            float xbeg=x-sln*SNHALF;
+            
+            TRBLK;
+            ofDrawEllipse(xbeg,y+h/2-3+8,20,20);
+            if(oi==v0 || oi==v1 || oi==v2 || oi==v3) TRRED;
+            else TRBLU;
+            
+            ofDrawBitmapString(slbl, xbeg-4,y+h/2+8);
+            return;
+        }
+        
         int tsz=getosctblsz(oi);
         float xf=w / (float) tsz;
         float xx=x-w/2;
