@@ -122,7 +122,7 @@ void ofApp::rndrfsm()
     u.edge2(s4,s6, s7.x,s7.y, "<.>");
     u.edge2(s7,s0, s2.x,s2.y+30, "\\n");
     u.edge2(s2,s8, s2.x-8,s8.y, "t");
-    u.edge2(s8,s0, s0.x,s8.y+30, "A-Z");
+    u.edge2(s8,s0, s0.x,s8.y+30, "-|A-Z");
     u.edge2(s0,s9, s0.x-30,s9.y+30, "F12");
     u.edge2(s9,s10, (s9.x+s10.x)/2,s10.y+22, "<.>");
     u.edge2(s10,s11, (s10.x+s11.x)/2-22,s11.y+33, "0-9");
@@ -475,8 +475,18 @@ void ofApp::keyPressed(int key)
             int oc=S.pop();
             int oci=oc-97;
 
-            L.log("// "+ofToString((char)oc)+".table -> "+ofToString(ckey));
             z.ox[oci].tid=key-65;
+            L.log("[ox] "+ofToString((char)oc)+".table -> "+ofToString(ckey));
+            state=0;
+        }
+        else if(key==45) // -
+        {
+            S.pop(); // discard 't'
+            int oc=S.pop();
+            int oci=oc-97;
+
+            z.ox[oci].tid=-1;
+            L.log("[ox] "+ofToString((char)oc)+".table -> null");
             state=0;
         }
     }

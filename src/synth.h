@@ -99,7 +99,8 @@ public:
 
     void inittbl()
     {
-        for(int i=0;i<NTBL;i++) tx[i].setup(256);
+        // standard table size alloc
+        for(int i=0;i<NTBL;i++) tx[i].setup(TBL_STD_N);
         
         // bipolar sawteeth
         tx[0].dramp();
@@ -107,6 +108,7 @@ public:
         // adsyn
         tx[1].jya();
         tx[2].dvijya(1,1, 2,1);
+        tx[3].setup(512);
         tx[3].trijya(1,2, 2,1, 4,1);
         
         // triangles
@@ -126,6 +128,7 @@ public:
         tx[10].pulse(.125,.5);
         tx[11].squ();
         tx[12].btri();
+        tx[13].dcy(.975);
         tx[14].dcy(-.99);
         tx[15].wqspline(10,1, 150,-1, 500);
         tx[16].wqspline(80,2.4, 162,-2.2, 500);
