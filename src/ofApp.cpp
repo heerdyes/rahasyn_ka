@@ -10,21 +10,21 @@ void ofApp::initfsm()
     s5.setup(640,HH-280, 5);
     s6.setup(660,HH-88-88, 6);
     s7.setup(640,HH-44, 7);
-    s8.setup(450,HH-192, 8);
+    s8.setup(450,HH-207, 8);
     s9.setup(320,HH-44, 9);
     s10.setup(192,HH-44, 10);
     s11.setup(232,HH-94, 11);
     //
     s12.setup(240,HH-216, 12);
     s13.setup(172,HH-205, 13);
-    s14.setup(100,HH-225, 14);
-    s15.setup(48,HH-276, 15);
+    s14.setup(115,HH-250, 14);
+    s15.setup(38,HH-276, 15);
     s16.setup(32,HH-340, 16);
     s17.setup(99,HH-380, 17);
     s18.setup(180,HH-350, 18);
-    s19.setup(172,HH-256, 19);
+    s19.setup(182,HH-266, 19);
     s20.setup(120,HH-316, 20);
-    s21.setup(48,HH-200, 21);
+    s21.setup(68,HH-220, 21);
 }
 
 //--------------------------------------------------------------
@@ -137,6 +137,7 @@ void ofApp::rndrfsm()
     u.edge2(s14,s15, (s14.x+s15.x)/2,s14.y, "0-9");
     u.edge3(s15,s15, s15.x-55,s15.y+55, s15.x+11,s15.y+55, "0-9");
     u.edge2(s15,s16, s15.x-20,s15.y, "<,>");
+    u.edge2(s15,s0, s15.x-138,s0.y+0, "\\n");
     u.edge2(s16,s17, (s16.x+s17.x)/2,s17.y, "<.>");
     u.edge2(s17,s18, (s17.x+s18.x)/2,s18.y, "0-9");
     u.edge3(s18,s18, s18.x-22,s18.y-44, s18.x+36,s18.y-44, "0-9");
@@ -608,6 +609,21 @@ void ofApp::keyPressed(int key)
             L.log("// decay = "+ofToString(arg1));
             numtok.clear();
             state=16;
+        }
+        else if(key==13)
+        {
+            arg1=ofToFloat(numtok);
+            L.log("// decay = "+ofToString(arg1));
+            numtok.clear();
+            S.pop(); // chuck d
+            
+            int tkey=S.pop();
+            char ct=(char)tkey;
+            int ti=tkey-65;
+            z.tx[ti].dcy(arg1);
+            
+            L.log("[tx] "+ofToString(ct)+" decayed");
+            state=0;
         }
     }
     else if(state==16)
