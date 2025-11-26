@@ -18,3 +18,8 @@
 #define STKLBL  (ofSetColor(0,255,255))
 #define LGCOLOR (ofSetColor(55,242,66))
 
+#define SCOPEN  (ofSetColor(255,202,77))
+#define WWHITE  (ofSetColor(255))
+#define AXISX   (ofSetColor(255,88,0))
+#define VXXHAIR (ofSetColor(222,128,111))
+

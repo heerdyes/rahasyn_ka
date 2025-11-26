@@ -239,7 +239,7 @@ public:
         ofDrawBitmapString(ofToString((char)(65+ti)), x-3,y+h/2);
 
         // x axis
-        ofSetColor(255,88,0);
+        AXISX;
         ofDrawLine(x-w/2,y,x+w/2,y);
     }
 
@@ -311,7 +311,7 @@ public:
         ofDrawBitmapString(slbl, xbeg-4,y+h/2+8);
 
         // x axis
-        ofSetColor(255,88,0);
+        AXISX;
         ofDrawLine(x-w/2,y,x+w/2,y);
 
         float xp=x-w/2 + getoscptr(oi) * w / (float) tsz;
@@ -370,7 +370,7 @@ public:
         float ym=4;
         float xm=5;
 
-        ofSetColor(222,99,111);
+        VXXHAIR;
         ofDrawLine(x,y-r, x,y+r);
         ofDrawLine(x-r,y, x+r,y);
 

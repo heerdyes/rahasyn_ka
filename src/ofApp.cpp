@@ -59,9 +59,9 @@ void ofApp::setup()
 	
 	ofSetVerticalSync(true);
 	
-	L.log(" + --------- --------- +");
-	L.log("|| greetings soundseer ||");
-	L.log(" + --------- --------- +");
+	L.log("  / --------- --------- \\");
+	L.log("||  greetings soundseer  ||");
+	L.log("  \\ --------- --------- /");
 }
 
 //--------------------------------------------------------------
@@ -181,21 +181,20 @@ void ofApp::rndrfsm()
 void ofApp::draw()
 {
     // video plsss
-    ofSetColor(255);
+    WWHITE;
 	if(camon && isdvdss) vtx.draw(camx,camy, camw*vscale,camh*vscale);
 	
-    ofSetColor(22,202,232);
-
+    TRBLU;
     float cy=HH/2;
-    float cgy=cy-100;
-    float wd=1280;
-    float ht=440;
+    float cgy=cy-132;
+    float wd=1600;
+    float ht=550;
     float cx=WW/2-wd/2;
     float ky=ht/2;
     float kx=wd/SCOP_SIZE;
 
     // sound waveform
-    ofSetColor(255,202,77);
+    SCOPEN;
     for(int i=0;i<SCOP_SIZE;i++)
     {
         float xx=cx+i*kx;
