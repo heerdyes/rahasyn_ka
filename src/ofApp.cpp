@@ -329,6 +329,19 @@ void ofApp::keyPressed(int key)
             L.log("// v"+ofToString(vcur)+" -> "+ofToString(ckey));
             state=0;
         }
+        else if(key==45)
+        {
+            int fkey=S.pop();
+            int vcur=fkey-57344;
+            
+            if(vcur==0)      z.v0=-1;
+            else if(vcur==1) z.v1=-1;
+            else if(vcur==2) z.v2=-1;
+            else if(vcur==3) z.v3=-1;
+            
+            L.log("// v"+ofToString(vcur)+" -> -1");
+            state=0;
+        }
     }
     else if(state==2)
     {

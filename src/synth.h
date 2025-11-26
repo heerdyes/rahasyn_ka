@@ -74,10 +74,10 @@ public:
     void evolve()
     {
         // no more a-rate k-rate separation
-        ox[v0].evolve(tx,ox);
-        ox[v1].evolve(tx,ox);           // table lookup
-        ox[v2].evolve(tx,ox);           // oscillator
-        ox[v3].evolve(tx,ox);           // evolution
+        if(v0>=0) ox[v0].evolve(tx,ox);
+        if(v1>=0) ox[v1].evolve(tx,ox);           // table lookup
+        if(v2>=0) ox[v2].evolve(tx,ox);           // oscillator
+        if(v3>=0) ox[v3].evolve(tx,ox);           // evolution
         
         // evolve the remaining oscs without looping
         int rem=ctr%NTLO;
@@ -90,7 +90,11 @@ public:
 
     float vsamp()
     {
-        return mgain * (ox[v0].samp(tx) + ox[v1].samp(tx) + ox[v2].samp(tx) + ox[v3].samp(tx));
+        float vs0=v0==-1?0:ox[v0].samp(tx);
+        float vs1=v1==-1?0:ox[v1].samp(tx);
+        float vs2=v2==-1?0:ox[v2].samp(tx);
+        float vs3=v3==-1?0:ox[v3].samp(tx);
+        return mgain * (vs0+vs1+vs2+vs3);
     }
 
     void update(){}
@@ -129,9 +133,22 @@ public:
         tx[11].squ();
         tx[12].btri();
         tx[13].dcy(.975);
-        tx[14].dcy(-.99);
+        tx[14].dcy(-.98);
         tx[15].wqspline(10,1, 150,-1, 500);
         tx[16].wqspline(80,2.4, 162,-2.2, 500);
+        tx[17].wqspline(10,3.6, 250,-3.4, 500);
+        tx[18].dcy(.96);
+        tx[18].dcy(.96,.6666);
+        tx[19].dcy(.96);
+        tx[19].dcy(.96,.3333);
+        tx[20].dcy(.95);
+        tx[20].dcy(.975,.25);
+        tx[21].setup(1024);
+        tx[21].trijya(.5,1, 1,3, 3,1);
+        tx[22].setup(1024);
+        tx[22].trijya(1,1, 3,3, 5,2);
+        tx[23].setup(1024);
+        tx[23].trijya(1,1, 4,3, 7,1);
     }
 
     void inittlo()
@@ -148,10 +165,10 @@ public:
     void initvox()
     {
         // vox init
-        v0=0;
-        v1=0;
-        v2=0;
-        v3=0;
+        v0=-1;
+        v1=-1;
+        v2=-1;
+        v3=-1;
         // rgb oscils
         bo=8;
         ro=5;
@@ -374,10 +391,10 @@ public:
     
     void panic()
     {
-        ox[v0].seta(.0);
-        ox[v1].seta(.0);
-        ox[v2].seta(.0);
-        ox[v3].seta(.0);
+        if(v0>=0) ox[v0].seta(.0);
+        if(v1>=0) ox[v1].seta(.0);
+        if(v2>=0) ox[v2].seta(.0);
+        if(v3>=0) ox[v3].seta(.0);
     }
     
     void resetptrs()
