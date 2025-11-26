@@ -38,7 +38,7 @@ public:
         stopThread();
     }
 
-    // TODO: sound engine assist
+    // sound engine assist
     void threadedFunction()
     {
         while(isThreadRunning())
@@ -149,6 +149,10 @@ public:
         tx[22].trijya(1,1, 3,3, 5,2);
         tx[23].setup(1024);
         tx[23].trijya(1,1, 4,3, 7,1);
+        tx[24].setup(1024);
+        tx[24].trijya(.75,1, 5,4, 2,1);
+        tx[25].setup(512);
+        tx[25].wqspline(130,3.6, 256,-3.0, 700);
     }
 
     void inittlo()

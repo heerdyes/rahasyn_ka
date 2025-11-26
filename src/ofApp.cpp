@@ -2,18 +2,18 @@
 
 void ofApp::initfsm()
 {
-    s0.setup(380,HH-88-66, 0);
-    s1.setup(281,HH-65, 1);
-    s2.setup(500,HH-156, 2);
-    s3.setup(450,HH-264, 3);
-    s4.setup(440,HH-44, 4);
+    s0.setup(440,HH-88-66, 0);
+    s1.setup(321,HH-65, 1);
+    s2.setup(560,HH-156, 2);
+    s3.setup(510,HH-264, 3);
+    s4.setup(500,HH-44, 4);
     s5.setup(640,HH-280, 5);
     s6.setup(660,HH-88-88, 6);
     s7.setup(640,HH-44, 7);
-    s8.setup(450,HH-207, 8);
-    s9.setup(320,HH-44, 9);
-    s10.setup(192,HH-44, 10);
-    s11.setup(232,HH-94, 11);
+    s8.setup(510,HH-207, 8);
+    s9.setup(360,HH-44, 9);
+    s10.setup(232,HH-44, 10);
+    s11.setup(272,HH-94, 11);
     //
     s12.setup(240,HH-216, 12);
     s13.setup(172,HH-205, 13);
@@ -56,7 +56,12 @@ void ofApp::setup()
 	    vfx.allocate(camw, camh, OF_PIXELS_RGB);
 	    vtx.allocate(vfx);
 	}
+	
 	ofSetVerticalSync(true);
+	
+	L.log(" + --------- --------- +");
+	L.log("|| greetings soundseer ||");
+	L.log(" + --------- --------- +");
 }
 
 //--------------------------------------------------------------
@@ -106,7 +111,7 @@ void ofApp::rndrfsm()
 {
     // edges first
     u.edge2(s0,s1, (s0.x+s1.x)/2,s0.y+22, "F[1-4]");
-    u.edge2(s1,s0, (s0.x+s1.x)/2,s1.y-11, "a-z");
+    u.edge2(s1,s0, (s0.x+s1.x)/2,s1.y-11, "-|a-z");
     u.edge2(s0,s2, s2.x-30,s0.y-20, "a-z");
     u.edge2(s2,s3, s2.x,s3.y, "r");
     u.edge2(s2,s4, s2.x,s4.y, "a");
