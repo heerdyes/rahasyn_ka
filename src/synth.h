@@ -157,13 +157,13 @@ public:
 
     void inittlo()
     {
-        /*
-        ox[0].setup(0, 1.0, 0.0);
-        for(int i=1;i<NTLO;i++)
+        if(prepatch)
         {
-            ox[i].setup(i, 1.0, 1.0);
+            for(int i=0;i<NTLO;i++)
+            {
+                ox[i].setup(i, 1.0, 1.0);
+            }
         }
-        */
     }
 
     void initvox()
@@ -432,5 +432,7 @@ public:
     ut u; // TODO: make a singleton utility available for all classes
     float splox=WW/2, sploy=HH/2;
     float spltx=WW/2, splty=HH/2;
+    
+    bool prepatch=false;
 };
 
