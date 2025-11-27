@@ -160,6 +160,7 @@ void ofApp::rndrfsm()
     u.edge2(s0,s22, (s0.x+s22.x)/2,s22.y, "<[>");
     u.edge2(s22,s23, (s22.x+s23.x)/2,s22.y, "[A-Z]");
     u.edge2(s23,s24, (s23.x+s24.x)/2-20,s24.y-20, "[A-Z]");
+    u.edge2(s23,s0, s23.x-33,s23.y+132, "<->");
     u.edge2(s24,s25, (s24.x+s25.x)/2-30,s25.y, "[A-Z]");
     u.edge2(s25,s0, (s25.x+s0.x)/2-150,(s25.y+s0.y)/2, "[a-z]");
 
@@ -764,6 +765,16 @@ void ofApp::keyPressed(int key)
         {
             S.push(key);
             state=24;
+        }
+        else if(key==45)
+        {
+            int td=S.pop();
+            int tdid=td-65;
+            S.pop();
+            
+            z.tcmd[tdid]=0;
+            L.log("[wt] "+ofToString((char)td)+" wavetable deassoc");
+            state=0;
         }
     }
     else if(state==24)
