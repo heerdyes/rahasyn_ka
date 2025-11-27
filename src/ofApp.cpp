@@ -2,29 +2,35 @@
 
 void ofApp::initfsm()
 {
-    s0.setup(440,HH-88-66, 0);
-    s1.setup(321,HH-65, 1);
-    s2.setup(560,HH-156, 2);
-    s3.setup(510,HH-264, 3);
-    s4.setup(500,HH-44, 4);
-    s5.setup(640,HH-280, 5);
-    s6.setup(660,HH-88-88, 6);
-    s7.setup(640,HH-44, 7);
-    s8.setup(510,HH-207, 8);
-    s9.setup(360,HH-44, 9);
-    s10.setup(232,HH-44, 10);
-    s11.setup(272,HH-94, 11);
+    s0.setup(480,HH-88-66, 0);
+    s1.setup(381,HH-65, 1);
+    s2.setup(600,HH-156, 2);
+    s3.setup(550,HH-264, 3);
+    s4.setup(540,HH-44, 4);
+    s5.setup(680,HH-280, 5);
+    s6.setup(700,HH-88-88, 6);
+    s7.setup(680,HH-44, 7);
+    s8.setup(550,HH-207, 8);
+    s9.setup(420,HH-44, 9);
+    s10.setup(262,HH-44, 10);
+    s11.setup(342,HH-74, 11);
     //
-    s12.setup(240,HH-216, 12);
+    s12.setup(280,HH-216, 12);
     s13.setup(172,HH-205, 13);
     s14.setup(115,HH-250, 14);
     s15.setup(38,HH-276, 15);
     s16.setup(32,HH-340, 16);
     s17.setup(99,HH-380, 17);
     s18.setup(180,HH-350, 18);
-    s19.setup(182,HH-266, 19);
+    s19.setup(212,HH-266, 19);
     s20.setup(120,HH-316, 20);
     s21.setup(68,HH-220, 21);
+    //
+    s22.setup(200,HH-138, 22);
+    s23.setup(120,HH-138, 23);
+    s24.setup(60,HH-118, 24);
+    s25.setup(70,HH-48, 25);
+    s26.setup(108,HH-48, 26);
 }
 
 //--------------------------------------------------------------
@@ -131,7 +137,7 @@ void ofApp::rndrfsm()
     u.edge2(s0,s9, s0.x-30,s9.y+30, "F12");
     u.edge2(s9,s10, (s9.x+s10.x)/2,s10.y+22, "<.>");
     u.edge2(s10,s11, (s10.x+s11.x)/2-22,s11.y+33, "0-9");
-    u.edge3(s11,s11, s11.x-20,s11.y-20,s11.x+20,s11.y-20, "0-9");
+    u.edge3(s11,s11, s11.x-40,s11.y-40,s11.x+40,s11.y-40, "0-9");
     u.edge2(s11,s0, (s11.x+s0.x)/2,s0.y, "\\n");
     u.edge2(s0,s12, s12.x,(s0.y+s12.y)/2, "A-Z");
     u.edge2(s12,s0, s0.x-20,(s0.y+s12.y)/2-20, "[wzjub]");
@@ -151,6 +157,11 @@ void ofApp::rndrfsm()
     u.edge2(s19,s20, (s19.x+s20.x)/2,s19.y, "1-9");
     u.edge3(s20,s20, s20.x-55,s20.y+27, s20.x-55,s20.y-27, "0-9");
     u.edge2(s20,s0, (s20.x+s0.x)/2+44,(s20.y+s0.y)/2-44, "\\n");
+    u.edge2(s0,s22, (s0.x+s22.x)/2,s22.y, "<[>");
+    u.edge2(s22,s23, (s22.x+s23.x)/2,s22.y, "[A-Z]");
+    u.edge2(s23,s24, (s23.x+s24.x)/2-20,s24.y-20, "[A-Z]");
+    u.edge2(s24,s25, (s24.x+s25.x)/2-30,s25.y, "[A-Z]");
+    u.edge2(s25,s0, (s25.x+s0.x)/2-150,(s25.y+s0.y)/2, "[a-z]");
 
     // then nodes, to prevent edge lines reaching the center
     s0.rndr(state);
@@ -175,6 +186,10 @@ void ofApp::rndrfsm()
     s19.rndr(state);
     s20.rndr(state);
     s21.rndr(state);
+    s22.rndr(state);
+    s23.rndr(state);
+    s24.rndr(state);
+    s25.rndr(state);
 }
 
 //--------------------------------------------------------------
@@ -316,6 +331,11 @@ void ofApp::keyPressed(int key)
         {
             S.push(key);
             state=12;
+        }
+        else if(key==91) // [
+        {
+            S.push(key);
+            state=22;
         }
     }
     else if(state==1)
@@ -728,6 +748,55 @@ void ofApp::keyPressed(int key)
         {
             numtok+=".";
             state=14;
+        }
+    }
+    else if(state==22)
+    {
+        if(key>=65 && key<=90)
+        {
+            S.push(key);
+            state=23;
+        }
+    }
+    else if(state==23)
+    {
+        if(key>=65 && key<=90)
+        {
+            S.push(key);
+            state=24;
+        }
+    }
+    else if(state==24)
+    {
+        if(key>=65 && key<=90)
+        {
+            S.push(key);
+            state=25;
+        }
+    }
+    else if(state==25)
+    {
+        if(key>=97 && key<=122)
+        {
+            int t2=S.pop();
+            int t1=S.pop();
+            int td=S.pop();
+            S.pop(); // discard [
+            
+            int t2id=t2-65;
+            int t1id=t1-65;
+            int tdid=td-65;
+            int moid=key-97;
+            
+            z.tcmd[tdid]=u.tcmd_pack(8, t1id, t2id, moid);
+            
+            string std=ofToString((char)td);
+            string skey=ofToString((char)key);
+            string st1=ofToString((char)t1);
+            string st2=ofToString((char)t2);
+            L.log("(wt "+std+" "+skey+" "+st1+" "+st2+")");
+            
+            state=0;
         }
     }
 }

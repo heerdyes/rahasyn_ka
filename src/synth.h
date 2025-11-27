@@ -37,7 +37,7 @@ public:
     {
         stopThread();
     }
-
+    
     // sound engine assist
     void threadedFunction()
     {
@@ -67,7 +67,20 @@ public:
                         if(ctr%(d1*d2)==0) tx[i].urnd();
                     }
                 }
+                else if(cmd==8) // wavetable
+                {
+                    if(ox[d3].tid>=0)
+                    {
+                        float mixgen=ox[d3].samp(tx);
+                        float mix1=ofMap(mixgen, -1,1, 1,0);
+                        float mix2=1-mix1;
+                        
+                        tx[i].sampwr(tclk, mix1*tx[d1].samprd(tclk) + mix2*tx[d2].samprd(tclk));
+                    }
+                }
             }
+            
+            tclk=(tclk+1)%TBL_MAX_N;
         }
     }
     
@@ -408,6 +421,7 @@ public:
 
     // vars
     int ctr = 0;
+    unsigned int tclk = 0;
     float synbuf[SYNBUF_SZ];
 
     // table list

@@ -220,6 +220,16 @@ public:
             buf[i]=2*abs(buf[i])-1;
         }
     }
+    
+    float samprd(int p)
+    {
+        return buf[p%sz];
+    }
+    
+    void sampwr(int p, float v)
+    {
+        buf[p%sz]=v;
+    }
 };
 
 class tlo
