@@ -231,7 +231,7 @@ public:
     float getro() { return abs(ox[ro].amp); }
 
     // tbl rendering
-    void rndrtbl(float x,float y, float w,float h, int ti)
+    void rndrtbl(float x,float y, float w,float h, int ti, float cx,float cy)
     {
         TRBLU;
         int tsz=gettblsz(ti);
@@ -246,19 +246,23 @@ public:
             xx+=xf;
         }
 
+        // label is radially aligned
+        float rd=.18;
+        float lx=(1-rd)*x + rd*cx;
+        float ly=(1-rd)*y + rd*cy;
         TRBLK;
-        ofDrawEllipse(x,y+h/2-5,20,20);
+        ofDrawEllipse(lx,ly-5,20,20);
         TRBLU;
-        ofDrawBitmapString(ofToString((char)(65+ti)), x-3,y+h/2);
+        ofDrawBitmapString(ofToString((char)(65+ti)), lx-3,ly);
 
         // x axis
         AXISX;
         ofDrawLine(x-w/2,y,x+w/2,y);
     }
 
-    void rndrtbl(int ti)
+    void rndrtbl(int ti, float cx,float cy)
     {
-        rndrtbl(tblxywh[ti].x, tblxywh[ti].y, tblxywh[ti].w, tblxywh[ti].h, ti);
+        rndrtbl(tblxywh[ti].x, tblxywh[ti].y, tblxywh[ti].w, tblxywh[ti].h, ti, cx,cy);
     }
 
     void rndrtbls(float x, float y, float r)
@@ -275,29 +279,36 @@ public:
             tblxywh[i].w=72;
             tblxywh[i].h=40;
 
-            rndrtbl(i);
+            rndrtbl(i, x,y);
         }
     }
 
     // tlo rendering
-    void rndrtlo(float x, float y, float w, float h, int oi)
+    void rndrtlo(float x, float y, float w, float h, int oi, float cx,float cy)
     {
         tlo & oref=getosc(oi);
+        // label display
+        float rd1=.18;
+        float lx=(1-rd1)*x + rd1*cx;
+        float ly=(1-rd1)*y + rd1*cy;
+        // rate display
+        float rd2=.30;
+        float lx2=(1-rd2)*x + rd2*cx;
+        float ly2=(1-rd2)*y + rd2*cy;
+        
         TRBLU;
         if(oref.tid==-1)
         {
             ofDrawLine(x-w/2,y,x+w/2,y);
-            // label
-            string slbl=ofToString((char)(97+oi))+" "+ofToString(oref.rate);
-            int sln=slbl.length();
-            float xbeg=x-sln*SNHALF;
+            // label is radially aligned
+            string slbl=ofToString((char)(97+oi));
             
-            TRBLK;
-            ofDrawEllipse(xbeg,y+h/2-3+8,20,20);
             if(oi==v0 || oi==v1 || oi==v2 || oi==v3) TRRED;
             else TRBLU;
             
-            ofDrawBitmapString(slbl, xbeg-4,y+h/2+8);
+            ofDrawBitmapString(slbl, lx,ly);
+            ofDrawBitmapString(ofToString(oref.rate,3), lx2-18,ly2-10);
+            ofDrawBitmapString(ofToString(oref.amp,3), lx2-18,ly2+10);
             return;
         }
         
@@ -313,15 +324,14 @@ public:
             xx+=xf;
         }
 
-        // label
-        string slbl=ofToString((char)(97+oi))+" "+ofToString(oref.rate);
-        int sln=slbl.length();
-        float xbeg=x-sln*SNHALF;
+        // label is radially aligned
+        string slbl=ofToString((char)(97+oi));
         TRBLK;
-        ofDrawEllipse(xbeg,y+h/2-3+8,20,20);
         if(oi==v0 || oi==v1 || oi==v2 || oi==v3) TRRED;
         else TRBLU;
-        ofDrawBitmapString(slbl, xbeg-4,y+h/2+8);
+        ofDrawBitmapString(slbl, lx,ly);
+        ofDrawBitmapString(ofToString(oref.rate,3), lx2-18,ly2-10);
+        ofDrawBitmapString(ofToString(oref.amp,3), lx2-18,ly2+10);
 
         // x axis
         AXISX;
@@ -354,9 +364,9 @@ public:
         }
     }
 
-    void rndrtlo(int oi)
+    void rndrtlo(int oi, float cx,float cy)
     {
-        rndrtlo(tloxywh[oi].x, tloxywh[oi].y, tloxywh[oi].w, tloxywh[oi].h, oi);
+        rndrtlo(tloxywh[oi].x, tloxywh[oi].y, tloxywh[oi].w, tloxywh[oi].h, oi, cx,cy);
     }
 
     void rndrtlos(float x, float y, float r)
@@ -373,7 +383,7 @@ public:
             tloxywh[i].w=72;
             tloxywh[i].h=40;
 
-            rndrtlo(i);
+            rndrtlo(i, x,y);
         }
     }
 
