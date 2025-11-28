@@ -51,20 +51,22 @@ public:
 
                 if(cmd==2) // bipolar random
                 {
-                    if(d1==0 || d2==0) tx[i].birnd();
+                    float vv=ofRandom(-1,1);
+                    if(d1==0 || d2==0) tx[i].sampwr(tclk, vv);
                     else
                     {
                         // triggered randomness causes timbral changes
-                        if(ctr%(d1*d2)==0) tx[i].birnd();
+                        if(ctr%(d1*d2)==0) tx[i].sampwr(tclk, vv);
                     }
                 }
                 else if(cmd==1) // unipolar random
                 {
-                    if(d1==0 || d2==0) tx[i].urnd();
+                    float vv=ofRandom(0,1);
+                    if(d1==0 || d2==0) tx[i].sampwr(tclk, vv);
                     else
                     {
                         // control refresh rate of randomness
-                        if(ctr%(d1*d2)==0) tx[i].urnd();
+                        if(ctr%(d1*d2)==0) tx[i].sampwr(tclk, vv);
                     }
                 }
                 else if(cmd==8) // wavetable
@@ -133,10 +135,10 @@ public:
 
         // noise
         tx[5].birnd();
-        tcmd[5]=u.tcmd_pack(2, 10, 20, 0);
+        tcmd[5]=u.tcmd_pack(2, 2, 2, 0);
         
         tx[6].urnd();
-        tcmd[6]=u.tcmd_pack(1, 30, 50, 0);
+        tcmd[6]=u.tcmd_pack(1, 6, 5, 0);
 
         // wild pulses
         tx[7].pulse(.5);
@@ -291,7 +293,7 @@ public:
         float rd1=.18;
         float lx=(1-rd1)*x + rd1*cx;
         float ly=(1-rd1)*y + rd1*cy;
-        // rate display
+        // rate / amp display
         float rd2=.30;
         float lx2=(1-rd2)*x + rd2*cx;
         float ly2=(1-rd2)*y + rd2*cy;
