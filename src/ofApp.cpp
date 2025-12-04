@@ -119,6 +119,8 @@ void ofApp::update()
 	
 	// listen to h/w i/f
 	pko.listen(L);
+	// knob for synth master gain
+	z.mgain=ofMap(pko.kn0, 0,4096, .0,.999);
 }
 
 void ofApp::rndrfsm()

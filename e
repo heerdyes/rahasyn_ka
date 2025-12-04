@@ -10,4 +10,5 @@ gedit src/synth.h
 gedit src/ftbl.h
 gedit src/fsm.h
 gedit src/uts.h
+gedit src/hwif.h
 
