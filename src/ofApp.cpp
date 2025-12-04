@@ -247,7 +247,8 @@ void ofApp::draw()
     z.rndrvox(WW/2,HH/2+200+108);
     
     // pico chat
-    ofDrawBitmapString(ofToString(pko.kn0), WW/2,80);
+    string pkomsg=ofToString(pko.state)+"::"+ofToString(pko.kn0,0,4,'0');
+    ofDrawBitmapString(pkomsg, WW/2-SNHALF*pkomsg.length(),32);
 }
 
 // ----------------------------------------- //
