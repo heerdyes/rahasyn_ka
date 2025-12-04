@@ -10,6 +10,7 @@
 #include "uts.h"
 #include "ftbl.h"
 #include "synth.h"
+#include "hwif.h"
 
 #define SCOP_SIZE   (1024)
 
@@ -19,6 +20,7 @@ class ofApp : public ofBaseApp{
         void setup();
         void update();
         void draw();
+        void exit();
 
         void keyPressed(int key);
         void keyReleased(int key);
@@ -54,6 +56,7 @@ class ofApp : public ofBaseApp{
 
         void initfsm();
         void rndrfsm();
+        void rdpico();
 
         ofSoundStream soundStream;
 
@@ -91,5 +94,8 @@ class ofApp : public ofBaseApp{
 		bool camon=false;
 		
 		float arg1,arg2;
+		
+		// pico i/f
+		rp2 pko;
 };
 

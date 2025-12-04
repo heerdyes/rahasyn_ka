@@ -34,6 +34,11 @@ void ofApp::initfsm()
     s27.setup(360,HH-260, 27);
 }
 
+void ofApp::exit()
+{
+    pko.quit();
+}
+
 //--------------------------------------------------------------
 void ofApp::setup()
 {
@@ -43,12 +48,11 @@ void ofApp::setup()
     scopectr=0;
     ctr=0;
     state=0;
-
+    
     initfsm();
-
     z.setup();
     L.setup(1380,HH-303);
-    
+    pko.setup();
     soundsetup();
     
     if(camon)
@@ -112,6 +116,9 @@ void ofApp::update()
 		    vtx.loadData(vfx);
 	    }
 	}
+	
+	// listen to h/w i/f
+	pko.listen(L);
 }
 
 void ofApp::rndrfsm()
@@ -236,6 +243,9 @@ void ofApp::draw()
     ofDrawBitmapString(numtok, WW/2-numtok.length()*SNHALF,HH/2+200+30);
     // vox
     z.rndrvox(WW/2,HH/2+200+108);
+    
+    // pico chat
+    ofDrawBitmapString(ofToString(pko.kn0), WW/2,80);
 }
 
 // ----------------------------------------- //
