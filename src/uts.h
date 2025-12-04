@@ -156,7 +156,7 @@ public:
         float yy=y-10;
         float xx=x-18;
         STKLBL;
-        ofDrawLine(x-18,y, x+18,y);
+        ofDrawLine(x-27,y, x+27,y);
 
         for(int i=0;i<sp;i++)
         {
@@ -166,13 +166,17 @@ public:
             else if(k==57345) ofDrawBitmapString("F2", xx,yy);
             else if(k==57346) ofDrawBitmapString("F3", xx,yy);
             else if(k==57347) ofDrawBitmapString("F4", xx,yy);
-            else ofDrawBitmapString("["+ofToString(k)+"] "+ofToString((char)k), xx,yy);
+            else
+            {
+                ofDrawBitmapString("["+ofToString(k)+"] ", xx-10,yy);
+                ofDrawBitmapString(ofToString((char)k), xx+41,yy);
+            }
             yy-=hgap;
         }
 
         yy-=8;
         STKLBL;
-        ofDrawLine(x-18,yy, x+18,yy);
+        ofDrawLine(x-27,yy, x+27,yy);
     }
 };
 
