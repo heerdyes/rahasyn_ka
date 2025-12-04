@@ -56,7 +56,7 @@ class ofApp : public ofBaseApp{
 
         void initfsm();
         void rndrfsm();
-        void rdpico();
+        void kpevt(int key);
 
         ofSoundStream soundStream;
 
@@ -69,6 +69,7 @@ class ofApp : public ofBaseApp{
         nd s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11;
         nd s12,s13,s14,s15,s16,s17,s18,s19,s20,s21;
         nd s22,s23,s24,s25,s26,s27;
+        nd s28,s29;
 
         syn z;
         int rbctr=0;

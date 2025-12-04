@@ -2,18 +2,18 @@
 
 void ofApp::initfsm()
 {
-    s0.setup(590,HH-88-66, 0);
-    s1.setup(491,HH-65, 1);
-    s2.setup(710,HH-156, 2);
-    s3.setup(660,HH-264, 3);
-    s4.setup(650,HH-44, 4);
-    s5.setup(790,HH-280, 5);
+    s0.setup(590,HH-174, 0);
+    s1.setup(421,HH-65, 1);
+    s2.setup(730,HH-126, 2);
+    s3.setup(700,HH-264, 3);
+    s4.setup(690,HH-44, 4);
+    s5.setup(810,HH-280, 5);
     s6.setup(810,HH-88-88, 6);
     s7.setup(790,HH-44, 7);
-    s8.setup(660,HH-207, 8);
-    s9.setup(530,HH-44, 9);
-    s10.setup(372,HH-44, 10);
-    s11.setup(452,HH-74, 11);
+    s8.setup(690,HH-197, 8);
+    s9.setup(460,HH-44, 9);
+    s10.setup(302,HH-44, 10);
+    s11.setup(382,HH-74, 11);
     //
     s12.setup(280,HH-200, 12);
     s13.setup(172,HH-205, 13);
@@ -32,6 +32,9 @@ void ofApp::initfsm()
     s25.setup(100,HH-48, 25);
     s26.setup(280,HH-280, 26);
     s27.setup(360,HH-260, 27);
+    //
+    s28.setup(560,HH-303, 28);
+    s29.setup(620,HH-303, 29);
 }
 
 void ofApp::exit()
@@ -128,13 +131,13 @@ void ofApp::rndrfsm()
     // edges first
     u.edge2(s0,s1, (s0.x+s1.x)/2,s0.y+22, "F[1-4]");
     u.edge2(s1,s0, (s0.x+s1.x)/2,s1.y-11, "-|[a-z]");
-    u.edge2(s0,s2, s2.x-30,s0.y-20, "[a-z]");
+    u.edge2(s0,s2, (s0.x+s2.x)/2,(s0.y+s2.y)/2-20, "[a-z]");
     u.edge2(s2,s3, s2.x,s3.y, "r");
     u.edge2(s2,s4, s2.x,s4.y, "a");
-    u.edge2(s3,s0, s0.x,s3.y, "-|[a-z]");
-    u.edge2(s4,s0, s0.x,s4.y, "-|[a-z]");
-    u.edge2(s3,s5, s5.x,s3.y, "[0-9]");
-    u.edge2(s3,s6, s5.x,s5.y, "<.>");
+    u.edge2(s3,s0, (s0.x+s3.x)/2,(s0.y+s3.y)/2-22, "-|[a-z]");
+    u.edge2(s4,s0, (s0.x+s4.x)/2,(s0.y+s4.y)/2+22, "-|[a-z]");
+    u.edge2(s3,s5, (s3.x+s5.x)/2,(s3.y+s5.y)/2-22, "[0-9]");
+    u.edge2(s3,s6, (s3.x+s6.x)/2,(s3.y+s6.y)/2-22, "<.>");
     u.edge3(s5,s5, s5.x+60,s5.y-30, s5.x+60,s5.y+30, "[0-9]");
     u.edge2(s5,s6, s5.x+20,s6.y, "<.>");
     u.edge2(s6,s7, s7.x+30,s7.y-20, "[0-9]");
@@ -144,7 +147,7 @@ void ofApp::rndrfsm()
     u.edge2(s7,s0, s2.x,s2.y+30, "\\n");
     u.edge2(s2,s8, s2.x-8,s8.y, "t");
     u.edge2(s8,s0, s0.x,s8.y+30, "-|[A-Z]");
-    u.edge2(s0,s9, s0.x-30,s9.y+30, "F12");
+    u.edge2(s0,s9, (s0.x+s9.x)/2+22,(s0.y+s9.y)/2+22, "F12");
     u.edge2(s9,s10, (s9.x+s10.x)/2,s10.y+22, "<.>");
     u.edge2(s10,s11, (s10.x+s11.x)/2-22,s11.y+33, "[0-9]");
     u.edge3(s11,s11, s11.x-40,s11.y-40,s11.x+40,s11.y-40, "[0-9]");
@@ -177,6 +180,10 @@ void ofApp::rndrfsm()
     u.edge2(s26,s27, (s26.x+s27.x)/2,s27.y+10, "[1-9]");
     u.edge3(s27,s27, s27.x-50,s27.y-36, s27.x+50,s27.y-36, "[0-9]");
     u.edge2(s27,s0, (s27.x+s0.x)/2+22,(s27.y+s0.y)/2-55, "\\n");
+    u.edge2(s0,s28, s0.x-33,(s0.y+s28.y)/2, "</>");
+    u.edge2(s28,s29, (s28.x+s29.x)/2,s29.y-33, "[a-zA-Z0-9]");
+    u.edge3(s29,s29, s29.x-44,s29.y-44, s29.x+44,s29.y-44, "[a-zA-Z0-9]");
+    u.edge2(s29,s0, (s29.x+s0.x)/2,(s29.y+s0.y)/2, "\\n");
 
     // then nodes, to prevent edge lines reaching the center
     s0.rndr(state);
@@ -207,6 +214,8 @@ void ofApp::rndrfsm()
     s25.rndr(state);
     s26.rndr(state);
     s27.rndr(state);
+    s28.rndr(state);
+    s29.rndr(state);
 }
 
 //--------------------------------------------------------------
@@ -276,12 +285,10 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
     }
 }
 
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key)
+void ofApp::kpevt(int key)
 {
-    cout<<key<<endl;
     char ckey=(char)key;
-
+    
     if(key==3682)
     {
         z.updatesplt(mouseX, mouseY);
@@ -357,6 +364,11 @@ void ofApp::keyPressed(int key)
         {
             S.push(key);
             state=22;
+        }
+        else if(key==47) // /
+        {
+            S.push(key);
+            state=28;
         }
     }
     else if(state==1)
@@ -866,6 +878,71 @@ void ofApp::keyPressed(int key)
             state=0;
         }
     }
+    else if(state==28)
+    {
+        if((key>=97 && key<=122) || (key>=48 && key<=57) || (key>=65 && key<=90))
+        {
+            numtok+=ofToString((char)key);
+            state=29;
+        }
+    }
+    else if(state==29)
+    {
+        if((key>=97 && key<=122) || (key>=48 && key<=57) || (key>=65 && key<=90))
+        {
+            numtok+=ofToString((char)key);
+            state=29;
+        }
+        else if(key==13)
+        {
+            S.pop();
+            string kafn(numtok+".rhka");
+            L.log("automaton: "+kafn);
+            
+            numtok.clear();
+            state=0;
+            
+            ofBuffer cmdsq=ofBufferFromFile(kafn);
+            string scmd=cmdsq.getText();
+            
+            for(size_t i=0;i<scmd.length();i++)
+            {
+                int ki=0;
+                char tc=scmd[i];
+                
+                if(tc=='\n') ki=13;
+                else if(tc=='<')
+                {
+                    string fntok;
+                    for(;;)
+                    {
+                        i++;
+                        if(i>=scmd.length()) break;
+                        if(scmd[i]=='>') break;
+                        fntok+=scmd[i];
+                    }
+                    
+                    if(fntok=="F1") ki=57344;
+                    else if(fntok=="F2") ki=57345;
+                    else if(fntok=="F3") ki=57346;
+                    else if(fntok=="F4") ki=57347;
+                    else if(fntok=="F12") ki=57355;
+                }
+                else ki=(int)scmd[i];
+                
+                cout<<"[autokey] "<<ki<<endl;
+                if(ki==10) kpevt(13);
+                kpevt(ki);
+            }
+        }
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key)
+{
+    cout<<"[OF] "<<key<<endl;
+    kpevt(key);
 }
 
 //--------------------------------------------------------------

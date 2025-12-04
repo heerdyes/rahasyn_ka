@@ -456,7 +456,7 @@ public:
     xywh tloxywh[NTLO];
 
     ut u; // TODO: make a singleton utility available for all classes
-    float splox=WW/2, sploy=HH/2;
+    float splox=3*WW/4, sploy=HH/2;
     float spltx=WW/2, splty=HH/2;
     
     bool prepatch=false;
