@@ -244,6 +244,8 @@ public:
     int rtlo;
     int atlo;
     float ptr;
+    float rmag=1.0;
+    float amag=.5;
 
     tlo()
     {
@@ -301,8 +303,8 @@ public:
     void evolve(tbl2 tx[], tlo ox[])
     {
         incptr(tx);
-        if(rtlo!=-1) rate=abs(rateref*ox[rtlo].samp(tx));
-        if(atlo!=-1) amp=abs(ampref*ox[atlo].samp(tx));
+        if(rtlo!=-1) rate=abs(rateref + rmag*ox[rtlo].samp(tx));
+        if(atlo!=-1) amp=abs(ampref + amag*ox[atlo].samp(tx));
     }
 
     float samp(tbl2 tx[])

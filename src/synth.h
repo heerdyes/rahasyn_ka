@@ -289,9 +289,10 @@ public:
                 
                 if(cmd==8) // wavetable
                 {
-                    u.spline2(tblxywh[d1].x,tblxywh[d1].y, tblxywh[i].x,tblxywh[i].y, splwx,splwy, 22, "~1");
-                    u.spline2(tblxywh[d2].x,tblxywh[d2].y, tblxywh[i].x,tblxywh[i].y, splwx,splwy, 22, "~2");
-                    u.spline2(tloxywh[d3].x,tloxywh[d3].y, tblxywh[i].x,tblxywh[i].y, spltx,splty, 22, "m");
+                    string pt="~"+ofToString((char)(65+i));
+                    u.spline2(tblxywh[d1].x,tblxywh[d1].y, tblxywh[i].x,tblxywh[i].y, splwx,splwy, 22, pt+"1");
+                    u.spline2(tblxywh[d2].x,tblxywh[d2].y, tblxywh[i].x,tblxywh[i].y, splwx,splwy, 22, pt+"2");
+                    u.spline2(tloxywh[d3].x,tloxywh[d3].y, tblxywh[i].x,tblxywh[i].y, spltx,splty, 22, pt+"o");
                 }
             }
         }
@@ -309,6 +310,10 @@ public:
         float rd2=.30;
         float lx2=(1-rd2)*x + rd2*cx;
         float ly2=(1-rd2)*y + rd2*cy;
+        // rate / amp mod amt display
+        float rd3=.45;
+        float lx3=(1-rd3)*x + rd3*cx;
+        float ly3=(1-rd3)*y + rd3*cy;
         
         TRBLU;
         if(oref.tid==-1)
@@ -323,6 +328,9 @@ public:
             ofDrawBitmapString(slbl, lx,ly);
             ofDrawBitmapString(ofToString(oref.rate,3), lx2-18,ly2-10);
             ofDrawBitmapString(ofToString(oref.amp,3), lx2-18,ly2+10);
+            
+            ofDrawBitmapString(ofToString(oref.rmag,2), lx3-14,ly3-6);
+            ofDrawBitmapString(ofToString(oref.amag,2), lx3-14,ly3+6);
             return;
         }
         
@@ -346,6 +354,9 @@ public:
         ofDrawBitmapString(slbl, lx,ly);
         ofDrawBitmapString(ofToString(oref.rate,3), lx2-18,ly2-10);
         ofDrawBitmapString(ofToString(oref.amp,3), lx2-18,ly2+10);
+        // rate and amp mod amts
+        ofDrawBitmapString(ofToString(oref.rmag,2), lx3-14,ly3-6);
+        ofDrawBitmapString(ofToString(oref.amag,2), lx3-14,ly3+6);
 
         // x axis
         AXISX;
