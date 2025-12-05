@@ -244,8 +244,8 @@ public:
     int rtlo;
     int atlo;
     float ptr;
-    float rmag=1.0;
-    float amag=.5;
+    float rmag;
+    float amag;
 
     tlo()
     {
@@ -273,6 +273,8 @@ public:
         amp=a0;
         rateref=r0;
         ampref=a0;
+        rmag=rateref;
+        amag=ampref;
     }
 
     void setra(float rr, float aa)
