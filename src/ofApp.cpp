@@ -33,8 +33,9 @@ void ofApp::initfsm()
     s26.setup(280,HH-280, 26);
     s27.setup(360,HH-260, 27);
     //
-    s28.setup(560,HH-303, 28);
-    s29.setup(620,HH-303, 29);
+    s28.setup(590,HH-303, 28);
+    //s29.setup(620,HH-303, 29);
+    s30.setup(590,HH-44, 30);
 }
 
 void ofApp::exit()
@@ -180,10 +181,10 @@ void ofApp::rndrfsm()
     u.edge2(s26,s27, (s26.x+s27.x)/2,s27.y+10, "[1-9]");
     u.edge3(s27,s27, s27.x-50,s27.y-36, s27.x+50,s27.y-36, "[0-9]");
     u.edge2(s27,s0, (s27.x+s0.x)/2+22,(s27.y+s0.y)/2-55, "\\n");
-    u.edge2(s0,s28, s0.x-33,(s0.y+s28.y)/2, "</>");
-    u.edge2(s28,s29, (s28.x+s29.x)/2,s29.y-33, "[a-zA-Z0-9]");
-    u.edge3(s29,s29, s29.x-44,s29.y-44, s29.x+44,s29.y-44, "[a-zA-Z0-9]");
-    u.edge2(s29,s0, (s29.x+s0.x)/2,(s29.y+s0.y)/2, "\\n");
+    u.edge2(s0,s28, (s0.x+s28.x)/2-44,(s0.y+s28.y)/2+33, "</>");
+    u.edge2(s28,s0, (s28.x+s0.x)/2+44,(s28.y+s0.y)/2-33, "[0-9a-z]");
+    u.edge2(s0,s30, (s0.x+s30.x)/2-44,(s0.y+s30.y)/2+33, "<\\>");
+    u.edge2(s30,s0, (s0.x+s30.x)/2+44,(s0.y+s30.y)/2-33, "[a-z]");
 
     // then nodes, to prevent edge lines reaching the center
     s0.rndr(state);
@@ -215,7 +216,8 @@ void ofApp::rndrfsm()
     s26.rndr(state);
     s27.rndr(state);
     s28.rndr(state);
-    s29.rndr(state);
+    //s29.rndr(state);
+    s30.rndr(state);
 }
 
 //--------------------------------------------------------------
@@ -282,6 +284,42 @@ void ofApp::audioOut(ofSoundBuffer & outbuf)
 
         // a-rate and k-rate are unified?
         z.evolve();
+    }
+}
+
+void ofApp::sourcerhka(string kafn)
+{
+    ofBuffer cmdsq=ofBufferFromFile(kafn);
+    string scmd=cmdsq.getText();
+    
+    for(size_t i=0;i<scmd.length();i++)
+    {
+        int ki=0;
+        char tc=scmd[i];
+        
+        if(tc=='\n') ki=13;
+        else if(tc=='<')
+        {
+            string fntok;
+            for(;;)
+            {
+                i++;
+                if(i>=scmd.length()) break;
+                if(scmd[i]=='>') break;
+                fntok+=scmd[i];
+            }
+            
+            if(fntok=="F1") ki=57344;
+            else if(fntok=="F2") ki=57345;
+            else if(fntok=="F3") ki=57346;
+            else if(fntok=="F4") ki=57347;
+            else if(fntok=="F12") ki=57355;
+        }
+        else ki=(int)scmd[i];
+        
+        cout<<"[autokey] "<<ki<<endl;
+        if(ki==10) kpevt(13);
+        kpevt(ki);
     }
 }
 
@@ -369,6 +407,11 @@ void ofApp::kpevt(int key)
         {
             S.push(key);
             state=28;
+        }
+        else if(key==92) /* \\ */
+        {
+            S.push(key);
+            state=30;
         }
     }
     else if(state==1)
@@ -880,60 +923,27 @@ void ofApp::kpevt(int key)
     }
     else if(state==28)
     {
-        if((key>=97 && key<=122) || (key>=48 && key<=57) || (key>=65 && key<=90))
+        if((key>=48 && key<=57) || (key>=97 && key<=122))
         {
             numtok+=ofToString((char)key);
-            state=29;
-        }
-    }
-    else if(state==29)
-    {
-        if((key>=97 && key<=122) || (key>=48 && key<=57) || (key>=65 && key<=90))
-        {
-            numtok+=ofToString((char)key);
-            state=29;
-        }
-        else if(key==13)
-        {
             S.pop();
-            string kafn(numtok+".rhka");
-            L.log("automaton: "+kafn);
+            
+            string kafn(ofToString(bank)+numtok+".rhka");
+            L.log("-> sourcing program: "+kafn);
             
             numtok.clear();
             state=0;
-            
-            ofBuffer cmdsq=ofBufferFromFile(kafn);
-            string scmd=cmdsq.getText();
-            
-            for(size_t i=0;i<scmd.length();i++)
-            {
-                int ki=0;
-                char tc=scmd[i];
-                
-                if(tc=='\n') ki=13;
-                else if(tc=='<')
-                {
-                    string fntok;
-                    for(;;)
-                    {
-                        i++;
-                        if(i>=scmd.length()) break;
-                        if(scmd[i]=='>') break;
-                        fntok+=scmd[i];
-                    }
-                    
-                    if(fntok=="F1") ki=57344;
-                    else if(fntok=="F2") ki=57345;
-                    else if(fntok=="F3") ki=57346;
-                    else if(fntok=="F4") ki=57347;
-                    else if(fntok=="F12") ki=57355;
-                }
-                else ki=(int)scmd[i];
-                
-                cout<<"[autokey] "<<ki<<endl;
-                if(ki==10) kpevt(13);
-                kpevt(ki);
-            }
+            sourcerhka(kafn);
+        }
+    }
+    else if(state==30)
+    {
+        if(key>=97 && key<=122)
+        {
+            S.pop();
+            bank=ckey;
+            L.log("# source bank: "+ofToString(bank));
+            state=0;
         }
     }
 }
