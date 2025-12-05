@@ -282,6 +282,18 @@ public:
             tblxywh[i].h=40;
 
             rndrtbl(i, x,y);
+            if(tcmd[i]!=0)
+            {
+                int cmd,d1,d2,d3;
+                u.tcmd_unpack(tcmd[i], &cmd, &d1, &d2, &d3);
+                
+                if(cmd==8) // wavetable
+                {
+                    u.spline2(tblxywh[d1].x,tblxywh[d1].y, tblxywh[i].x,tblxywh[i].y, splwx,splwy, 22, "~1");
+                    u.spline2(tblxywh[d2].x,tblxywh[d2].y, tblxywh[i].x,tblxywh[i].y, splwx,splwy, 22, "~2");
+                    u.spline2(tloxywh[d3].x,tloxywh[d3].y, tblxywh[i].x,tblxywh[i].y, spltx,splty, 22, "m");
+                }
+            }
         }
     }
 
@@ -418,6 +430,12 @@ public:
         splty=yy;
     }
     
+    void updatesplw(float xx, float yy)
+    {
+        splwx=xx;
+        splwy=yy;
+    }
+    
     void panic()
     {
         if(v0>=0) ox[v0].seta(.0);
@@ -456,8 +474,9 @@ public:
     xywh tloxywh[NTLO];
 
     ut u; // TODO: make a singleton utility available for all classes
-    float splox=3*WW/4, sploy=HH/2;
+    float splox=3*WW/4, sploy=HH/2-64;
     float spltx=WW/2, splty=HH/2;
+    float splwx=WW/4, splwy=HH/2-64;
     
     bool prepatch=false;
 };

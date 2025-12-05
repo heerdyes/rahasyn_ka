@@ -335,6 +335,10 @@ void ofApp::kpevt(int key)
     {
         z.updatesplo(mouseX, mouseY);
     }
+    if(key==3684)
+    {
+        z.updatesplw(mouseX, mouseY);
+    }
     
     if(key==96)
     {
