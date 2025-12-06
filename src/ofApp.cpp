@@ -30,8 +30,8 @@ void ofApp::initfsm()
     s23.setup(120,HH-138, 23);
     s24.setup(60,HH-118, 24);
     s25.setup(100,HH-48, 25);
-    s26.setup(280,HH-280, 26);
-    s27.setup(360,HH-260, 27);
+    s26.setup(260,HH-300, 26);
+    s27.setup(340,HH-280, 27);
     //
     s28.setup(550,HH-323, 28);
     s30.setup(560,HH-44, 30);
@@ -41,6 +41,8 @@ void ofApp::initfsm()
     s34.setup(650,HH-53, 34);
     s35.setup(740,HH-60, 35);
     s37.setup(700,HH-123, 37);
+    //
+    s31.setup(390,HH-250, 31);
 }
 
 void ofApp::exit()
@@ -142,6 +144,21 @@ void ofApp::update()
 	    // map the master gain
     	z.mgain=ofMap(pko.kn0, 0,4096, .0,.999);
     }
+    
+    // wave pencil
+    if(state==31)
+    {
+        if(S.sp==2)
+        {
+            int txia=S.buf[0];
+            int txi=txia-65;
+            
+            int tndx=(int)ofMap(mouseX, 0,WW, 0,z.tx[txi].sz);
+            float vv=ofMap(mouseY, 0,HH, 1,-1);
+            
+            z.tx[txi].sampwr(tndx, vv);
+        }
+    }
 }
 
 void ofApp::rndrfsm()
@@ -171,7 +188,7 @@ void ofApp::rndrfsm()
     u.edge3(s11,s11, s11.x-40,s11.y-40,s11.x+40,s11.y-40, "[0-9]");
     u.edge2(s11,s0, (s11.x+s0.x)/2,s0.y, "\\n");
     u.edge2(s0,s12, s12.x,(s0.y+s12.y)/2, "[A-Z]");
-    u.edge2(s12,s0, s0.x-20,(s0.y+s12.y)/2-20, "[wzjub]");
+    u.edge2(s12,s0, s0.x-44,(s0.y+s12.y)/2-20, "[wzjub]");
     u.edge2(s12,s13, (s12.x+s13.x)/2,s12.y+22, "d");
     u.edge2(s12,s26, s12.x-18,s12.y-10, "r");
     u.edge2(s13,s14, (s13.x+s14.x)/2+8,s14.y+22, "<.>");
@@ -214,6 +231,8 @@ void ofApp::rndrfsm()
     u.edge2(s35,s34, (s35.x+s34.x)/2,(s35.y+s34.y)/2+22, "[0-9]");
     u.edge3(s34,s34, s34.x-55,s34.y+55, s34.x-55,s34.y-33, "[0-9]");
     u.edge2(s34,s0, (s34.x+s0.x)/2+33,(s34.y+s0.y)/2-33, "\\n");
+    u.edge2(s12,s31, (s12.x+s31.x)/2,(s12.y+s31.y)/2-22, "m");
+    u.edge2(s31,s0, (s0.x+s31.x)/2+22,(s0.y+s31.y)/2-22, "\\n");
 
     // then nodes, to prevent edge lines reaching the center
     s0.rndr(state); s1.rndr(state); s2.rndr(state); s3.rndr(state);
@@ -225,6 +244,7 @@ void ofApp::rndrfsm()
     s24.rndr(state); s25.rndr(state); s26.rndr(state); s27.rndr(state);
     s28.rndr(state); s29.rndr(state); s30.rndr(state); s32.rndr(state);
     s33.rndr(state); s34.rndr(state); s35.rndr(state); s37.rndr(state);
+    s31.rndr(state);
 }
 
 //--------------------------------------------------------------
@@ -767,6 +787,13 @@ void ofApp::kpevt(int key)
             state=26;
             cmdlog+=ofToString(ckey);
         }
+        else if(key==109) // m
+        {
+            S.push(key);
+            state=31;
+            cmdlog+="m";
+            L.log("# wave mouse stupidly to change waveform");
+        }
     }
     else if(state==13)
     {
@@ -1140,6 +1167,16 @@ void ofApp::kpevt(int key)
             
             state=0;
             cmdlog+="\n";
+        }
+    }
+    else if(state==31)
+    {
+        if(key==13)
+        {
+            state=0;
+            S.pop(); S.pop();
+            cmdlog+="\n";
+            L.log("# wave pencil ended");
         }
     }
 }

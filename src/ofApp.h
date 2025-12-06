@@ -71,7 +71,7 @@ class ofApp : public ofBaseApp{
         nd s12,s13,s14,s15,s16,s17,s18,s19,s20,s21;
         nd s22,s23,s24,s25,s26,s27;
         nd s28,s29,s30,s32,s33,s34,s35,s37;
-        nd s31,s36; // unused
+        nd s31,s36;
 
         syn z;
         int rbctr=0;
