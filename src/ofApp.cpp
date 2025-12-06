@@ -36,13 +36,11 @@ void ofApp::initfsm()
     s28.setup(550,HH-323, 28);
     s30.setup(560,HH-44, 30);
     s29.setup(840,HH-323, 29);
-    s31.setup(820,HH-373, 31);
     s32.setup(760,HH-383, 32);
     s33.setup(700,HH-343, 33);
-    s34.setup(640,HH-63, 34);
-    s35.setup(690,HH-123, 35);
-    s36.setup(740,HH-38, 36);
-    s37.setup(840,HH-53, 37);
+    s34.setup(650,HH-53, 34);
+    s35.setup(740,HH-60, 35);
+    s37.setup(700,HH-123, 37);
 }
 
 void ofApp::exit()
@@ -199,61 +197,28 @@ void ofApp::rndrfsm()
     u.edge2(s0,s30, (s0.x+s30.x)/2-44,(s0.y+s30.y)/2+33, "<\\>");
     u.edge2(s30,s0, (s0.x+s30.x)/2+44,(s0.y+s30.y)/2-33, "[a-z]");
     u.edge2(s3,s29, (s3.x+s29.x)/2,(s3.y+s29.y)/2-11, "<=>");
-    u.edge2(s29,s31, (s29.x+s31.x)/2+22,(s29.y+s31.y)/2+15, "[1-9]");
-    u.edge2(s29,s32, (s29.x+s32.x)/2-22,(s29.y+s32.y)/2+11, "<.>");
-    u.edge2(s31,s32, (s31.x+s32.x)/2+22,(s31.y+s32.y)/2, "<.>");
-    u.edge3(s31,s31, s31.x-11,s31.y-44, s31.x+66,s31.y-44, "[0-9]");
+    u.edge2(s29,s32, (s29.x+s32.x)/2+22,(s29.y+s32.y)/2-22, "<.>");
+    u.edge2(s29,s0, (s29.x+s0.x)/2+55,(s29.y+s0.y)/2-178, "1");
     u.edge2(s32,s33, (s32.x+s33.x)/2-22,(s32.y+s33.y)/2+11, "[0-9]");
     u.edge3(s33,s33, s33.x-44,s33.y+44, s33.x-44,s33.y-44, "[0-9]");
     u.edge2(s33,s0, (s33.x+s0.x)/2-22,(s33.y+s0.y)/2-11, "\\n");
     u.edge2(s4,s37, (s4.x+s37.x)/2+22,(s4.y+s37.y)/2, "<=>");
-    u.edge2(s37,s36, (s36.x+s37.x)/2,(s36.y+s37.y)/2+22, "[1-9]");
     u.edge2(s37,s35, (s35.x+s37.x)/2,(s35.y+s37.y)/2+22, "<.>");
-    u.edge3(s36,s36, s36.x-55,s36.y+55, s36.x-55,s36.y-33, "[0-9]");
-    u.edge2(s36,s35, (s35.x+s36.x)/2,(s35.y+s36.y)/2+22, "<.>");
+    u.edge2(s37,s0, (s0.x+s37.x)/2+22,(s0.y+s37.y)/2, "1");
     u.edge2(s35,s34, (s35.x+s34.x)/2,(s35.y+s34.y)/2+22, "[0-9]");
     u.edge3(s34,s34, s34.x-55,s34.y+55, s34.x-55,s34.y-33, "[0-9]");
     u.edge2(s34,s0, (s34.x+s0.x)/2+33,(s34.y+s0.y)/2-33, "\\n");
 
     // then nodes, to prevent edge lines reaching the center
-    s0.rndr(state);
-    s1.rndr(state);
-    s2.rndr(state);
-    s3.rndr(state);
-    s4.rndr(state);
-    s5.rndr(state);
-    s6.rndr(state);
-    s7.rndr(state);
-    s8.rndr(state);
-    s9.rndr(state);
-    s10.rndr(state);
-    s11.rndr(state);
-    s12.rndr(state);
-    s13.rndr(state);
-    s14.rndr(state);
-    s15.rndr(state);
-    s16.rndr(state);
-    s17.rndr(state);
-    s18.rndr(state);
-    s19.rndr(state);
-    s20.rndr(state);
-    s21.rndr(state);
-    s22.rndr(state);
-    s23.rndr(state);
-    s24.rndr(state);
-    s25.rndr(state);
-    s26.rndr(state);
-    s27.rndr(state);
-    s28.rndr(state);
-    s29.rndr(state);
-    s30.rndr(state);
-    s31.rndr(state);
-    s32.rndr(state);
-    s33.rndr(state);
-    s34.rndr(state);
-    s35.rndr(state);
-    s36.rndr(state);
-    s37.rndr(state);
+    s0.rndr(state); s1.rndr(state); s2.rndr(state); s3.rndr(state);
+    s4.rndr(state); s5.rndr(state); s6.rndr(state); s7.rndr(state);
+    s8.rndr(state); s9.rndr(state); s10.rndr(state); s11.rndr(state);
+    s12.rndr(state); s13.rndr(state); s14.rndr(state); s15.rndr(state);
+    s16.rndr(state); s17.rndr(state); s18.rndr(state); s19.rndr(state);
+    s20.rndr(state); s21.rndr(state); s22.rndr(state); s23.rndr(state);
+    s24.rndr(state); s25.rndr(state); s26.rndr(state); s27.rndr(state);
+    s28.rndr(state); s29.rndr(state); s30.rndr(state); s32.rndr(state);
+    s33.rndr(state); s34.rndr(state); s35.rndr(state); s37.rndr(state);
 }
 
 //--------------------------------------------------------------
@@ -1064,32 +1029,24 @@ void ofApp::kpevt(int key)
     }
     else if(state==29)
     {
-        if(key>=49 && key<=57)
-        {
-            numtok+=ckey;
-            state=31;
-            cmdlog+=ofToString(ckey);
-        }
-        else if(key==46) // .
+        if(key==46) // .
         {
             numtok+=ckey;
             state=32;
             cmdlog+=ofToString(ckey);
         }
-    }
-    else if(state==31)
-    {
-        if(key>=48 && key<=57)
+        else if(key==49) // 1
         {
-            numtok+=ckey;
-            state=31;
-            cmdlog+=ofToString(ckey);
-        }
-        else if(key==46) // .
-        {
-            numtok+=ckey;
-            state=32;
-            cmdlog+=ofToString(ckey);
+            S.pop(); S.pop(); // pop = and r
+            int oia=S.pop();
+            char oc=(char)oia;
+            int oi=oia-97;
+            
+            z.ox[oi].rmag=1.0;
+            L.log("// "+ofToString(oc)+".rmag = 1.0");
+            
+            state=0;
+            cmdlog+="1";
         }
     }
     else if(state==32)
@@ -1133,26 +1090,18 @@ void ofApp::kpevt(int key)
             state=35;
             cmdlog+=ckey;
         }
-        else if(key>=49 && key<=57)
+        else if(key==49) // 1
         {
-            numtok+=ckey;
-            state=36;
-            cmdlog+=ckey;
-        }
-    }
-    else if(state==36)
-    {
-        if(key>=48 && key<=57)
-        {
-            numtok+=ckey;
-            state=36;
-            cmdlog+=ckey;
-        }
-        else if(key==46) // .
-        {
-            numtok+=".";
-            state=35;
-            cmdlog+=".";
+            S.pop(); S.pop();
+            int oia=S.pop();
+            char oic=(char)oia;
+            int oi=oia-97;
+            
+            z.ox[oi].amag=1.0;
+            L.log("// "+ofToString(oic)+".amag = 1.0");
+            
+            state=0;
+            cmdlog+="1";
         }
     }
     else if(state==35)

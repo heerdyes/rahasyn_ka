@@ -305,8 +305,8 @@ public:
     void evolve(tbl2 tx[], tlo ox[])
     {
         incptr(tx);
-        if(rtlo!=-1) rate=abs(rateref + rmag*ox[rtlo].samp(tx));
-        if(atlo!=-1) amp=abs(ampref + amag*ox[atlo].samp(tx));
+        if(rtlo!=-1) rate=abs(rateref * (1.0 + rmag*ox[rtlo].samp(tx)));
+        if(atlo!=-1) amp=abs(ampref * (1.0 + amag*ox[atlo].samp(tx)));
     }
 
     float samp(tbl2 tx[])
