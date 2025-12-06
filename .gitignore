@@ -1,4 +1,5 @@
 obj/
 bin/libfmod.so
 bin/rahasyn_ka
+bin/data/session.rhka
 
