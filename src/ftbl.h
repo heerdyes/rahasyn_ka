@@ -255,6 +255,8 @@ public:
         rate=rateref=1.0;
         amp=ampref=1.0;
         tid=-1; // -1 causes system wide ramifications
+        amag=1.0;
+        rmag=1.0;
     }
 
     bool ratemodded() { return rtlo!=-1; }
@@ -273,8 +275,8 @@ public:
         amp=a0;
         rateref=r0;
         ampref=a0;
-        rmag=rateref;
-        amag=ampref;
+        rmag=1.0;
+        amag=1.0;
     }
 
     void setra(float rr, float aa)
