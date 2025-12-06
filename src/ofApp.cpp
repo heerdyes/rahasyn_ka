@@ -132,10 +132,13 @@ void ofApp::update()
 	    }
 	}
 	
-	// listen to h/w i/f
-	if(pko.state!='e') pko.listen(L);
-	// knob for synth master gain
-	if(pko.state!='e') z.mgain=ofMap(pko.kn0, 0,4096, .0,.999);
+	// listen to h/w i/f if connected
+	if(pko.state!='e')
+	{
+	    pko.listen(L);
+	    // map the master gain
+    	z.mgain=ofMap(pko.kn0, 0,4096, .0,.999);
+    }
 }
 
 void ofApp::rndrfsm()
