@@ -50,8 +50,11 @@ void ofApp::exit()
     cout<<endl<<"[session.rhka]"<<endl;
     cout<<cmdlog<<endl<<endl;
     
-    ofBuffer snbuf(cmdlog.c_str(), cmdlog.size());
-    ofBufferToFile("session.rhka", snbuf);
+    if(persist_cmdlog)
+    {
+        ofBuffer snbuf(cmdlog.c_str(), cmdlog.size());
+        ofBufferToFile("session.rhka", snbuf);
+    }
 }
 
 //--------------------------------------------------------------

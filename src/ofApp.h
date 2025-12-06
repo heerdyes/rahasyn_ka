@@ -95,6 +95,7 @@ class ofApp : public ofBaseApp{
 		bool isdvdss=true;
 		int camclk=0;
 		bool camon=false;
+		bool persist_cmdlog=false;
 		
 		float arg1,arg2;
 		char bank='a';
