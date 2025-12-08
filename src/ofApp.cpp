@@ -70,10 +70,12 @@ void ofApp::setup()
     state=0;
     
     initfsm();
-    z.setup();
+    z.setup(&mpdq);
     L.setup(1380,HH-303);
     pko.setup();
     soundsetup();
+    //
+    mpd.setup("/dev/midi", &mpdq);
     
     if(camon)
     {
@@ -93,6 +95,8 @@ void ofApp::setup()
 	L.log("  / --------- --------- \\");
 	L.log("||  greetings soundseer  ||");
 	L.log("  \\ --------- --------- /");
+	L.log("");
+	L.log("[mpd] "+mpd.state);
 }
 
 //--------------------------------------------------------------
@@ -181,7 +185,7 @@ void ofApp::rndrfsm()
     u.edge2(s4,s6, (s4.x+s6.x)/2+22,(s4.y+s6.y)/2+22, "<.>");
     u.edge2(s7,s0, (s7.x+s0.x)/2+44,(s7.y+s0.y)/2-44, "\\n");
     u.edge2(s2,s8, s2.x-8,s8.y, "t");
-    u.edge2(s8,s0, s0.x,s8.y+30, "-|[A-Z]");
+    u.edge2(s8,s0, (s0.x+s8.x)/2+22,(s0.y+s8.y)/2, "-|[A-Z]");
     u.edge2(s0,s9, (s0.x+s9.x)/2-33,(s0.y+s9.y)/2+55, "F12");
     u.edge2(s9,s10, (s9.x+s10.x)/2,s10.y+22, "<.>");
     u.edge2(s10,s11, (s10.x+s11.x)/2-22,s11.y+33, "[0-9]");
@@ -270,6 +274,9 @@ void ofApp::draw()
         float xx=cx+i*kx;
         ofDrawLine(xx,cgy,xx,cgy-scope[i]*ky);
     }
+    
+    // rndr q
+    mpdq.rndr(212,11);
 
     z.rndrtlos(WW/2+550, HH/2-170, 330);
     z.rndrtbls(WW/2-550, HH/2-170, 330);

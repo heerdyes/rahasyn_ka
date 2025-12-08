@@ -17,8 +17,9 @@ public:
         waitForThread(false);
     }
 
-    void setup()
+    void setup(iq *qq)
     {
+        qref=qq;
         mgain=0.125;
 
         inittbl();
@@ -43,6 +44,13 @@ public:
     {
         while(isThreadRunning())
         {
+            // midimon
+            if(!qref->mt())
+            {
+                int b=qref->dq();
+                //cout<<"[syn][mq] "<<b<<endl;
+            }
+            
             // tcmd computer
             for(int i=0;i<NTBL;i++)
             {
@@ -490,5 +498,8 @@ public:
     float splwx=WW/4, splwy=HH/2-64;
     
     bool prepatch=false;
+    
+    // midi q
+    iq *qref;
 };
 

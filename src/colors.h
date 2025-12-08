@@ -23,3 +23,7 @@
 #define AXISX   (ofSetColor(255,88,0))
 #define VXXHAIR (ofSetColor(222,128,111))
 
+#define IQBEG   (ofSetColor(0,255,144))
+#define IQEND   (ofSetColor(255,64,0))
+#define IQGRE   (ofSetColor(144))
+

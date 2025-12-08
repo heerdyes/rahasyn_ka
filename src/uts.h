@@ -3,6 +3,7 @@
 #include "ofMain.h"
 
 #define STK_MAX (64)
+#define MQ_MAX  (44)
 #define LOG_MAX (18)
 
 #define SNHALF  (0.5 * 8)
@@ -214,6 +215,71 @@ public:
     {
         buf[pos]=s;
         pos=(pos+1)%LOG_MAX;
+    }
+};
+
+class iq
+{
+public:
+    int buf[MQ_MAX];
+    int qbeg;
+    int qend;
+    
+    iq()
+    {
+        for(int i=0;i<MQ_MAX;i++) buf[i]=0;
+        qbeg=0;
+        qend=0;
+    }
+    
+    void nq(int d)
+    {
+        if((qend+1)%MQ_MAX==qbeg) // limit
+        {
+            cout<<"[WARN][iq] data loss!"<<endl;
+            buf[qend]=d;
+            
+            qbeg=1;
+            qend=0;
+        }
+        else
+        {
+            buf[qend]=d;
+            qend=(qend+1)%MQ_MAX;
+        }
+    }
+    
+    int dq()
+    {
+        if(qbeg==qend) return 0; // empty
+        
+        int v=buf[qbeg];
+        qbeg=(qbeg+1)%MQ_MAX;
+        
+        return v;
+    }
+    
+    bool mt() { return qbeg==qend; }
+    
+    void rndr(float x,float y)
+    {
+        float xx=x;
+        WWHITE;
+        ofDrawBitmapString("[", xx,y);
+        xx+=16;
+        
+        for(int i=0;i<MQ_MAX;i++)
+        {
+            if(i==qbeg) IQBEG;
+            else if(i==qend) IQEND;
+            else IQGRE;
+            
+            ofDrawBitmapString(ofToString(buf[i],3,'0'), xx,y);
+            xx+=32;
+        }
+        
+        WWHITE;
+        ofDrawBitmapString("]", xx,y);
     }
 };
 

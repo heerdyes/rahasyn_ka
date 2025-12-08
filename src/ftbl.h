@@ -308,7 +308,7 @@ public:
     {
         incptr(tx);
         if(rtlo!=-1) rate=abs(rateref * (1.0 + rmag*ox[rtlo].samp(tx)));
-        if(atlo!=-1) amp=abs(ampref * (1.0 + amag*ox[atlo].samp(tx)));
+        if(atlo!=-1) amp=abs(ampref * (1.0 + amag*ox[atlo].samp(tx)) / 2);
     }
 
     float samp(tbl2 tx[])

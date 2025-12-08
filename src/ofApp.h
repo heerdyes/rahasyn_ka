@@ -11,6 +11,7 @@
 #include "ftbl.h"
 #include "synth.h"
 #include "hwif.h"
+#include "mpd218.h"
 
 #define SCOP_SIZE   (1024)
 
@@ -103,5 +104,9 @@ class ofApp : public ofBaseApp{
 		
 		// pico i/f
 		rp2 pko;
+		
+		// midi instr
+		mpdctl mpd;
+		iq mpdq;
 };
 

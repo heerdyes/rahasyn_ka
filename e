@@ -11,4 +11,6 @@ gedit src/ftbl.h
 gedit src/fsm.h
 gedit src/uts.h
 gedit src/hwif.h
+gedit src/mpd218.h
+gedit src/colors.h
 
