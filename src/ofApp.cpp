@@ -59,6 +59,13 @@ void ofApp::exit()
     }
 }
 
+void ofApp::loadconf()
+{
+    conf.load("settings.xml");
+    mpdmidf=conf.getValue("raha:midi","");
+    ofLog()<<"#conf# setting mpdmidf: "<<mpdmidf;
+}
+
 //--------------------------------------------------------------
 void ofApp::setup()
 {
@@ -75,7 +82,8 @@ void ofApp::setup()
     pko.setup();
     soundsetup();
     //
-    mpd.setup("/dev/midi", &mpdq);
+    loadconf();
+    mpd.setup(mpdmidf, &mpdq);
     
     if(camon)
     {

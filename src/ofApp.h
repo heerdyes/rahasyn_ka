@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxXmlSettings.h"
 
 #define HH          (ofGetHeight())
 #define WW          (ofGetWidth())
@@ -59,6 +60,7 @@ class ofApp : public ofBaseApp{
         void rndrfsm();
         void kpevt(int key);
         void sourcerhka(string kafn);
+        void loadconf();
 
         ofSoundStream soundStream;
 
@@ -108,5 +110,9 @@ class ofApp : public ofBaseApp{
 		// midi instr
 		mpdctl mpd;
 		iq mpdq;
+		string mpdmidf;
+		
+		// cfg
+		ofxXmlSettings conf;
 };
 
