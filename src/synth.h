@@ -140,32 +140,41 @@ public:
         
         // triangles
         tx[4].utri();
+        tx[4].uni2bi();
 
         // noise
         tx[5].birnd();
         tcmd[5]=u.tcmd_pack(2, 2, 2, 0);
-        
-        tx[6].urnd();
-        tcmd[6]=u.tcmd_pack(1, 6, 5, 0);
 
         // wild pulses
-        tx[7].pulse(.5);
+        tx[6].pulse(.09);
+        tx[7].pulse(.33);
         tx[8].pulse(.25);
         tx[9].pulse(.125);
         tx[10].pulse(.125,.5);
         tx[11].squ();
         tx[12].btri();
+        
         tx[13].dcy(.975);
+        tx[13].uni2bi();
+        
         tx[14].dcy(-.98);
         tx[15].wqspline(10,1, 150,-1, 500);
         tx[16].wqspline(80,2.4, 162,-2.2, 500);
         tx[17].wqspline(10,3.6, 250,-3.4, 500);
+        
         tx[18].dcy(.96);
         tx[18].dcy(.96,.6666);
+        tx[18].uni2bi();
+        
         tx[19].dcy(.96);
         tx[19].dcy(.96,.3333);
+        tx[19].uni2bi();
+        
         tx[20].dcy(.95);
         tx[20].dcy(.975,.25);
+        tx[20].uni2bi();
+        
         tx[21].setup(1024);
         tx[21].trijya(.5,1, 1,3, 3,1);
         tx[22].setup(1024);
