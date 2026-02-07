@@ -246,6 +246,8 @@ public:
     float ptr;
     float rmag;
     float amag;
+    // single sweep osc
+    bool trigo;
 
     tlo()
     {
@@ -257,6 +259,7 @@ public:
         tid=-1; // -1 causes system wide ramifications
         amag=1.0;
         rmag=1.0;
+        trigo=false; // trigable oscil
     }
 
     bool ratemodded() { return rtlo!=-1; }
@@ -268,7 +271,7 @@ public:
         return tx[tid].sz;
     }
 
-    void setup(int tt, float r0, float a0)
+    void setup(int tt, float r0, float a0, bool tro=false)
     {
         tid=tt;
         rate=r0;
@@ -277,6 +280,7 @@ public:
         ampref=a0;
         rmag=1.0;
         amag=1.0;
+        trigo=tro;
     }
 
     void setra(float rr, float aa)
@@ -296,12 +300,26 @@ public:
         ampref=aa;
         amp=aa;
     }
+    
+    void trigger()
+    {
+        if(trigo) ptr=0;
+    }
 
     void incptr(tbl2 tx[])
     {
         if(tid==-1) return;
-        ptr+=rate;
-        while(ptr>tx[tid].sz-1) ptr-=tx[tid].sz-1;
+        
+        if(trigo)
+        {
+            if(ptr>=tx[tid].sz-1) ptr=tx[tid].sz-1;
+            else ptr+=rate;
+        }
+        else
+        {
+            ptr+=rate;
+            while(ptr>tx[tid].sz-1) ptr-=tx[tid].sz-1;
+        }
     }
 
     void evolve(tbl2 tx[], tlo ox[])

@@ -348,6 +348,13 @@ public:
             
             ofDrawBitmapString(ofToString(oref.rmag,2), lx3-14,ly3-6);
             ofDrawBitmapString(ofToString(oref.amag,2), lx3-14,ly3+6);
+            
+            // signal trigability
+            if(oref.trigo)
+            {
+                TRRED;
+                ofDrawBitmapString("T", lx-7,ly-7);
+            }
             return;
         }
         
@@ -374,6 +381,12 @@ public:
         // rate and amp mod amts
         ofDrawBitmapString(ofToString(oref.rmag,2), lx3-14,ly3-6);
         ofDrawBitmapString(ofToString(oref.amag,2), lx3-14,ly3+6);
+        // signal trigability
+        if(oref.trigo)
+        {
+            TRRED;
+            ofDrawBitmapString("T", lx-7,ly-7);
+        }
 
         // x axis
         AXISX;

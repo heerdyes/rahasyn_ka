@@ -40,7 +40,7 @@ void ofApp::initfsm()
     s33.setup(700,HH-343, 33);
     s34.setup(650,HH-53, 34);
     s35.setup(740,HH-60, 35);
-    s37.setup(700,HH-123, 37);
+    s37.setup(700,HH-103, 37);
     //
     s31.setup(390,HH-250, 31);
 }
@@ -178,11 +178,12 @@ void ofApp::rndrfsm()
     // edges first
     u.edge2(s0,s1, (s0.x+s1.x)/2,s0.y+22, "F[1-4]");
     u.edge2(s1,s0, (s0.x+s1.x)/2,s1.y-11, "-|[a-z]");
-    u.edge2(s0,s2, (s0.x+s2.x)/2,(s0.y+s2.y)/2-20, "[a-z]");
+    u.edge2(s0,s2, (s0.x+s2.x)/2+20,(s0.y+s2.y)/2-20, "[a-z]");
+    u.edge2(s2,s0, (s0.x+s2.x)/2,(s0.y+s2.y)/2+36, ".|\\n");
     u.edge2(s2,s3, (s2.x+s3.x)/2+22,(s2.y+s3.y)/2+11, "r");
     u.edge2(s2,s4, s2.x,s4.y, "a");
     u.edge2(s3,s0, (s0.x+s3.x)/2,(s0.y+s3.y)/2-22, "-|[a-z]");
-    u.edge2(s4,s0, (s0.x+s4.x)/2+33,(s0.y+s4.y)/2-33, "-|[a-z]");
+    u.edge2(s4,s0, (s0.x+s4.x)/2+33,(s0.y+s4.y)/2, "-|[a-z]");
     u.edge2(s3,s5, (s3.x+s5.x)/2,(s3.y+s5.y)/2+11, "[0-9]");
     u.edge2(s3,s6, (s3.x+s6.x)/2+27,(s3.y+s6.y)/2-7, "<.>");
     u.edge3(s5,s5, s5.x+60,s5.y-30, s5.x+60,s5.y+30, "[0-9]");
@@ -191,7 +192,7 @@ void ofApp::rndrfsm()
     u.edge3(s7,s7, s7.x+80,s7.y, s7.x,s7.y+80, "[0-9]");
     u.edge2(s4,s5, (s4.x+s5.x)/2-22,(s4.y+s5.y)/2-22, "[0-9]");
     u.edge2(s4,s6, (s4.x+s6.x)/2+22,(s4.y+s6.y)/2+22, "<.>");
-    u.edge2(s7,s0, (s7.x+s0.x)/2+44,(s7.y+s0.y)/2-44, "\\n");
+    u.edge2(s7,s0, (s7.x+s0.x)/2+44,(s7.y+s0.y)/2+4, "\\n");
     u.edge2(s2,s8, s2.x-8,s8.y, "t");
     u.edge2(s8,s0, (s0.x+s8.x)/2+22,(s0.y+s8.y)/2, "-|[A-Z]");
     u.edge2(s0,s9, (s0.x+s9.x)/2-33,(s0.y+s9.y)/2+55, "F12");
@@ -521,6 +522,27 @@ void ofApp::kpevt(int key)
         {
             S.push(key);
             state=8;
+            cmdlog+=ofToString(ckey);
+        }
+        else if(ckey=='.')
+        {
+            int oc=S.pop();
+            int oci=oc-97;
+            
+            z.ox[oci].trigo=!z.ox[oci].trigo;
+            L.log("// "+ofToString((char)oc)+".trigo = "+ofToString(z.ox[oci].trigo));
+
+            state=0;
+            cmdlog+=ofToString(ckey);
+        }
+        else if(key==13)
+        {
+            int oc=S.pop();
+            int oci=oc-97;
+            L.log("// "+ofToString((char)oc)+".trig() !");
+
+            z.ox[oci].trigger();
+            state=0;
             cmdlog+=ofToString(ckey);
         }
     }
