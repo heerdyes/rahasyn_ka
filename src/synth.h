@@ -21,6 +21,7 @@ public:
     {
         qref=qq;
         mgain=0.125;
+        mdx=-1;
 
         inittbl();
         inittlo();
@@ -48,7 +49,10 @@ public:
             if(!qref->mt())
             {
                 int b=qref->dq();
-                //cout<<"[syn][mq] "<<b<<endl;
+                if(b==153)
+                {
+                    if(mdx>=0) ox[mdx].trigger();
+                }
             }
             
             // tcmd computer
@@ -487,7 +491,10 @@ public:
     
     void resetptrs()
     {
-        for(int i=0;i<NTLO;i++) ox[i].ptr=0.0;
+        for(int i=0;i<NTLO;i++)
+        {
+            if(!ox[i].trigo) ox[i].ptr=0.0;
+        }
     }
 
     // vars
@@ -500,6 +507,9 @@ public:
 
     // oscillators
     tlo ox[NTLO];
+    
+    // midi reactor
+    int mdx;
     
     // threaded table commands in tcmd format (refer uts.h)
     unsigned int tcmd[NTBL];

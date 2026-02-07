@@ -179,7 +179,7 @@ void ofApp::rndrfsm()
     u.edge2(s0,s1, (s0.x+s1.x)/2,s0.y+22, "F[1-4]");
     u.edge2(s1,s0, (s0.x+s1.x)/2,s1.y-11, "-|[a-z]");
     u.edge2(s0,s2, (s0.x+s2.x)/2+20,(s0.y+s2.y)/2-20, "[a-z]");
-    u.edge2(s2,s0, (s0.x+s2.x)/2,(s0.y+s2.y)/2+36, ".|\\n");
+    u.edge2(s2,s0, (s0.x+s2.x)/2,(s0.y+s2.y)/2+36, ".|m|\\n");
     u.edge2(s2,s3, (s2.x+s3.x)/2+22,(s2.y+s3.y)/2+11, "r");
     u.edge2(s2,s4, s2.x,s4.y, "a");
     u.edge2(s3,s0, (s0.x+s3.x)/2,(s0.y+s3.y)/2-22, "-|[a-z]");
@@ -542,6 +542,16 @@ void ofApp::kpevt(int key)
             L.log("// "+ofToString((char)oc)+".trig() !");
 
             z.ox[oci].trigger();
+            state=0;
+            cmdlog+=ofToString(ckey);
+        }
+        else if(ckey=='m')
+        {
+            int oc=S.pop();
+            int oci=oc-97;
+            z.mdx=oci;
+            
+            L.log("// "+ofToString((char)oc)+" is the midi target!");
             state=0;
             cmdlog+=ofToString(ckey);
         }
