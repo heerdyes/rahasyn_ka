@@ -3,7 +3,7 @@
 #include "ofMain.h"
 
 #define STK_MAX (64)
-#define MQ_MAX  (44)
+#define MQ_MAX  (32)
 #define LOG_MAX (18)
 
 #define SNHALF  (0.5 * 8)
@@ -218,25 +218,58 @@ public:
     }
 };
 
+class mde
+{
+public:
+    int cmd;
+    int chn;
+    int db1;
+    int db2;
+    
+    mde(int hi=0,int lo=0,int d1=0,int d2=0)
+    {
+        setup(hi,lo,d1,d2);
+    }
+    
+    void setup(int hi=0,int lo=0,int d1=0,int d2=0)
+    {
+        cmd=hi;
+        chn=lo;
+        db1=d1;
+        db2=d2;
+    }
+    
+    void dump()
+    {
+        char cs[36];
+        sprintf(cs, "[mde] 0x%02x|%02x %03d %03d", cmd,chn, db1,db2);
+        ofLog()<<ofToString(cs);
+    }
+    
+    bool noteon() { return cmd==0x09; }
+    bool noteoff() { return cmd==0x08; }
+    bool midicc() { return cmd==0x0b; }
+    bool midiat() { return cmd==0x0d; }
+};
+
 class iq
 {
 public:
-    int buf[MQ_MAX];
+    mde buf[MQ_MAX];
     int qbeg;
     int qend;
     
     iq()
     {
-        for(int i=0;i<MQ_MAX;i++) buf[i]=0;
         qbeg=0;
         qend=0;
     }
     
-    void nq(int d)
+    void nq(mde d)
     {
         if((qend+1)%MQ_MAX==qbeg) // limit
         {
-            cout<<"[WARN][iq] data loss!"<<endl;
+            ofLogWarning()<<"[iq] data loss!";
             buf[qend]=d;
             
             qbeg=1;
@@ -249,11 +282,11 @@ public:
         }
     }
     
-    int dq()
+    mde dq()
     {
-        if(qbeg==qend) return 0; // empty
+        if(qbeg==qend) return mde(); // empty
         
-        int v=buf[qbeg];
+        mde v=buf[qbeg];
         qbeg=(qbeg+1)%MQ_MAX;
         
         return v;
@@ -261,12 +294,12 @@ public:
     
     bool mt() { return qbeg==qend; }
     
-    void rndr(float x,float y)
+    void rndr(float x,float y, float gap)
     {
         float xx=x;
         WWHITE;
         ofDrawBitmapString("[", xx,y);
-        xx+=16;
+        xx+=14;
         
         for(int i=0;i<MQ_MAX;i++)
         {
@@ -274,8 +307,12 @@ public:
             else if(i==qend) IQEND;
             else IQGRE;
             
-            ofDrawBitmapString(ofToString(buf[i],3,'0'), xx,y);
-            xx+=32;
+            ofDrawBitmapString(ofToString(buf[i].cmd,3,'0'), xx,y);
+            ofDrawBitmapString(ofToString(buf[i].chn,3,'0'), xx+7*gap/16,y);
+            ofDrawBitmapString(ofToString(buf[i].db1,3,'0'), xx,y+11);
+            ofDrawBitmapString(ofToString(buf[i].db2,3,'0'), xx+7*gap/16,y+11);
+            
+            xx+=gap;
         }
         
         WWHITE;

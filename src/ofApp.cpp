@@ -285,7 +285,7 @@ void ofApp::draw()
     }
     
     // rndr q
-    mpdq.rndr(212,11);
+    mpdq.rndr(16,9, 58);
 
     z.rndrtlos(WW/2+550, HH/2-170, 330);
     z.rndrtbls(WW/2-550, HH/2-170, 330);

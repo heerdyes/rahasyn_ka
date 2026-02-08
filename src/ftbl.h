@@ -303,7 +303,10 @@ public:
     
     void trigger()
     {
-        if(trigo) ptr=0;
+        if(trigo)
+        {
+            ptr=0;
+        }
     }
 
     void incptr(tbl2 tx[])

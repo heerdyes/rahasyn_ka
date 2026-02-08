@@ -48,10 +48,13 @@ public:
             // midimon
             if(!qref->mt())
             {
-                int b=qref->dq();
-                if(b==153)
+                mde b=qref->dq();
+                if(b.cmd==0x09) // note on
                 {
-                    if(mdx>=0) ox[mdx].trigger();
+                    if(mdx>=0)
+                    {
+                        ox[mdx].trigger();
+                    }
                 }
             }
             
@@ -359,6 +362,12 @@ public:
                 TRRED;
                 ofDrawBitmapString("T", lx-7,ly-7);
             }
+            // midi reactivity
+            if(oi==mdx)
+            {
+                TRBLU;
+                ofDrawBitmapString("M", lx-7,ly+11);
+            }
             return;
         }
         
@@ -390,6 +399,12 @@ public:
         {
             TRRED;
             ofDrawBitmapString("T", lx-7,ly-7);
+        }
+        // midi reactivity
+        if(oi==mdx)
+        {
+            TRBLU;
+            ofDrawBitmapString("M", lx-7,ly+11);
         }
 
         // x axis
