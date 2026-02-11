@@ -61,6 +61,7 @@ class ofApp : public ofBaseApp{
         void kpevt(int key);
         void sourcerhka(string kafn);
         void loadconf();
+        void rndrmidisrc(float x,float y, float r);
 
         ofSoundStream soundStream;
 
@@ -74,7 +75,7 @@ class ofApp : public ofBaseApp{
         nd s12,s13,s14,s15,s16,s17,s18,s19,s20,s21;
         nd s22,s23,s24,s25,s26,s27;
         nd s28,s29,s30,s32,s33,s34,s35,s37;
-        nd s31,s36;
+        nd s31,s36,s38;
 
         syn z;
         int rbctr=0;
@@ -98,7 +99,11 @@ class ofApp : public ofBaseApp{
 		bool isdvdss=true;
 		int camclk=0;
 		bool camon=false;
-		bool persist_cmdlog=false;
+		
+		// cmd sequence == program
+		bool persist_cmdlog=true;
+		float t=0.0;
+		float dt=0.002;
 		
 		float arg1,arg2;
 		char bank='a';

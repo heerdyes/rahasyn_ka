@@ -248,11 +248,13 @@ public:
     float amag;
     // single sweep osc
     bool trigo;
+    int midisrc;
 
     tlo()
     {
         rtlo=-1;
         atlo=-1;
+        midisrc=-1;
         ptr=0;
         rate=rateref=1.0;
         amp=ampref=1.0;
@@ -264,6 +266,7 @@ public:
 
     bool ratemodded() { return rtlo!=-1; }
     bool ampmodded() { return atlo!=-1; }
+    bool midimodded() { return midisrc!=-1; }
 
     int tblsz(tbl2 tx[])
     {

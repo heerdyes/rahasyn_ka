@@ -6,10 +6,16 @@ class xywh
 {
 public:
     float x,y,w,h;
+    
+    void setup(float xx,float yy, float ww,float hh)
+    {
+        x=xx; y=yy;
+        w=ww; h=hh;
+    }
 
     xywh()
     {
-        x=y=w=h=0;
+        setup(0,0,0,0);
     }
 };
 

@@ -7,6 +7,7 @@
 #define SYNBUF_SZ   (512)
 #define NTBL        (26)
 #define NTLO        (26)
+#define NMIDISRC    (4)
 
 class syn: public ofThread
 {
@@ -21,7 +22,6 @@ public:
     {
         qref=qq;
         mgain=0.125;
-        mdx=-1;
 
         inittbl();
         inittlo();
@@ -40,64 +40,78 @@ public:
         stopThread();
     }
     
+    void procmidi()
+    {
+        // midimon
+        if(!qref->mt())
+        {
+            mde b=qref->dq();
+            for(int i=0;i<NTLO;i++)
+            {
+                if(ox[i].midisrc==-1) continue;
+                
+                if(ox[i].midisrc==0 && b.cmd==0x09) ox[i].trigger();
+                else if(ox[i].midisrc==1 && b.cmd==0x08) {}
+                else if(ox[i].midisrc==2 && b.cmd==0x0b)
+                {
+                    if(b.db1==0x03) ox[i].setr(ofMap(b.db2, 0,127, 0.2,10));
+                }
+                else if(ox[i].midisrc==3 && b.cmd==0x0d) {}
+            }
+        }
+    }
+    
+    void tcmdcompute()
+    {
+        // tcmd computer
+        for(int i=0;i<NTBL;i++)
+        {
+            int cmd,d1,d2,d3;
+            u.tcmd_unpack(tcmd[i], &cmd, &d1, &d2, &d3);
+
+            if(cmd==2) // bipolar random
+            {
+                float vv=ofRandom(-1,1);
+                if(d1==0 || d2==0) tx[i].sampwr(tclk, vv);
+                else
+                {
+                    // triggered randomness causes timbral changes
+                    if(ctr%(d1*d2)==0) tx[i].sampwr(tclk, vv);
+                }
+            }
+            else if(cmd==1) // unipolar random
+            {
+                float vv=ofRandom(0,1);
+                if(d1==0 || d2==0) tx[i].sampwr(tclk, vv);
+                else
+                {
+                    // control refresh rate of randomness
+                    if(ctr%(d1*d2)==0) tx[i].sampwr(tclk, vv);
+                }
+            }
+            else if(cmd==8) // wavetable
+            {
+                if(ox[d3].tid>=0)
+                {
+                    float mixgen=ox[d3].samp(tx);
+                    float mix1=ofMap(mixgen, -1,1, 1,0);
+                    float mix2=1-mix1;
+                    
+                    tx[i].sampwr(tclk, mix1*tx[d1].samprd(tclk) + mix2*tx[d2].samprd(tclk));
+                }
+            }
+        }
+        
+        tclk=(tclk+1)%TBL_MAX_N;
+    }
+    
     // sound engine assist
     void threadedFunction()
     {
         while(isThreadRunning())
         {
-            // midimon
-            if(!qref->mt())
-            {
-                mde b=qref->dq();
-                if(b.cmd==0x09) // note on
-                {
-                    if(mdx>=0)
-                    {
-                        ox[mdx].trigger();
-                    }
-                }
-            }
-            
-            // tcmd computer
-            for(int i=0;i<NTBL;i++)
-            {
-                int cmd,d1,d2,d3;
-                u.tcmd_unpack(tcmd[i], &cmd, &d1, &d2, &d3);
-
-                if(cmd==2) // bipolar random
-                {
-                    float vv=ofRandom(-1,1);
-                    if(d1==0 || d2==0) tx[i].sampwr(tclk, vv);
-                    else
-                    {
-                        // triggered randomness causes timbral changes
-                        if(ctr%(d1*d2)==0) tx[i].sampwr(tclk, vv);
-                    }
-                }
-                else if(cmd==1) // unipolar random
-                {
-                    float vv=ofRandom(0,1);
-                    if(d1==0 || d2==0) tx[i].sampwr(tclk, vv);
-                    else
-                    {
-                        // control refresh rate of randomness
-                        if(ctr%(d1*d2)==0) tx[i].sampwr(tclk, vv);
-                    }
-                }
-                else if(cmd==8) // wavetable
-                {
-                    if(ox[d3].tid>=0)
-                    {
-                        float mixgen=ox[d3].samp(tx);
-                        float mix1=ofMap(mixgen, -1,1, 1,0);
-                        float mix2=1-mix1;
-                        
-                        tx[i].sampwr(tclk, mix1*tx[d1].samprd(tclk) + mix2*tx[d2].samprd(tclk));
-                    }
-                }
-            }
-            
-            tclk=(tclk+1)%TBL_MAX_N;
+            procmidi();
+            tcmdcompute();
         }
     }
     
@@ -362,8 +376,7 @@ public:
                 TRRED;
                 ofDrawBitmapString("T", lx-7,ly-7);
             }
-            // midi reactivity
-            if(oi==mdx)
+            if(oref.midimodded())
             {
                 TRBLU;
                 ofDrawBitmapString("M", lx-7,ly+11);
@@ -400,12 +413,6 @@ public:
             TRRED;
             ofDrawBitmapString("T", lx-7,ly-7);
         }
-        // midi reactivity
-        if(oi==mdx)
-        {
-            TRBLU;
-            ofDrawBitmapString("M", lx-7,ly+11);
-        }
 
         // x axis
         AXISX;
@@ -435,6 +442,16 @@ public:
             float oxdst=tloxywh[atlo].x;
             float oydst=tloxywh[atlo].y;
             u.spline2(oxdst,oydst, x,y, splox,sploy, 22, sosc+"a"+ofToString((char)(97+atlo)));
+        }
+        if(oref.midimodded())
+        {
+            TRBLU;
+            ofDrawBitmapString("M", lx-7,ly+11);
+            
+            int mdsrc=oref.midisrc;
+            float msx=midisrcxywh[mdsrc].x;
+            float msy=midisrcxywh[mdsrc].y;
+            u.spline2(msx,msy, x,y, spltx,splty, 22, "midi");
         }
     }
 
@@ -523,9 +540,6 @@ public:
     // oscillators
     tlo ox[NTLO];
     
-    // midi reactor
-    int mdx;
-    
     // threaded table commands in tcmd format (refer uts.h)
     unsigned int tcmd[NTBL];
 
@@ -538,6 +552,7 @@ public:
     // tbl and tlo locations/sizes
     xywh tblxywh[NTBL];
     xywh tloxywh[NTLO];
+    xywh midisrcxywh[NMIDISRC];
 
     ut u; // TODO: make a singleton utility available for all classes
     float splox=3*WW/4, sploy=HH/2-64;
