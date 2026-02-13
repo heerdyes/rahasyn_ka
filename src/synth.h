@@ -8,6 +8,7 @@
 #define NTBL        (26)
 #define NTLO        (26)
 #define NMIDISRC    (4)
+#define SCALELEN    (12)
 
 class syn: public ofThread
 {
@@ -16,6 +17,22 @@ public:
     {
         stop();
         waitForThread(false);
+    }
+    
+    void initscale()
+    {
+        scale[0]  = 1.0;               // sa    c
+        scale[1]  = 256.0/243.0;       // sa#   c#
+        scale[2]  = 9.0/8.0;           // re    d
+        scale[3]  = 32.0/27.0;         // re#   d#
+        scale[4]  = 81.0/64.0;         // ga    e
+        scale[5]  = 4.0/3.0;           // ma    f
+        scale[6]  = 1024.0/729.0;      // ma#   f#
+        scale[7]  = 3.0/2.0;           // pa    g
+        scale[8]  = 128.0/81.0;        // pa#   g#
+        scale[9]  = 27.0/16.0;         // dha   a
+        scale[10] = 16.0/9.0;          // dha#  a#
+        scale[11] = 243.0/128.0;       // ni    b
     }
 
     void setup(iq *qq)
@@ -28,6 +45,7 @@ public:
         midicmds[2]=0x0b;
         midicmds[3]=0x0d;
 
+        initscale();
         inittbl();
         inittlo();
         initvox();
@@ -52,7 +70,16 @@ public:
             mde b=qref->dq();
             for(int i=0;i<NTLO;i++)
             {
-                if(ox[i].rmidimod() && midicmds[ox[i].rmidi]==b.cmd) ox[i].setr(.25 + (float)b.db1/10.0);
+                if(ox[i].rmidimod() && midicmds[ox[i].rmidi]==b.cmd)
+                {
+                    int octv=b.db1/12;
+                    int notei=b.db1%12;
+                    
+                    float actoct=ox[i].midibasef * pow(2.0, (float)octv);
+                    float actfrq=actoct * scale[notei];
+                    
+                    ox[i].setr(actfrq);
+                }
                 if(ox[i].amidimod() && midicmds[ox[i].amidi]==b.cmd) ox[i].seta((float)b.db2/127.0);
                 if(ox[i].emidimod() && midicmds[ox[i].emidi]==b.cmd) ox[i].trigger();
             }
@@ -608,5 +635,6 @@ public:
     
     // midi event types
     int midicmds[NMIDISRC];
+    float scale[SCALELEN];
 };
 

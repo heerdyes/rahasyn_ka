@@ -1333,7 +1333,7 @@ void ofApp::kpevt(int key)
                 int oci=oi-97;
                 
                 z.ox[oci].rmidi=0;
-                L.log("# "+ofToString(ci)+".rmidi rcv noteon");
+                L.log("# "+ofToString(ci)+".rmidi=0 -> "+ofToString(z.midicmds[0]));
                 
                 state=0;
                 cmdlog+=ofToString(ckey);

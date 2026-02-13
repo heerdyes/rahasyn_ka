@@ -240,6 +240,7 @@ public:
     float amp;
     float rateref; // reference rate
     float ampref;  // reference amp
+    float midibasef; // lowest midi freq
     
     // mod tlos
     int rtlo;
@@ -275,6 +276,7 @@ public:
         
         trigo=false; // trigable oscil
         samp0=samp1=samp2=0.0;
+        midibasef=0.015;
     }
 
     bool ratemodded() { return rtlo!=-1; }
