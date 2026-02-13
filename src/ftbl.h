@@ -240,33 +240,49 @@ public:
     float amp;
     float rateref; // reference rate
     float ampref;  // reference amp
+    
     // mod tlos
     int rtlo;
+    int rmidi;   // midi mods rate
     int atlo;
+    int amidi;   // midi mods amp
+    int etlo;    // osc trig event src (a-z)
+    int emidi;   // midi mods trig
+    
     float ptr;
     float rmag;
     float amag;
+    
     // single sweep osc
     bool trigo;
-    int midisrc;
+    float samp0,samp1,samp2;
 
     tlo()
     {
         rtlo=-1;
         atlo=-1;
-        midisrc=-1;
+        etlo=-1;
+        rmidi=-1;
+        amidi=-1;
+        emidi=-1;
+        
         ptr=0;
         rate=rateref=1.0;
         amp=ampref=1.0;
         tid=-1; // -1 causes system wide ramifications
         amag=1.0;
         rmag=1.0;
+        
         trigo=false; // trigable oscil
+        samp0=samp1=samp2=0.0;
     }
 
     bool ratemodded() { return rtlo!=-1; }
     bool ampmodded() { return atlo!=-1; }
-    bool midimodded() { return midisrc!=-1; }
+    bool evtmodded() { return etlo!=-1; }
+    bool rmidimod() { return rmidi!=-1; }
+    bool amidimod() { return amidi!=-1; }
+    bool emidimod() { return emidi!=-1; }
 
     int tblsz(tbl2 tx[])
     {
@@ -306,10 +322,8 @@ public:
     
     void trigger()
     {
-        if(trigo)
-        {
-            ptr=0;
-        }
+        if(!trigo) trigo=true;
+        ptr=0;
     }
 
     void incptr(tbl2 tx[])
@@ -330,15 +344,28 @@ public:
 
     void evolve(tbl2 tx[], tlo ox[])
     {
+        samp(tx,ox);
         incptr(tx);
-        if(rtlo!=-1) rate=abs(rateref * (1.0 + rmag*ox[rtlo].samp(tx)));
-        if(atlo!=-1) amp=abs(ampref * (1.0 + amag*ox[atlo].samp(tx)) / 2);
+        
+        if(rtlo!=-1) rate=abs(rateref * (1.0 + rmag*ox[rtlo].getsamp()));
+        if(atlo!=-1) amp=abs(ampref * (1.0 + amag*ox[atlo].getsamp()) / 2);
     }
 
-    float samp(tbl2 tx[])
+    void samp(tbl2 tx[], tlo ox[])
     {
-        if(tid==-1) return 0.0;
-        return amp * tx[tid].buf[(int)round(ptr)];
+        if(tid==-1) return;
+        
+        // current sample
+        samp2=amp * tx[tid].buf[(int)round(ptr)];
+        
+        // trigger on -ve to +ve
+        if(etlo!=-1 && samp1<0 && samp2>=0) ox[etlo].trigger();
+        
+        // breadcrumb sample trail
+        samp0=samp1;
+        samp1=samp2;
     }
+    
+    float getsamp() { return samp2; }
 };
 

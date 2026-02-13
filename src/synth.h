@@ -22,6 +22,11 @@ public:
     {
         qref=qq;
         mgain=0.125;
+        
+        midicmds[0]=0x09;
+        midicmds[1]=0x08;
+        midicmds[2]=0x0b;
+        midicmds[3]=0x0d;
 
         inittbl();
         inittlo();
@@ -42,21 +47,14 @@ public:
     
     void procmidi()
     {
-        // midimon
         if(!qref->mt())
         {
             mde b=qref->dq();
             for(int i=0;i<NTLO;i++)
             {
-                if(ox[i].midisrc==-1) continue;
-                
-                if(ox[i].midisrc==0 && b.cmd==0x09) ox[i].trigger();
-                else if(ox[i].midisrc==1 && b.cmd==0x08) {}
-                else if(ox[i].midisrc==2 && b.cmd==0x0b)
-                {
-                    if(b.db1==0x03) ox[i].setr(ofMap(b.db2, 0,127, 0.2,10));
-                }
-                else if(ox[i].midisrc==3 && b.cmd==0x0d) {}
+                if(ox[i].rmidimod() && midicmds[ox[i].rmidi]==b.cmd) ox[i].setr(.25 + (float)b.db1/10.0);
+                if(ox[i].amidimod() && midicmds[ox[i].amidi]==b.cmd) ox[i].seta((float)b.db2/127.0);
+                if(ox[i].emidimod() && midicmds[ox[i].emidi]==b.cmd) ox[i].trigger();
             }
         }
     }
@@ -93,7 +91,7 @@ public:
             {
                 if(ox[d3].tid>=0)
                 {
-                    float mixgen=ox[d3].samp(tx);
+                    float mixgen=ox[d3].getsamp();
                     float mix1=ofMap(mixgen, -1,1, 1,0);
                     float mix2=1-mix1;
                     
@@ -131,13 +129,19 @@ public:
         ctr++;
         if(ctr>8888888) ctr=0;
     }
+    
+    void ktelapse()
+    {
+        t+=dt;
+        if(t>88888888) t=0.0;
+    }
 
     float vsamp()
     {
-        float vs0=v0==-1?0:ox[v0].samp(tx);
-        float vs1=v1==-1?0:ox[v1].samp(tx);
-        float vs2=v2==-1?0:ox[v2].samp(tx);
-        float vs3=v3==-1?0:ox[v3].samp(tx);
+        float vs0=v0==-1?0:ox[v0].getsamp();
+        float vs1=v1==-1?0:ox[v1].getsamp();
+        float vs2=v2==-1?0:ox[v2].getsamp();
+        float vs3=v3==-1?0:ox[v3].getsamp();
         return mgain * (vs0+vs1+vs2+vs3);
     }
 
@@ -376,11 +380,11 @@ public:
                 TRRED;
                 ofDrawBitmapString("T", lx-7,ly-7);
             }
-            if(oref.midimodded())
-            {
-                TRBLU;
-                ofDrawBitmapString("M", lx-7,ly+11);
-            }
+            TRGRN;
+            if(oref.rmidimod()) ofDrawBitmapString("Mr", lx-7,ly+11);
+            if(oref.amidimod()) ofDrawBitmapString("Ma", lx+9,ly+11);
+            if(oref.emidimod()) ofDrawBitmapString("Me", lx+9,ly-7);
+            
             return;
         }
         
@@ -407,6 +411,7 @@ public:
         // rate and amp mod amts
         ofDrawBitmapString(ofToString(oref.rmag,2), lx3-14,ly3-6);
         ofDrawBitmapString(ofToString(oref.amag,2), lx3-14,ly3+6);
+        
         // signal trigability
         if(oref.trigo)
         {
@@ -443,15 +448,47 @@ public:
             float oydst=tloxywh[atlo].y;
             u.spline2(oxdst,oydst, x,y, splox,sploy, 22, sosc+"a"+ofToString((char)(97+atlo)));
         }
-        if(oref.midimodded())
+        if(oref.evtmodded())
+        {
+            int etlo=oref.etlo;
+            float oxdst=tloxywh[etlo].x;
+            float oydst=tloxywh[etlo].y;
+            
+            float rr=11;
+            float _splex=splex+rr*cos(t);
+            float _spley=spley-rr*sin(t);
+            
+            u.spline2(x,y, oxdst,oydst, _splex,_spley, 22, sosc+"e"+ofToString((char)(97+etlo)));
+        }
+        if(oref.rmidimod())
         {
             TRBLU;
-            ofDrawBitmapString("M", lx-7,ly+11);
+            ofDrawBitmapString("Mr", lx-7,ly+11);
             
-            int mdsrc=oref.midisrc;
-            float msx=midisrcxywh[mdsrc].x;
-            float msy=midisrcxywh[mdsrc].y;
-            u.spline2(msx,msy, x,y, spltx,splty, 22, "midi");
+            int mdsrc=oref.rmidi;
+            float msx=rmidixywh[mdsrc].x;
+            float msy=rmidixywh[mdsrc].y;
+            u.spline2(msx,msy, x,y, spltx,splty, 22, "rmidi");
+        }
+        if(oref.amidimod())
+        {
+            TRBLU;
+            ofDrawBitmapString("Ma", lx+9,ly+11);
+            
+            int mdsrc=oref.amidi;
+            float msx=amidixywh[mdsrc].x;
+            float msy=amidixywh[mdsrc].y;
+            u.spline2(msx,msy, x,y, spltx,splty, 22, "amidi");
+        }
+        if(oref.emidimod())
+        {
+            TRBLU;
+            ofDrawBitmapString("Me", lx+9,ly-7);
+            
+            int mdsrc=oref.emidi;
+            float msx=emidixywh[mdsrc].x;
+            float msy=emidixywh[mdsrc].y;
+            u.spline2(msx,msy, x,y, spltx,splty, 22, "emidi");
         }
     }
 
@@ -497,10 +534,10 @@ public:
 
     void updatesplo(float xx, float yy)
     {
-        splox=xx;
-        sploy=yy;
+        splex=splox=xx;
+        spley=sploy=yy;
     }
-
+    
     void updatesplt(float xx, float yy)
     {
         spltx=xx;
@@ -533,6 +570,8 @@ public:
     int ctr = 0;
     unsigned int tclk = 0;
     float synbuf[SYNBUF_SZ];
+    float  t = 0.000;
+    float dt = 0.005;
 
     // table list
     tbl2 tx[NTBL];
@@ -552,10 +591,13 @@ public:
     // tbl and tlo locations/sizes
     xywh tblxywh[NTBL];
     xywh tloxywh[NTLO];
-    xywh midisrcxywh[NMIDISRC];
+    xywh rmidixywh[NMIDISRC];
+    xywh amidixywh[NMIDISRC];
+    xywh emidixywh[NMIDISRC];
 
     ut u; // TODO: make a singleton utility available for all classes
     float splox=3*WW/4, sploy=HH/2-64;
+    float splex=splox, spley=sploy;
     float spltx=WW/2, splty=HH/2;
     float splwx=WW/4, splwy=HH/2-64;
     
@@ -563,5 +605,8 @@ public:
     
     // midi q
     iq *qref;
+    
+    // midi event types
+    int midicmds[NMIDISRC];
 };
 

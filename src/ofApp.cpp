@@ -5,7 +5,7 @@ void ofApp::initfsm()
     s0.setup(570,HH-174, 0);
     s1.setup(421,HH-65, 1);
     s2.setup(800,HH-236, 2);
-    s3.setup(840,HH-304, 3);
+    s3.setup(870,HH-304, 3);
     s4.setup(910,HH-104, 4);
     s5.setup(1050,HH-250, 5);
     s6.setup(1030,HH-160, 6);
@@ -43,8 +43,9 @@ void ofApp::initfsm()
     s37.setup(870,HH-43, 37);
     //
     s31.setup(390,HH-250, 31);
-    s36.setup(840,HH-176, 36);
-    s38.setup(920,HH-274, 38);
+    s36.setup(820,HH-162, 36);
+    s38.setup(930,HH-244, 38);
+    s39.setup(900,HH-246, 39);
 }
 
 void ofApp::exit()
@@ -176,6 +177,7 @@ void ofApp::update()
     
     // temporality
     t+=dt;
+    z.ktelapse();
 }
 
 void ofApp::rndrfsm()
@@ -186,11 +188,11 @@ void ofApp::rndrfsm()
     u.edge2(s0,s2, (s0.x+s2.x)/2+20,(s0.y+s2.y)/2-20, "[a-z]");
     u.edge2(s2,s0, (s0.x+s2.x)/2,(s0.y+s2.y)/2+36, ".|\\n");
     u.edge2(s2,s3, (s2.x+s3.x)/2+22,(s2.y+s3.y)/2+11, "r");
-    u.edge2(s2,s4, (s2.x+s4.x)/2+66,(s2.y+s4.y)/2-66, "a");
+    u.edge2(s2,s4, (s2.x+s4.x)/2+66,(s2.y+s4.y)/2-22, "a");
     u.edge2(s3,s0, (s0.x+s3.x)/2,(s0.y+s3.y)/2-22, "-|[a-z]");
     u.edge2(s4,s0, (s0.x+s4.x)/2-55,(s0.y+s4.y)/2+99, "-|[a-z]");
-    u.edge2(s3,s5, (s3.x+s5.x)/2+100,(s3.y+s5.y)/2-100, "[0-9]");
-    u.edge2(s3,s6, (s3.x+s6.x)/2+122,(s3.y+s6.y)/2-122, "<.>");
+    u.edge2(s3,s5, (s3.x+s5.x)/2+88,(s3.y+s5.y)/2-88, "[0-9]");
+    u.edge2(s3,s6, (s3.x+s6.x)/2+99,(s3.y+s6.y)/2-99, "<.>");
     u.edge3(s5,s5, s5.x+60,s5.y-30, s5.x+60,s5.y+30, "[0-9]");
     u.edge2(s5,s6, (s5.x+s6.x)/2+22,(s5.y+s6.y)/2-22, "<.>");
     u.edge2(s6,s7, s7.x+30,s7.y-20, "[0-9]");
@@ -251,9 +253,12 @@ void ofApp::rndrfsm()
     u.edge2(s34,s0, (s34.x+s0.x)/2-33,(s34.y+s0.y)/2+33, "\\n");
     u.edge2(s12,s31, (s12.x+s31.x)/2,(s12.y+s31.y)/2-22, "m");
     u.edge2(s31,s0, (s0.x+s31.x)/2+22,(s0.y+s31.y)/2-22, "\\n");
-    u.edge2(s2,s36, (s2.x+s36.x)/2+33,(s2.y+s36.y)/2+11, "m");
-    u.edge2(s36,s0, (s0.x+s36.x)/2,(s0.y+s36.y)/2+88, "[-98bd]");
+    u.edge2(s2,s36, (s2.x+s36.x)/2+33,(s2.y+s36.y)/2+11, "e");
+    u.edge2(s36,s0, (s0.x+s36.x)/2,(s0.y+s36.y)/2+44, "-|[a-z]");
     u.edge2(s3,s38, (s3.x+s38.x)/2,(s3.y+s38.y)/2-12, "/");
+    u.edge2(s38,s0, (s38.x+s0.x)/2+180,(s38.y+s0.y)/2+200, "[98bd]");
+    u.edge2(s4,s38, (s38.x+s4.x)/2+55,(s38.y+s4.y)/2+11, "/");
+    u.edge2(s36,s38, (s38.x+s36.x)/2-22,(s38.y+s36.y)/2-22, "/");
 
     // then nodes, to prevent edge lines reaching the center
     s0.rndr(state); s1.rndr(state); s2.rndr(state); s3.rndr(state);
@@ -270,14 +275,26 @@ void ofApp::rndrfsm()
 
 void ofApp::rndrmidisrc(float x,float y, float r)
 {
-    TRRED;
     string _mde[]={"0x09", "0x08", "0x0b", "0x0d"};
     
     float a=t;
+    float da=PI/32;
+    float dh=11;
+    
     for(int i=0;i<NMIDISRC;i++)
     {
-        z.midisrcxywh[i].setup(x+r*cos(a),y-r*sin(a), 30,10);
-        ofDrawBitmapString(_mde[i], z.midisrcxywh[i].x,z.midisrcxywh[i].y);
+        TRRED;
+        z.rmidixywh[i].setup(x+r*cos(a),y-r*sin(a), 30,10);
+        ofDrawBitmapString(_mde[i], z.rmidixywh[i].x,z.rmidixywh[i].y);
+        
+        TRGRN;
+        z.amidixywh[i].setup(x+r*cos(a),y-r*sin(a)-dh, 30,10);
+        ofDrawBitmapString(_mde[i], z.amidixywh[i].x,z.amidixywh[i].y);
+        
+        BRCYAN;
+        z.emidixywh[i].setup(x+r*cos(a),y-r*sin(a)+dh, 30,10);
+        ofDrawBitmapString(_mde[i], z.emidixywh[i].x,z.emidixywh[i].y);
+        
         a+=(2*PI)/(float)NMIDISRC;
     }
 }
@@ -571,7 +588,7 @@ void ofApp::kpevt(int key)
             state=0;
             cmdlog+="\n";
         }
-        else if(ckey=='m')
+        else if(ckey=='e')
         {
             S.push(key);
             state=36;
@@ -671,6 +688,12 @@ void ofApp::kpevt(int key)
         {
             S.push(key);
             state=37;
+            cmdlog+=ofToString(ckey);
+        }
+        else if(ckey=='/')
+        {
+            S.push(key);
+            state=38;
             cmdlog+=ofToString(ckey);
         }
     }
@@ -1256,49 +1279,101 @@ void ofApp::kpevt(int key)
     }
     else if(state==36)
     {
-        S.pop();
-        int oi=S.pop();
-        int oci=oi-97;
-        
-        if(ckey=='9')
+        if(key>=97 && key<=122)
         {
-            z.ox[oci].midisrc=0;
-        }
-        else if(ckey=='8')
-        {
-            z.ox[oci].midisrc=1;
-        }
-        else if(ckey=='b')
-        {
-            z.ox[oci].midisrc=2;
-        }
-        else if(ckey=='d')
-        {
-            z.ox[oci].midisrc=3;
-        }
-        else if(ckey=='-')
-        {
-            z.ox[oci].midisrc=-1;
-        }
-        
-        L.log("# "+ofToString((char)oi)+".midisrc = "+ofToString(ckey));
-        state=0;
-        cmdlog+=ofToString(ckey);
-    }
-    else if(state==38)
-    {
-        if(ckey=='9')
-        {
-            S.pop(); S.pop();
-            int oi=S.pop();
-            int oci=oi-97;
+            S.pop();
+            int mod=S.pop();
             
-            z.ox[oci].midisrc=0;
-            L.log("# "+ofToString((char)oi)+".midisrc = "+ofToString(ckey));
+            int src=mod-97;
+            char csrc=(char)mod;
+            int dst=key-97;
+            
+            z.ox[src].etlo=dst;
+            L.log("# "+ofToString(csrc)+" triggers "+ofToString(ckey));
             
             state=0;
             cmdlog+=ofToString(ckey);
         }
+        else if(ckey=='-')
+        {
+            S.pop();
+            int mod=S.pop();
+            
+            int src=mod-97;
+            char csrc=(char)mod;
+            
+            z.ox[src].etlo=-1;
+            L.log("# "+ofToString(csrc)+" does not trigger");
+            
+            state=0;
+            cmdlog+=ofToString(ckey);
+        }
+        else if(ckey=='/')
+        {
+            S.push(key);
+            state=38;
+            cmdlog+="/";
+        }
+        else
+        {
+            L.log("! invalid transition key !");
+        }
+    }
+    else if(state==38)
+    {
+        S.pop();
+        char prop=(char)S.pop();
+        
+        if(prop=='r')
+        {
+            if(ckey=='9')
+            {
+                int oi=S.pop();
+                char ci=(char)oi;
+                int oci=oi-97;
+                
+                z.ox[oci].rmidi=0;
+                L.log("# "+ofToString(ci)+".rmidi rcv noteon");
+                
+                state=0;
+                cmdlog+=ofToString(ckey);
+            }
+        }
+        else if(prop=='a')
+        {
+            if(ckey=='9')
+            {
+                int oi=S.pop();
+                char ci=(char)oi;
+                int oci=oi-97;
+                
+                z.ox[oci].amidi=0;
+                L.log("# "+ofToString(ci)+".amidi rcv noteon");
+                
+                state=0;
+                cmdlog+=ofToString(ckey);
+            }
+        }
+        else if(prop=='e')
+        {
+            if(ckey=='9')
+            {
+                int oi=S.pop();
+                char ci=(char)oi;
+                int oci=oi-97;
+                
+                z.ox[oci].emidi=0;
+                //z.ox[oci].etlo=-1;
+                L.log("# "+ofToString(ci)+".emidi rcv noteon");
+                
+                state=0;
+                cmdlog+=ofToString(ckey);
+            }
+        }
+    }
+    else if(state==39)
+    {
+        //
     }
 }
 

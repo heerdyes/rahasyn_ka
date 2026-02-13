@@ -5,6 +5,7 @@
 #define TRRED   (ofSetColor(255,111,33))
 #define TRBLU   (ofSetColor(23,202,232))
 #define TRBLK   (ofSetColor(0,0,0))
+#define TRGRN   (ofSetColor(32,255,32))
 #define BRCYAN  (ofSetColor(0,255,255))
 
 #define CS2Y    (ofSetColor(255,180,88))
